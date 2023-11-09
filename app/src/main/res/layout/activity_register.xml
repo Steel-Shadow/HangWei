@@ -7,7 +7,7 @@
     android:background="@drawable/bg_login"
     android:layoutAnimation="@anim/layout_from_bottom"
     android:orientation="vertical"
-    tools:context=".ui.init.RegisterActivity"
+    tools:context=".ui.activity.RegisterActivity"
     tools:layoutAnimation="@null">
 
 

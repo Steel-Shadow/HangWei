@@ -1,7 +1,6 @@
-package com.example.hangwei.ui.init;
+package com.example.hangwei.ui.activity;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -16,8 +15,6 @@ import com.example.hangwei.R;
 import com.example.hangwei.base.BaseActivity;
 import com.example.hangwei.data.AsyncHttpUtil;
 import com.example.hangwei.data.Ports;
-import com.example.hangwei.data.SyncHttpUtil;
-import com.example.hangwei.ui.MainActivity;
 import com.example.hangwei.utils.CheckUtil1;
 import com.example.hangwei.utils.ToastUtil;
 import com.example.hangwei.widget.view.CountdownView;
