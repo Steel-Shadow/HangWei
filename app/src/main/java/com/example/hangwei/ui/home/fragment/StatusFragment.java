@@ -51,13 +51,13 @@ public final class StatusFragment extends TitleBarFragment<AppActivity>
         mAdapter.setOnItemClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
 
-        TextView headerView = mRecyclerView.addHeaderView(R.layout.picker_item);
-        headerView.setText("我是头部");
-        headerView.setOnClickListener(v -> ToastUtil.toast("点击了头部", ToastConst.hintStyle));
+//        TextView headerView = mRecyclerView.addHeaderView(R.layout.picker_item);
+//        headerView.setText("我是头部");
+//        headerView.setOnClickListener(v -> ToastUtil.toast("点击了头部", ToastConst.hintStyle));
 
         TextView footerView = mRecyclerView.addFooterView(R.layout.picker_item);
         footerView.setText("我是尾部");
-        headerView.setOnClickListener(v -> ToastUtil.toast("点击了尾部", ToastConst.hintStyle));
+        footerView.setOnClickListener(v -> ToastUtil.toast("点击了尾部", ToastConst.hintStyle));
 
         mRefreshLayout.setOnRefreshLoadMoreListener(this);
     }

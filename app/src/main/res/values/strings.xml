@@ -269,8 +269,10 @@
     <string name="camera_launch_fail">无法启动相机</string>
     <string name="camera_image_error">目标地址错误</string>
     <string name="title_activity_main">MainActivity</string>
-    <string name="home_search_hint">完善细节，追求完美</string>
-    <string name="location">地点</string>
-    <string name="search_hint">今天吃什么</string>
+
+    <!--  Home主页  -->
+    <string name="home_location_text">地点</string>
+    <string name="home_search_hint">今天吃什么</string>
+    <string name="home_middle_text">根据您的口味私人化推荐</string>
 
 </resources>

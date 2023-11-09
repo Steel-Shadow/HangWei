@@ -41,12 +41,12 @@
                     android:orientation="horizontal">
 
                     <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/tv_home_address"
+                        android:id="@+id/home_address"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:drawableStart="@drawable/location"
                         android:gravity="center_vertical"
-                        android:text="@string/location"
+                        android:text="@string/home_location_text"
                         android:textColor="@color/black50"
                         android:textSize="@dimen/sp_15" />
 
@@ -58,7 +58,7 @@
                         android:orientation="horizontal">
 
                         <com.example.hangwei.widget.view.ClearEditText
-                            android:id="@+id/tv_home_hint"
+                            android:id="@+id/home_searchBox"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="@dimen/dp_20"
@@ -69,7 +69,7 @@
                             android:paddingVertical="@dimen/dp_5"
                             android:paddingStart="@dimen/dp_10"
                             android:paddingEnd="@dimen/dp_10"
-                            android:text="@string/search_hint"
+                            android:text="@string/home_search_hint"
                             android:textColor="@color/black50"
                             android:textSize="@dimen/sp_13" />
                     </LinearLayout>
@@ -89,20 +89,34 @@
 
         </com.example.hangwei.widget.layout.XCollapsingToolbarLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_home_tab"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            tools:itemCount="2"
-            tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            tools:listitem="@layout/tab_item_design"
-            tools:spanCount="2" />
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/home_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/dp_10"
+                android:paddingTop="@dimen/dp_10"
+                android:paddingEnd="0dp"
+                android:paddingBottom="@dimen/dp_10" />
+
+            <TextView
+                style="@style/EditTextStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="@string/home_middle_text"
+                android:textStyle="bold" />
+        </LinearLayout>
+
 
     </com.google.android.material.appbar.AppBarLayout>
 
     <com.example.hangwei.widget.view.NestedViewPager
-        android:id="@+id/vp_home_pager"
+        android:id="@+id/home_pager_lists"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />

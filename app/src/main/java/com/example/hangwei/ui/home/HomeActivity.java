@@ -57,7 +57,7 @@ public final class HomeActivity extends AppActivity
 
     @Override
     protected void initView() {
-        mViewPager = findViewById(R.id.vp_home_pager);
+        mViewPager = findViewById(R.id.home_page);
         mNavigationView = findViewById(R.id.rv_home_navigation);
 
         mNavigationAdapter = new NavigationAdapter(this);
