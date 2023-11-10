@@ -274,5 +274,7 @@
     <string name="home_location_text">地点</string>
     <string name="home_search_hint">今天吃什么</string>
     <string name="home_middle_text">根据您的口味私人化推荐</string>
+    <string name="dish_picture">dish picture</string>
+    <string name="home_fragment_toolbar_pic">工具栏图片</string>
 
 </resources>

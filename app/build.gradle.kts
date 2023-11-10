@@ -49,6 +49,8 @@ android {
 }
 
 dependencies {
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+
     // 上拉刷新下拉加载框架：https://github.com/scwang90/SmartRefreshLayout
     implementation("com.scwang.smart:refresh-layout-kernel:2.0.3")
     implementation("com.scwang.smart:refresh-header-material:2.0.3")

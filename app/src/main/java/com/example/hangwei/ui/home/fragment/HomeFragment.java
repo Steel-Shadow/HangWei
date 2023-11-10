@@ -5,10 +5,11 @@ import android.content.res.ColorStateList;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
@@ -20,7 +21,6 @@ import com.example.hangwei.base.FragmentPagerAdapter;
 import com.example.hangwei.ui.home.HomeActivity;
 import com.example.hangwei.widget.layout.NestedViewPager;
 import com.example.hangwei.widget.layout.XCollapsingToolbarLayout;
-import com.example.hangwei.widget.view.ClearEditText;
 import com.gyf.immersionbar.ImmersionBar;
 
 /**
@@ -29,15 +29,14 @@ import com.gyf.immersionbar.ImmersionBar;
 public final class HomeFragment extends TitleBarFragment<HomeActivity>
         implements AdapterView.OnItemSelectedListener,
         ViewPager.OnPageChangeListener,
-//        TabAdapter.OnTabListener,
         XCollapsingToolbarLayout.OnScrimsListener {
 
     /*-Toolbar 渐变伸缩---------------------------------------------------------*/
     private XCollapsingToolbarLayout mCollapsingToolbarLayout; // 渐变动态布局
     private Toolbar mToolbar; // 工具栏
     private TextView mAddressView; // 地址
-    private ClearEditText mSearchBox; // 搜索栏 todo:如何收起键盘
-    private AppCompatImageButton mFilterButton; // todo:筛选功能
+    private EditText mSearchBox; // 搜索栏 todo:如何收起键盘
+    private ImageButton mFilterButton; // todo:筛选功能
 
     /*-中间选择栏---------------------------------------------------------*/
     private Spinner mSpinner;
@@ -143,7 +142,7 @@ public final class HomeFragment extends TitleBarFragment<HomeActivity>
         mAddressView.setTextColor(ContextCompat.getColor(getAttachActivity(), shown ? R.color.black : R.color.black));
         mSearchBox.setBackgroundResource(shown ? R.drawable.home_search_bar_gray_bg : R.drawable.home_search_bar_transparent_bg);
         mSearchBox.setTextColor(ContextCompat.getColor(getAttachActivity(), shown ? R.color.black60 : R.color.black));
-        mFilterButton.setSupportImageTintList(ColorStateList.valueOf(getColor(shown ? R.color.common_icon_color : R.color.black)));
+        mFilterButton.setImageTintList(ColorStateList.valueOf(getColor(shown ? R.color.common_icon_color : R.color.black)));
     }
 
     @Override

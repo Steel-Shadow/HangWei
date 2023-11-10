@@ -8,9 +8,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hangwei.R;
 import com.example.hangwei.app.AppActivity;
+import com.example.hangwei.app.Dish;
 import com.example.hangwei.app.TitleBarFragment;
 import com.example.hangwei.base.BaseAdapter;
 import com.example.hangwei.consts.ToastConst;
+import com.example.hangwei.data.AsyncHttpUtil;
+import com.example.hangwei.data.Ports;
 import com.example.hangwei.ui.home.adapter.StatusAdapter;
 import com.example.hangwei.utils.ToastUtil;
 import com.example.hangwei.widget.layout.WrapRecyclerView;
@@ -19,8 +22,14 @@ import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 /**
  * desc   : 加载案例 Fragment
@@ -28,8 +37,8 @@ import java.util.List;
 public final class StatusFragment extends TitleBarFragment<AppActivity>
         implements OnRefreshLoadMoreListener,
         BaseAdapter.OnItemClickListener {
-    private static final int MAX_LIST_ITEM_NUM = 30;
-    private static final int LIST_ITEM_ADD_NUM = 10;
+    private static final int MAX_LIST_ITEM_NUM = 20;
+    private static final int LIST_ITEM_ADD_NUM = 5;
 
     public static StatusFragment newInstance() {
         return new StatusFragment();
@@ -67,16 +76,31 @@ public final class StatusFragment extends TitleBarFragment<AppActivity>
 
     @Override
     protected void initData() {
-        mAdapter.setData(analogData());
+        mAdapter.setData(getDishData());
     }
 
     /**
-     * 模拟数据
+     * TODO:
+     * 网络请求获取新信息
      */
-    private List<String> analogData() {
-        List<String> data = new ArrayList<>();
+    private List<Dish> getDishData() {
+        List<Dish> data = new ArrayList<>();
         for (int i = mAdapter.getCount(); i < mAdapter.getCount() + LIST_ITEM_ADD_NUM; i++) {
-            data.add("我是第" + i + "条目");
+            HashMap<String, String> params = new HashMap<>();
+//            params.put("userName", userName);
+//            params.put("password", password);
+            AsyncHttpUtil.httpPost(Ports.userLoginUrl, params, new Callback() {
+                @Override
+                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                }
+
+                @Override
+                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                }
+            });
+
+            Dish dish = new Dish("菜品" + i, "location", 1.0, 2, 3, "https://goo.gl/gEgYUd");
+            data.add(dish);
         }
         return data;
     }
@@ -91,7 +115,8 @@ public final class StatusFragment extends TitleBarFragment<AppActivity>
     @Override
     public void onItemClick(RecyclerView recyclerView, View itemView, int position) {
         // todo: 点击具体条目，跳转到评论区
-        ToastUtil.toast(mAdapter.getItem(position) + "跳转评论区", ToastConst.hintStyle);
+        Dish dish = mAdapter.getItem(position);
+        ToastUtil.toast(dish.name + "跳转评论区", ToastConst.hintStyle);
     }
 
     /**
@@ -102,7 +127,7 @@ public final class StatusFragment extends TitleBarFragment<AppActivity>
     public void onRefresh(@NonNull RefreshLayout refreshLayout) {
         postDelayed(() -> {
             mAdapter.clearData();
-            mAdapter.setData(analogData());
+            mAdapter.setData(getDishData());
             mRefreshLayout.finishRefresh();
         }, 1000);
     }
@@ -110,7 +135,7 @@ public final class StatusFragment extends TitleBarFragment<AppActivity>
     @Override
     public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
         postDelayed(() -> {
-            mAdapter.addData(analogData());
+            mAdapter.addData(getDishData());
             mRefreshLayout.finishLoadMore();
 
             mAdapter.setLastPage(mAdapter.getCount() >= MAX_LIST_ITEM_NUM);
