@@ -32,10 +32,9 @@ public final class HomeActivity extends AppActivity
     private static final String INTENT_KEY_IN_FRAGMENT_CLASS = "fragmentClass";
 
     private ViewPager mViewPager;
-    private RecyclerView mNavigationView;
-
-    private NavigationAdapter mNavigationAdapter;
     private FragmentPagerAdapter<AppFragment<?>> mPagerAdapter;
+    private RecyclerView mNavigationView;
+    private NavigationAdapter mNavigationAdapter;
 
     public static void start(Context context) {
         start(context, HomeFragment.class);

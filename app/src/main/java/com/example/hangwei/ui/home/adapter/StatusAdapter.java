@@ -12,6 +12,7 @@ import com.example.hangwei.app.AppAdapter;
 /**
  *    desc   : 状态数据列表
  */
+//TODO: 修改显示，不只是String
 public final class StatusAdapter extends AppAdapter<String> {
 
     public StatusAdapter(Context context) {
@@ -26,6 +27,7 @@ public final class StatusAdapter extends AppAdapter<String> {
 
     private final class ViewHolder extends AppAdapter<?>.ViewHolder {
 
+        //TODO: 修改显示，不只是String
         private final TextView mTextView;
 
         private ViewHolder() {

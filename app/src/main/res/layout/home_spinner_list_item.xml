@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheckedTextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/home_spinner_list_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:ellipsize="marquee"
+    android:gravity="center"
+    android:paddingStart="@dimen/dp_15"
+    android:paddingTop="@dimen/dp_5"
+    android:paddingEnd="@dimen/dp_0_1"
+    android:paddingBottom="@dimen/dp_5"
+    android:singleLine="true"
+    android:textColor="#D5B041" />

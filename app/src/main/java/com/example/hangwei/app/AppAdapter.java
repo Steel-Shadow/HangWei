@@ -1,5 +1,6 @@
 package com.example.hangwei.app;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.View;
 
@@ -50,6 +51,7 @@ public abstract class AppAdapter<T> extends BaseAdapter<BaseAdapter<?>.ViewHolde
     /**
      * 设置新的数据
      */
+    @SuppressLint("NotifyDataSetChanged")
     public void setData(@Nullable List<T> data) {
         mDataSet = data;
         notifyDataSetChanged();
@@ -83,6 +85,7 @@ public abstract class AppAdapter<T> extends BaseAdapter<BaseAdapter<?>.ViewHolde
     /**
      * 清空当前数据
      */
+    @SuppressLint("NotifyDataSetChanged")
     public void clearData() {
         if (mDataSet == null || mDataSet.size() == 0) {
             return;

@@ -14,6 +14,7 @@ import com.example.hangwei.consts.ToastConst;
 import com.example.hangwei.ui.home.adapter.StatusAdapter;
 import com.example.hangwei.utils.ToastUtil;
 import com.example.hangwei.widget.layout.WrapRecyclerView;
+
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener;
@@ -27,6 +28,8 @@ import java.util.List;
 public final class StatusFragment extends TitleBarFragment<AppActivity>
         implements OnRefreshLoadMoreListener,
         BaseAdapter.OnItemClickListener {
+    private static final int MAX_LIST_ITEM_NUM = 30;
+    private static final int LIST_ITEM_ADD_NUM = 10;
 
     public static StatusFragment newInstance() {
         return new StatusFragment();
@@ -51,13 +54,13 @@ public final class StatusFragment extends TitleBarFragment<AppActivity>
         mAdapter.setOnItemClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
 
-//        TextView headerView = mRecyclerView.addHeaderView(R.layout.picker_item);
-//        headerView.setText("我是头部");
-//        headerView.setOnClickListener(v -> ToastUtil.toast("点击了头部", ToastConst.hintStyle));
+        TextView headerView = mRecyclerView.addHeaderView(R.layout.picker_item);
+        headerView.setText("我是头部");
+        headerView.setOnClickListener(v -> ToastUtil.toast("点击了头部", ToastConst.successStyle));
 
         TextView footerView = mRecyclerView.addFooterView(R.layout.picker_item);
         footerView.setText("我是尾部");
-        footerView.setOnClickListener(v -> ToastUtil.toast("点击了尾部", ToastConst.hintStyle));
+        footerView.setOnClickListener(v -> ToastUtil.toast("点击了尾部", ToastConst.errorStyle));
 
         mRefreshLayout.setOnRefreshLoadMoreListener(this);
     }
@@ -72,7 +75,7 @@ public final class StatusFragment extends TitleBarFragment<AppActivity>
      */
     private List<String> analogData() {
         List<String> data = new ArrayList<>();
-        for (int i = mAdapter.getCount(); i < mAdapter.getCount() + 20; i++) {
+        for (int i = mAdapter.getCount(); i < mAdapter.getCount() + LIST_ITEM_ADD_NUM; i++) {
             data.add("我是第" + i + "条目");
         }
         return data;
@@ -87,7 +90,8 @@ public final class StatusFragment extends TitleBarFragment<AppActivity>
      */
     @Override
     public void onItemClick(RecyclerView recyclerView, View itemView, int position) {
-        ToastUtil.toast(mAdapter.getItem(position), ToastConst.hintStyle);
+        // todo: 点击具体条目，跳转到评论区
+        ToastUtil.toast(mAdapter.getItem(position) + "跳转评论区", ToastConst.hintStyle);
     }
 
     /**
@@ -109,7 +113,7 @@ public final class StatusFragment extends TitleBarFragment<AppActivity>
             mAdapter.addData(analogData());
             mRefreshLayout.finishLoadMore();
 
-            mAdapter.setLastPage(mAdapter.getCount() >= 100);
+            mAdapter.setLastPage(mAdapter.getCount() >= MAX_LIST_ITEM_NUM);
             mRefreshLayout.setNoMoreData(mAdapter.isLastPage());
         }, 1000);
     }

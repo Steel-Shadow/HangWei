@@ -13,21 +13,21 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 
+import com.example.hangwei.R;
 import com.example.hangwei.app.AppFragment;
+import com.example.hangwei.app.TitleBarFragment;
+import com.example.hangwei.base.FragmentPagerAdapter;
+import com.example.hangwei.ui.home.HomeActivity;
+import com.example.hangwei.widget.layout.NestedViewPager;
+import com.example.hangwei.widget.layout.XCollapsingToolbarLayout;
 import com.example.hangwei.widget.view.ClearEditText;
 import com.gyf.immersionbar.ImmersionBar;
-import com.example.hangwei.R;
-import com.example.hangwei.base.FragmentPagerAdapter;
-import com.example.hangwei.app.TitleBarFragment;
-import com.example.hangwei.widget.layout.XCollapsingToolbarLayout;
-
-import com.example.hangwei.ui.home.HomeActivity;
 
 /**
  * desc   : 首页 Fragment
  */
 public final class HomeFragment extends TitleBarFragment<HomeActivity>
-        implements  AdapterView.OnItemSelectedListener,
+        implements AdapterView.OnItemSelectedListener,
         ViewPager.OnPageChangeListener,
 //        TabAdapter.OnTabListener,
         XCollapsingToolbarLayout.OnScrimsListener {
@@ -44,8 +44,8 @@ public final class HomeFragment extends TitleBarFragment<HomeActivity>
     ArrayAdapter<CharSequence> mArrayAdapter;
 
     /*- 菜品展示列表 ---------------------------------------------------------*/
-    private ViewPager mViewPager;
-    private FragmentPagerAdapter<AppFragment<?>> mPagerAdapter;
+    private NestedViewPager mViewPager; // 下方展示区，可左右切换，目前只有一个，可直接改为 StatusFragment
+    private FragmentPagerAdapter<AppFragment<?>> mPagerAdapter; // 下方展示区的适配器，目前只有一个
 
     /*----------------------------------------------------------*/
     public static HomeFragment newInstance() {
@@ -70,7 +70,7 @@ public final class HomeFragment extends TitleBarFragment<HomeActivity>
         mViewPager = findViewById(R.id.home_pager_lists);
 
         mPagerAdapter = new FragmentPagerAdapter<>(this);
-        mPagerAdapter.addFragment(StatusFragment.newInstance(), "餐品列表"); // todo:切换早中晚餐
+        mPagerAdapter.addFragment(StatusFragment.newInstance(), "餐品列表");
 
         mViewPager.setAdapter(mPagerAdapter);
         mViewPager.addOnPageChangeListener(this);
@@ -84,8 +84,8 @@ public final class HomeFragment extends TitleBarFragment<HomeActivity>
 
     @Override
     protected void initData() {
-        mArrayAdapter = ArrayAdapter.createFromResource(requireContext(), R.array.home_spinner_array, R.layout.home_spinner_item);
-        mArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mArrayAdapter = ArrayAdapter.createFromResource(requireContext(), R.array.home_spinner_array, R.layout.home_spinner_view);
+        mArrayAdapter.setDropDownViewResource(R.layout.home_spinner_list_item);
 
         mSpinner.setAdapter(mArrayAdapter);
         mSpinner.setOnItemSelectedListener(this);
@@ -102,10 +102,12 @@ public final class HomeFragment extends TitleBarFragment<HomeActivity>
         return mCollapsingToolbarLayout.isScrimsShown();
     }
 
-    //设置 mViewPager 的页数
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         mViewPager.setCurrentItem(position);
+        // mViewPager.setCurrentItem(position);
+        // 无需切换
+        // todo:切换早中晚餐
     }
 
     @Override
@@ -123,10 +125,6 @@ public final class HomeFragment extends TitleBarFragment<HomeActivity>
 
     @Override
     public void onPageSelected(int position) {
-//        if (mTabAdapter == null) {
-//            return;
-//        }
-//        mTabAdapter.setSelectedPosition(position);
     }
 
     @Override

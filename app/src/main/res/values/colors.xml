@@ -101,4 +101,5 @@
     <color name="toast_success_color">#388E3C</color>
     <color name="toast_warn_color">#FFA900</color>
     <color name="toast_error_color">#D50000</color>
+
 </resources>
