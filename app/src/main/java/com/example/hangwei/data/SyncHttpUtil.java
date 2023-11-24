@@ -13,8 +13,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
@@ -52,6 +54,18 @@ public class SyncHttpUtil {
         return getRunnable.jsonObject;
     }
 
+    public static JSONObject httpGetForMap(String url, Map<String, Object> params) throws IOException {
+        GetRunnable getRunnable = new GetRunnable(url, params);
+        Thread thread = new Thread(getRunnable, "getThread");
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return getRunnable.jsonObject;
+    }
+
     static final class GetRunnable implements Runnable {
         private final String getUrl;
         private JSONObject jsonObject;
@@ -63,6 +77,18 @@ public class SyncHttpUtil {
                 getUrl.append(s).append('/');
             }
             this.getUrl = getUrl.toString();
+            System.out.println(this.getUrl);
+        }
+
+        public GetRunnable(String url, Map<String, Object> params) {
+            // 构建请求URL，并添加参数
+            HttpUrl.Builder urlBuilder = HttpUrl.parse(url).newBuilder();
+
+            for (Map.Entry<String, Object> entry : params.entrySet()) {
+                urlBuilder.addQueryParameter(entry.getKey(), entry.getValue().toString());
+            }
+
+            getUrl = urlBuilder.build().toString();
             System.out.println(this.getUrl);
         }
 
@@ -86,7 +112,7 @@ public class SyncHttpUtil {
     /*
      * POST
      * */
-    public static JSONObject httpPost(String url, HashMap<String, String> params) throws IOException {
+    public static JSONObject httpPost(String url, HashMap<String, Object> params) throws IOException {
         PostRunnable postRunnable = new PostRunnable(url, params);
         Thread thread = new Thread(postRunnable, "postThread");
         thread.start();
@@ -103,7 +129,7 @@ public class SyncHttpUtil {
         private final JSONObject jsonBody;
         private JSONObject jsonObject;
 
-        public PostRunnable(String url, HashMap<String, String> params) {
+        public PostRunnable(String url, HashMap<String, Object> params) {
             this.url = url;
             System.out.println(this.url);
             this.jsonBody = new JSONObject(params);

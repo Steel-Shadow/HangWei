@@ -1,12 +1,11 @@
 package com.example.hangwei.ui.home.fragment;
 
 import android.annotation.SuppressLint;
-import android.content.res.ColorStateList;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -35,14 +34,14 @@ public final class HomeFragment extends TitleBarFragment<HomeActivity>
     private XCollapsingToolbarLayout mCollapsingToolbarLayout; // 渐变动态布局
     private Toolbar mToolbar; // 工具栏
     private TextView mAddressView; // 地址
-    private EditText mSearchBox; // 搜索栏 todo:如何收起键盘
-    private ImageButton mFilterButton; // todo:筛选功能
+    private EditText mSearchBox; // 搜索栏，点击下方图片空白收回键盘
 
     /*-中间选择栏---------------------------------------------------------*/
     private Spinner mSpinner;
     ArrayAdapter<CharSequence> mArrayAdapter;
 
     /*- 菜品展示列表 ---------------------------------------------------------*/
+    StatusFragment statusFragment;
     private NestedViewPager mViewPager; // 下方展示区，可左右切换，目前只有一个，可直接改为 StatusFragment
     private FragmentPagerAdapter<AppFragment<?>> mPagerAdapter; // 下方展示区的适配器，目前只有一个
 
@@ -63,22 +62,64 @@ public final class HomeFragment extends TitleBarFragment<HomeActivity>
 
         mAddressView = findViewById(R.id.home_address);
         mSearchBox = findViewById(R.id.home_searchBox);
-        mFilterButton = findViewById(R.id.iv_home_search);
 
         mSpinner = findViewById(R.id.home_spinner);
         mViewPager = findViewById(R.id.home_pager_lists);
 
         mPagerAdapter = new FragmentPagerAdapter<>(this);
-        mPagerAdapter.addFragment(StatusFragment.newInstance(), "餐品列表");
+        statusFragment = StatusFragment.newInstance();
+        mPagerAdapter.addFragment(statusFragment, "餐品列表");
 
         mViewPager.setAdapter(mPagerAdapter);
         mViewPager.addOnPageChangeListener(this);
+
+        // 点击 toolbar 的图片收回键盘
+        findViewById(R.id.home_imageView).setOnClickListener(v -> {
+            hideKeyboard(getView());
+        });
 
         // 给这个 ToolBar 设置顶部内边距，才能和 TitleBar 进行对齐
         ImmersionBar.setTitleBar(getAttachActivity(), mToolbar);
 
         //设置渐变监听
         mCollapsingToolbarLayout.setOnScrimsListener(this);
+
+        mAddressView.setOnClickListener(v -> {
+            if (mAddressView.getText().equals("学院路")) {
+                mAddressView.setText("沙河");
+                statusFragment.setCampus("沙河");
+            } else {
+                mAddressView.setText("学院路");
+                statusFragment.setCampus("学院路");
+            }
+            statusFragment.refresh();
+        });
+
+        mSearchBox.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                hideKeyboard(getView());
+                // 隐藏光标
+                mSearchBox.setCursorVisible(false);
+                statusFragment.setSearch(mSearchBox.getText());
+                statusFragment.refresh();
+            }
+            return false;
+        });
+
+        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // [0: 全部]，[1：早餐]，[2：正餐]，[3：饮料]
+                statusFragment.setType(position);
+                statusFragment.refresh();
+            }
+
+            //只有当patent中的资源没有时，调用此方法
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     @Override
@@ -87,7 +128,6 @@ public final class HomeFragment extends TitleBarFragment<HomeActivity>
         mArrayAdapter.setDropDownViewResource(R.layout.home_spinner_list_item);
 
         mSpinner.setAdapter(mArrayAdapter);
-        mSpinner.setOnItemSelectedListener(this);
     }
 
     @Override
@@ -104,9 +144,7 @@ public final class HomeFragment extends TitleBarFragment<HomeActivity>
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         mViewPager.setCurrentItem(position);
-        // mViewPager.setCurrentItem(position);
         // 无需切换
-        // todo:切换早中晚餐
     }
 
     @Override
@@ -142,7 +180,6 @@ public final class HomeFragment extends TitleBarFragment<HomeActivity>
         mAddressView.setTextColor(ContextCompat.getColor(getAttachActivity(), shown ? R.color.black : R.color.black));
         mSearchBox.setBackgroundResource(shown ? R.drawable.home_search_bar_gray_bg : R.drawable.home_search_bar_transparent_bg);
         mSearchBox.setTextColor(ContextCompat.getColor(getAttachActivity(), shown ? R.color.black60 : R.color.black));
-        mFilterButton.setImageTintList(ColorStateList.valueOf(getColor(shown ? R.color.common_icon_color : R.color.black)));
     }
 
     @Override

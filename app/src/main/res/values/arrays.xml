@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="home_spinner_array">
+        <item>全部</item>
         <item>早餐</item>
-        <item>午餐</item>
-        <item>晚餐</item>
+        <item>正餐</item>
+        <item>饮料</item>
     </string-array>
 </resources>

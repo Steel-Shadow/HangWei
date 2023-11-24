@@ -16,7 +16,7 @@ import com.example.hangwei.app.Dish;
 import java.util.Locale;
 
 /**
- * desc   : 状态数据列表
+ * desc   : 菜品数据列表
  */
 public final class StatusAdapter extends AppAdapter<Dish> {
 
@@ -52,18 +52,11 @@ public final class StatusAdapter extends AppAdapter<Dish> {
 
         @Override
         public void onBindView(int position) {
-            // todo: 显示菜品数据
             Dish dish = getItem(position);
 
             Glide.with(this.getItemView()).load(dish.foodPicUrl).into(mFoodPic);
-
             mName.setText(dish.name);
-
-            if (dish.price == (int) dish.price) {
-                mPrice.setText(String.format(Locale.CHINA, "%d", (int) dish.price));
-            } else {
-                mPrice.setText(String.format(Locale.CHINA, "%.1f", dish.price));
-            }
+            mPrice.setText(String.format(Locale.CHINA, "%d", dish.price));
         }
     }
 }

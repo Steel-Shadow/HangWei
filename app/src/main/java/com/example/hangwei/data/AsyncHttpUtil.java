@@ -7,9 +7,11 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Callback;
+import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
@@ -56,6 +58,43 @@ public class AsyncHttpUtil {
         Request request = new Request.Builder()
                 .url(finalUrl)
                 .post(RequestBody.create(MediaType.parse("application/json"), jsonBody.toString()))
+                .build();
+
+        // request
+        okHttpClient.newCall(request).enqueue(callback);
+    }
+
+    public static void httpPostForObject(String url, HashMap<String, Object> params, Callback callback) {
+        // build url
+        System.out.println(url);
+        JSONObject jsonBody = new JSONObject(params);
+
+        // build request
+        Request request = new Request.Builder()
+                .url(url)
+                .post(RequestBody.create(MediaType.parse("application/json"), jsonBody.toString()))
+                .build();
+
+        // request
+        okHttpClient.newCall(request).enqueue(callback);
+    }
+
+    /*
+     * GET
+     * */
+    public static void httpGetForObject(String url, HashMap<String, Object> params, Callback callback) {
+        // 构建请求URL，并添加参数
+        HttpUrl.Builder urlBuilder = HttpUrl.parse(url).newBuilder();
+
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
+            urlBuilder.addQueryParameter(entry.getKey(), entry.getValue().toString());
+        }
+
+        String finalUrl = urlBuilder.build().toString();
+
+        // 构建GET请求
+        Request request = new Request.Builder()
+                .url(finalUrl)
                 .build();
 
         // request

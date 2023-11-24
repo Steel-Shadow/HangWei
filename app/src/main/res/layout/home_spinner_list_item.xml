@@ -11,4 +11,5 @@
     android:paddingEnd="@dimen/dp_0_1"
     android:paddingBottom="@dimen/dp_5"
     android:singleLine="true"
-    android:textColor="#D5B041" />
+    android:textColor="#D5B041"
+    android:textSize="20sp" />

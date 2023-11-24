@@ -9,12 +9,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatButton;
 
-import com.example.hangwei.consts.ToastConst;
 import com.example.hangwei.R;
 import com.example.hangwei.base.BaseActivity;
+import com.example.hangwei.consts.ToastConst;
 import com.example.hangwei.data.AsyncHttpUtil;
-import com.example.hangwei.data.SyncHttpUtil;
 import com.example.hangwei.data.Ports;
+import com.example.hangwei.data.SyncHttpUtil;
+import com.example.hangwei.ui.home.HomeActivity;
 import com.example.hangwei.utils.CheckUtil1;
 import com.example.hangwei.utils.ToastUtil;
 import com.example.hangwei.widget.view.SubmitButton;
@@ -130,7 +131,7 @@ public class LoginActivity extends BaseActivity {
                             btn_login.showSucceed();
                             postDelayed(() -> {
                                 // 登录成功后关闭此页面进入主页
-                                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                                Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                                 Bundle bundle = new Bundle();
                                 bundle.putString("userName", userName);
                                 bundle.putString("password", password);

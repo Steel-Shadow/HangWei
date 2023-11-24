@@ -1,14 +1,16 @@
 package com.example.hangwei.app;
 
 public class Dish {
+    public String id;
     public String name;
     public String location;
-    public double price;
+    public int price;
     public int likeCount;
     public int commentCount;
     public String foodPicUrl;
 
-    public Dish(String name, String location, double price, int likeCount, int commentCount, String foodPicUrl) {
+    public Dish(String id, String name, String location, int price, int likeCount, int commentCount, String foodPicUrl) {
+        this.id = id;
         this.name = name;
         this.location = location;
         this.price = price;
