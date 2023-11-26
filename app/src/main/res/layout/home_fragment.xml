@@ -27,7 +27,7 @@
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
                 app:layout_collapseMode="parallax"
-                app:srcCompat="@color/yellow" />
+                android:src="@color/yellow" />
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/tb_home_title"
@@ -115,8 +115,6 @@
                 android:textSize="20sp"
                 android:textStyle="bold" />
         </LinearLayout>
-
-
     </com.google.android.material.appbar.AppBarLayout>
 
     <com.example.hangwei.widget.layout.NestedViewPager

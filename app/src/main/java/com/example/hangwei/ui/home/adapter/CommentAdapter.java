@@ -2,10 +2,12 @@ package com.example.hangwei.ui.home.adapter;
 
 import android.content.Context;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.bumptech.glide.Glide;
 import com.example.hangwei.R;
 import com.example.hangwei.app.AppAdapter;
 import com.example.hangwei.app.Comment;
@@ -26,27 +28,26 @@ public final class CommentAdapter extends AppAdapter<Comment> {
     }
 
     private final class ViewHolder extends AppAdapter<?>.ViewHolder {
-        private final LinearLayout mComment;
-        public String mUserId;
-        public String mDate;
-        public String mText; // 评论内容
+        private TextView mUserName;
+        private ImageView mUserPic;
+        private TextView mDate;
+        private TextView mText; // 评论内容
 
         private ViewHolder() {
-            super(R.layout.status_dish);
-            mComment = findViewById(R.id.status_dish);
-//            mUserId = mComment.findViewById(s)
+            super(R.layout.comment_item);
+            mUserName = findViewById(R.id.userName);
+            mUserPic = findViewById(R.id.picUrl);
+            mDate = findViewById(R.id.date);
+            mText = findViewById(R.id.comment);
         }
 
         @Override
         public void onBindView(int position) {
-            // todo: 显示评论数据
-//            Comment dish = getItem(position);
-//
-//            Glide.with(this.getItemView()).load(dish.foodPicUrl).into(mFoodPic);
-//
-//            mName.setText(dish.name);
-//
-//            mPrice.setText(String.format(Locale.CHINA, "%d", dish.price));
+            Comment comment = getItem(position);
+            Glide.with(this.getItemView()).load(comment.picUrl).into(mUserPic);
+            mUserName.setText(comment.userName);
+            mDate.setText(comment.date);
+            mText.setText(comment.text);
         }
     }
 }

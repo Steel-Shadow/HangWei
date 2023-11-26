@@ -4,20 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.home.fragment.StatusFragment" >
+    tools:context=".ui.home.fragment.DishFragment">
 
     <com.scwang.smart.refresh.layout.SmartRefreshLayout
-        android:id="@+id/rl_status_refresh"
+        android:id="@+id/dish_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:srlEnablePreviewInEditMode="false">
 
         <com.example.hangwei.widget.layout.WrapRecyclerView
-            android:id="@+id/rv_status_list"
+            android:id="@+id/dish_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:listCount="10"
-            tools:listitem="@layout/status_dish" />
+            tools:listitem="@layout/dish_info_item" />
     </com.scwang.smart.refresh.layout.SmartRefreshLayout>
 
 </FrameLayout>

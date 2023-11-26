@@ -89,7 +89,7 @@
     <string name="common_permission_setting">系统设置权限</string>
 
     <string name="common_network_hint">当前没有网络连接，请检查网络设置</string>
-    <string name="common_no_more_data">没有更多数据了</string>
+    <string name="common_no_more_data">显示条目已达上限</string>
 
     <string name="common_web_ssl_error_title">当前网站安全证书已过期或不可信\n是否继续浏览</string>
     <string name="common_web_ssl_error_allow">继续浏览</string>
@@ -277,5 +277,9 @@
     <string name="dish_picture">dish picture</string>
     <string name="home_fragment_toolbar_pic">工具栏图片</string>
     <string name="dish_comment">菜品评价</string>
+    <string name="comment_user_pic">评论区用户头像</string>
+
+    <!--  菜品详情页  -->
+    <string name="comment_count">共%1$d条评论</string>
 
 </resources>

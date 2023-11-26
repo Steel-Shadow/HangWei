@@ -41,7 +41,7 @@ public final class HomeFragment extends TitleBarFragment<HomeActivity>
     ArrayAdapter<CharSequence> mArrayAdapter;
 
     /*- 菜品展示列表 ---------------------------------------------------------*/
-    StatusFragment statusFragment;
+    DishFragment dishFragment;
     private NestedViewPager mViewPager; // 下方展示区，可左右切换，目前只有一个，可直接改为 StatusFragment
     private FragmentPagerAdapter<AppFragment<?>> mPagerAdapter; // 下方展示区的适配器，目前只有一个
 
@@ -67,8 +67,8 @@ public final class HomeFragment extends TitleBarFragment<HomeActivity>
         mViewPager = findViewById(R.id.home_pager_lists);
 
         mPagerAdapter = new FragmentPagerAdapter<>(this);
-        statusFragment = StatusFragment.newInstance();
-        mPagerAdapter.addFragment(statusFragment, "餐品列表");
+        dishFragment = DishFragment.newInstance();
+        mPagerAdapter.addFragment(dishFragment, "餐品列表");
 
         mViewPager.setAdapter(mPagerAdapter);
         mViewPager.addOnPageChangeListener(this);
@@ -87,12 +87,12 @@ public final class HomeFragment extends TitleBarFragment<HomeActivity>
         mAddressView.setOnClickListener(v -> {
             if (mAddressView.getText().equals("学院路")) {
                 mAddressView.setText("沙河");
-                statusFragment.setCampus("沙河");
+                dishFragment.setCampus("沙河");
             } else {
                 mAddressView.setText("学院路");
-                statusFragment.setCampus("学院路");
+                dishFragment.setCampus("学院路");
             }
-            statusFragment.refresh();
+            dishFragment.refresh();
         });
 
         mSearchBox.setOnEditorActionListener((v, actionId, event) -> {
@@ -100,8 +100,8 @@ public final class HomeFragment extends TitleBarFragment<HomeActivity>
                 hideKeyboard(getView());
                 // 隐藏光标
                 mSearchBox.setCursorVisible(false);
-                statusFragment.setSearch(mSearchBox.getText());
-                statusFragment.refresh();
+                dishFragment.setSearch(mSearchBox.getText());
+                dishFragment.refresh();
             }
             return false;
         });
@@ -110,8 +110,8 @@ public final class HomeFragment extends TitleBarFragment<HomeActivity>
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 // [0: 全部]，[1：早餐]，[2：正餐]，[3：饮料]
-                statusFragment.setType(position);
-                statusFragment.refresh();
+                dishFragment.setType(position);
+                dishFragment.refresh();
             }
 
             //只有当patent中的资源没有时，调用此方法
@@ -175,7 +175,6 @@ public final class HomeFragment extends TitleBarFragment<HomeActivity>
     @SuppressLint("RestrictedApi")
     @Override
     public void onScrimsStateChange(XCollapsingToolbarLayout layout, boolean shown) {
-        // todo: 修改下拉、回弹颜色修改
         getStatusBarConfig().statusBarDarkFont(shown).init();
         mAddressView.setTextColor(ContextCompat.getColor(getAttachActivity(), shown ? R.color.black : R.color.black));
         mSearchBox.setBackgroundResource(shown ? R.drawable.home_search_bar_gray_bg : R.drawable.home_search_bar_transparent_bg);

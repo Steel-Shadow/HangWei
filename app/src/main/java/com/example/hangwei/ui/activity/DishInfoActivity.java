@@ -7,19 +7,18 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.hangwei.R;
-import com.example.hangwei.app.AppActivity;
-import com.example.hangwei.app.AppFragment;
+import com.example.hangwei.base.BaseActivity;
+import com.example.hangwei.base.BaseFragment;
 import com.example.hangwei.base.FragmentPagerAdapter;
 import com.example.hangwei.consts.ToastConst;
 import com.example.hangwei.data.AsyncHttpUtil;
 import com.example.hangwei.data.Ports;
 import com.example.hangwei.ui.dishInfo.CommentFragment;
-import com.example.hangwei.ui.dishInfo.MatchDishFragment;
+import com.example.hangwei.ui.dishInfo.SideDishFragment;
 import com.example.hangwei.ui.home.adapter.TabAdapter;
 import com.example.hangwei.utils.ToastUtil;
 import com.example.hangwei.widget.layout.XCollapsingToolbarLayout;
@@ -37,11 +36,10 @@ import okhttp3.Response;
 /**
  * desc   : 餐品详情页
  */
-public final class DishInfoActivity extends AppActivity
+public final class DishInfoActivity extends BaseActivity
         implements TabAdapter.OnTabListener,
         ViewPager.OnPageChangeListener,
         XCollapsingToolbarLayout.OnScrimsListener {
-    private XCollapsingToolbarLayout mCollapsingToolbarLayout; // 渐变动态布局
     private String mDishId;
     private TextView mName;
     private TextView mPrice;
@@ -52,7 +50,7 @@ public final class DishInfoActivity extends AppActivity
     private ViewPager mViewPager;
 
     private TabAdapter mTabAdapter;
-    private FragmentPagerAdapter<AppFragment<?>> mPagerAdapter;
+    private FragmentPagerAdapter<BaseFragment<?>> mPagerAdapter;
 
     public static DishInfoActivity newInstance() {
         return new DishInfoActivity();
@@ -65,8 +63,6 @@ public final class DishInfoActivity extends AppActivity
 
     @Override
     protected void initView() {
-        mCollapsingToolbarLayout = findViewById(R.id.dish_info_bar);
-
         mName = findViewById(R.id.dish_info_name);
         mPrice = findViewById(R.id.dish_info_price);
         mFavorite = findViewById(R.id.dish_info_favorite);
@@ -76,15 +72,12 @@ public final class DishInfoActivity extends AppActivity
 
         mPagerAdapter = new FragmentPagerAdapter<>(this);
         mPagerAdapter.addFragment(CommentFragment.newInstance(), "评价");
-        mPagerAdapter.addFragment(MatchDishFragment.newInstance(), "餐品搭配");
+        mPagerAdapter.addFragment(SideDishFragment.newInstance(), "餐品搭配");
         mViewPager.setAdapter(mPagerAdapter);
         mViewPager.addOnPageChangeListener(this);
 
         mTabAdapter = new TabAdapter(this.getContext());
         mTabView.setAdapter(mTabAdapter);
-
-        //设置渐变监听
-        mCollapsingToolbarLayout.setOnScrimsListener(this);
 
         mFavorite.setOnClickListener(this::clickFavorite);
     }
@@ -96,31 +89,7 @@ public final class DishInfoActivity extends AppActivity
         mTabAdapter.setOnTabListener(this);
 
         Intent intent = getIntent();
-        String dishId = intent.getStringExtra("dishId");
-
-        HashMap<String, Object> params = new HashMap<>();
-        params.put("dishId", dishId);
-        AsyncHttpUtil.httpPostForObject(Ports.dishComment, params, new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                ToastUtil.toast("餐品详情获取失败，请稍候再试", ToastConst.warnStyle);
-            }
-
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                try {
-                    assert response.body() != null;
-                    JSONObject jsonObject = new JSONObject(response.body().string());
-
-                    Fragment fragment = mPagerAdapter.getShowFragment();
-                    runOnUiThread(() -> {
-
-                    });
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+        mDishId = intent.getStringExtra("dishId");
     }
 
     /**
@@ -166,6 +135,10 @@ public final class DishInfoActivity extends AppActivity
 
     }
 
+    public String getDishId() {
+        return mDishId;
+    }
+
     private void clickFavorite(View v) {
         HashMap<String, String> params = new HashMap<>();
         params.put("userId", "todo: userIdShouldBeHere"); // todo: 与wyj协商确定userId获取
@@ -185,15 +158,14 @@ public final class DishInfoActivity extends AppActivity
                     if (jsonObject.getInt("code") == 0) {
                         ToastUtil.toast(jsonObject.getString("msg"), ToastConst.errorStyle);
                     } else {
-                        Drawable star;
+                        Drawable newStar;
                         if (mHasFavorite) {
-                            star = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_rating_star_off, null);
+                            newStar = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_rating_star_off, null);
                         } else {
-                            star = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_rating_star_fill, null);
+                            newStar = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_rating_star_fill, null);
                         }
                         mHasFavorite = !mHasFavorite;
-                        assert star != null;
-                        runOnUiThread(() -> mFavorite.setCompoundDrawablesWithIntrinsicBounds(null, star, null, null));
+                        runOnUiThread(() -> mFavorite.setCompoundDrawablesWithIntrinsicBounds(null, newStar, null, null));
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

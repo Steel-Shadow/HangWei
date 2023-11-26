@@ -2,7 +2,6 @@ package com.example.hangwei.ui.home.fragment;
 
 import static java.lang.Math.min;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -19,7 +18,7 @@ import com.example.hangwei.consts.ToastConst;
 import com.example.hangwei.data.AsyncHttpUtil;
 import com.example.hangwei.data.Ports;
 import com.example.hangwei.ui.activity.DishInfoActivity;
-import com.example.hangwei.ui.home.adapter.StatusAdapter;
+import com.example.hangwei.ui.home.adapter.DishAdapter;
 import com.example.hangwei.utils.ToastUtil;
 import com.example.hangwei.widget.layout.WrapRecyclerView;
 import com.example.hangwei.widget.layout.XCollapsingToolbarLayout;
@@ -41,17 +40,17 @@ import okhttp3.Callback;
 import okhttp3.Response;
 
 /**
- * desc   : 加载案例 Fragment
+ * desc   : 菜品列表 Fragment
  */
-public final class StatusFragment extends TitleBarFragment<AppActivity>
+public final class DishFragment extends TitleBarFragment<AppActivity>
         implements OnRefreshLoadMoreListener,
         BaseAdapter.OnItemClickListener,
         XCollapsingToolbarLayout.OnScrimsListener {
     private static final int MAX_LIST_ITEM_NUM = 5;
     private static final int LIST_ITEM_ADD_NUM = 1;
 
-    public static StatusFragment newInstance() {
-        return new StatusFragment();
+    public static DishFragment newInstance() {
+        return new DishFragment();
     }
 
     private int type; // [0: 全部]，[1：早餐]，[2：中晚]，[3：早中晚]
@@ -59,19 +58,19 @@ public final class StatusFragment extends TitleBarFragment<AppActivity>
     private CharSequence search; // 搜索词
     private SmartRefreshLayout mRefreshLayout;
     private WrapRecyclerView mRecyclerView;
-    private StatusAdapter mAdapter;
+    private DishAdapter mAdapter;
 
     @Override
     protected int getLayoutId() {
-        return R.layout.status_fragment;
+        return R.layout.dish_fragment;
     }
 
     @Override
     protected void initView() {
-        mRefreshLayout = findViewById(R.id.rl_status_refresh);
-        mRecyclerView = findViewById(R.id.rv_status_list);
+        mRefreshLayout = findViewById(R.id.dish_refresh_layout);
+        mRecyclerView = findViewById(R.id.dish_list);
 
-        mAdapter = new StatusAdapter(getAttachActivity());
+        mAdapter = new DishAdapter(getAttachActivity());
         mAdapter.setOnItemClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
 
@@ -128,27 +127,21 @@ public final class StatusFragment extends TitleBarFragment<AppActivity>
 
                     if (jsonObject.getInt("code") == 0) {
                         ToastUtil.toast(jsonObject.getString("msg"), ToastConst.errorStyle);
+                        getAttachActivity().runOnUiThread(afterResponse);
                     } else {
                         JSONObject data = jsonObject.getJSONObject("data");
-                        if (data.length() == 0) {
-                            ToastUtil.toast("empty data in json", ToastConst.errorStyle);
-                        }
                         dishes.addAll(locationGetDishes(data.getJSONArray("学院路")));
                         dishes.addAll(locationGetDishes(data.getJSONArray("沙河")));
+                        getAttachActivity().runOnUiThread(() -> {
+                            if (setElseAdd) {
+                                mAdapter.setData(dishes);
+                            } else {
+                                mAdapter.addData(dishes);
+                            }
+                            afterResponse.run();
+                        });
                     }
-
-                    Activity activity = getActivity();
-                    assert activity != null;
-                    activity.runOnUiThread(() -> {
-                        if (setElseAdd) {
-                            mAdapter.setData(dishes);
-                        } else {
-                            mAdapter.addData(dishes);
-                        }
-                        afterResponse.run();
-                    });
                 } catch (JSONException e) {
-                    ToastUtil.toast("菜品json转换失败", ToastConst.errorStyle);
                     e.printStackTrace();
                 }
             }
@@ -167,8 +160,8 @@ public final class StatusFragment extends TitleBarFragment<AppActivity>
                         jsonDish.getString("dishName"),
                         jsonDish.getString("campus"),
                         jsonDish.getInt("price"),
-                        1,
-                        2,
+                        jsonDish.getInt("likeCount"),
+                        jsonDish.getInt("commentCount"),
                         jsonDish.getString("picture"));
                 dishes.add(dish);
             }

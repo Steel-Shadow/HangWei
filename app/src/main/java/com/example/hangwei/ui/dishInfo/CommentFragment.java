@@ -1,5 +1,6 @@
 package com.example.hangwei.ui.dishInfo;
 
+import android.app.Activity;
 import android.view.View;
 import android.widget.TextView;
 
@@ -9,19 +10,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.hangwei.R;
 import com.example.hangwei.app.AppActivity;
 import com.example.hangwei.app.Comment;
-import com.example.hangwei.app.Dish;
-import com.example.hangwei.app.TitleBarFragment;
 import com.example.hangwei.base.BaseAdapter;
+import com.example.hangwei.base.BaseFragment;
 import com.example.hangwei.consts.ToastConst;
 import com.example.hangwei.data.AsyncHttpUtil;
 import com.example.hangwei.data.Ports;
-import com.example.hangwei.ui.home.adapter.StatusAdapter;
+import com.example.hangwei.ui.activity.DishInfoActivity;
+import com.example.hangwei.ui.home.adapter.CommentAdapter;
 import com.example.hangwei.utils.ToastUtil;
-import com.example.hangwei.widget.layout.WrapRecyclerView;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -37,10 +38,10 @@ import okhttp3.Response;
 /**
  * desc   : 餐品详情页 的 评论区
  */
-public final class CommentFragment extends TitleBarFragment<AppActivity>
+public final class CommentFragment extends BaseFragment<AppActivity>
         implements OnRefreshLoadMoreListener,
         BaseAdapter.OnItemClickListener {
-    private static final int MAX_LIST_ITEM_NUM = 20;
+    private static final int MAX_LIST_ITEM_NUM = 10;
     private static final int LIST_ITEM_ADD_NUM = 5;
 
     public static CommentFragment newInstance() {
@@ -48,9 +49,9 @@ public final class CommentFragment extends TitleBarFragment<AppActivity>
     }
 
     private SmartRefreshLayout mRefreshLayout;
-    private WrapRecyclerView mRecyclerView;
-
-    private StatusAdapter mAdapter;
+    private RecyclerView mRecyclerView;
+    private TextView commentCount;
+    private CommentAdapter mAdapter;
 
     @Override
     protected int getLayoutId() {
@@ -59,43 +60,36 @@ public final class CommentFragment extends TitleBarFragment<AppActivity>
 
     @Override
     protected void initView() {
+        commentCount = findViewById(R.id.comment_count);
+
         mRefreshLayout = findViewById(R.id.comment_refresh);
         mRecyclerView = findViewById(R.id.comment_list);
 
-        mAdapter = new StatusAdapter(getAttachActivity());
+        mAdapter = new CommentAdapter(getAttachActivity());
         mAdapter.setOnItemClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
-
-        TextView headerView = mRecyclerView.addHeaderView(R.layout.picker_item);
-        headerView.setText("我是头部");
-        headerView.setOnClickListener(v -> ToastUtil.toast("点击了头部", ToastConst.successStyle));
-
-        TextView footerView = mRecyclerView.addFooterView(R.layout.picker_item);
-        footerView.setText("我是尾部");
-        footerView.setOnClickListener(v -> ToastUtil.toast("点击了尾部", ToastConst.errorStyle));
-
         mRefreshLayout.setOnRefreshLoadMoreListener(this);
     }
 
     @Override
     protected void initData() {
-//        mAdapter.setData(getCommentData()); todo
+        updateCommentData(true, () -> {
+        });
     }
 
     /**
-     * todo: 网络请求获取新评论
+     * 网络请求获取新评论
      */
-    private List<Comment> getCommentData() {
-        List<Comment> data = new ArrayList<>();
+    private void updateCommentData(boolean setElseAdd, Runnable afterResponse) {
+        HashMap<String, String> params = new HashMap<>();
+        Activity activity = getActivity();
+        assert activity != null;
+        params.put("dishId", ((DishInfoActivity) activity).getDishId());
 
-        HashMap<String, Object> params = new HashMap<>();
-        params.put("campus", "学院路");
-        params.put("type", 2); // [1：早餐]，[2：正餐]，[3：饮品]
-
-        AsyncHttpUtil.httpPostForObject(Ports.dishComment, params, new Callback() {
+        AsyncHttpUtil.httpPost(Ports.dishComment, params, new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                ToastUtil.toast("评论请求失败", ToastConst.errorStyle);
+                ToastUtil.toast("餐品评论获取失败，请稍候再试", ToastConst.warnStyle);
             }
 
             @Override
@@ -103,23 +97,38 @@ public final class CommentFragment extends TitleBarFragment<AppActivity>
                 try {
                     assert response.body() != null;
                     JSONObject jsonObject = new JSONObject(response.body().string());
-                    if (jsonObject.getInt("code") == 0) {
-                        try {
-                            ToastUtil.toast(jsonObject.getString("msg"), ToastConst.errorStyle);
-                        } catch (JSONException e) {
-                            throw new RuntimeException(e);
-                        }
-                    } else {
-                        JSONObject object = jsonObject.getJSONObject("data");
+                    List<Comment> comments = new ArrayList<>();
 
+                    if (jsonObject.getInt("code") == 0) {
+                        ToastUtil.toast(jsonObject.getString("msg"), ToastConst.errorStyle);
+                        activity.runOnUiThread(afterResponse);
+                    } else {
+                        JSONObject data = jsonObject.getJSONObject("data");
+                        int count = data.getInt("count");
+                        JSONArray JSONComments = data.getJSONArray("comments");
+                        for (int i = 0; i < JSONComments.length(); i++) {
+                            JSONObject o = JSONComments.getJSONObject(i);
+                            String userName = o.getString("userName");
+                            String picUrl = o.getString("picUrl");
+                            String date = o.getString("date");
+                            String text = o.getString("text");
+                            comments.add(new Comment(userName, picUrl, date, text));
+                        }
+                        activity.runOnUiThread(() -> {
+                            commentCount.setText(String.format(getString(R.string.comment_count), count));
+                            if (setElseAdd) {
+                                mAdapter.setData(comments);
+                            } else {
+                                mAdapter.addData(comments);
+                            }
+                            afterResponse.run();
+                        });
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
         });
-
-        return data;
     }
 
     /**
@@ -131,9 +140,8 @@ public final class CommentFragment extends TitleBarFragment<AppActivity>
      */
     @Override
     public void onItemClick(RecyclerView recyclerView, View itemView, int position) {
-        // todo: 点击具体条目，跳转到评论区
-        Dish dish = mAdapter.getItem(position);
-        ToastUtil.toast(dish.name + "跳转评论区", ToastConst.hintStyle);
+        // todo: 点击评论目前无互动
+//        Comment comment = mAdapter.getItem(position);
     }
 
     /**
@@ -142,21 +150,15 @@ public final class CommentFragment extends TitleBarFragment<AppActivity>
 
     @Override
     public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-        postDelayed(() -> {
-            mAdapter.clearData();
-//            mAdapter.setData(getCommentData());//todo:
-            mRefreshLayout.finishRefresh();
-        }, 1000);
+        updateCommentData(true, () -> mRefreshLayout.finishRefresh());
     }
 
     @Override
     public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-        postDelayed(() -> {
-//            mAdapter.addData(getCommentData());todo
+        updateCommentData(false, () -> {
             mRefreshLayout.finishLoadMore();
-
             mAdapter.setLastPage(mAdapter.getCount() >= MAX_LIST_ITEM_NUM);
             mRefreshLayout.setNoMoreData(mAdapter.isLastPage());
-        }, 1000);
+        });
     }
 }

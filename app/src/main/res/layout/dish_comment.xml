@@ -19,11 +19,12 @@
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/comment_count"
             style="@style/EditTextStyle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="end"
-            android:text="n条评论" />
+            android:text="共n条评论" />
 
     </LinearLayout>
 
@@ -33,7 +34,7 @@
         android:layout_height="match_parent"
         app:srlEnablePreviewInEditMode="false">
 
-        <com.example.hangwei.widget.layout.WrapRecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/comment_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

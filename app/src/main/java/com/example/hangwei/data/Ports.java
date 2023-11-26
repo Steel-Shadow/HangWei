@@ -17,9 +17,9 @@ public class Ports {
     public static String dish = api + "dish/";
     public static String dishUpdate = dish + "update";
     public static String dishChoose = dish + "choose";
-    public static String dishComment = dish + "comment";
     public static String favorite = dish + "favorite";
-    public static String sideDish = dish + "side";
+    public static String dishComment = dish + "comment";
+    public static String sideDish = dish + "sideDish";
 
     /*
      * 上传文件：POST
