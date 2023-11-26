@@ -187,6 +187,7 @@ public final class DishFragment extends TitleBarFragment<AppActivity>
         bundle.putString("id", dish.id);
         bundle.putString("name", dish.name);
         bundle.putInt("price", dish.price);
+        bundle.putString("picUrl", dish.foodPicUrl);
         intent.putExtras(bundle);
 
         startActivity(intent);

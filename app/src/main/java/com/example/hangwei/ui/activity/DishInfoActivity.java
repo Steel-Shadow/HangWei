@@ -3,6 +3,7 @@ package com.example.hangwei.ui.activity;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -10,6 +11,7 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
+import com.bumptech.glide.Glide;
 import com.example.hangwei.R;
 import com.example.hangwei.base.BaseActivity;
 import com.example.hangwei.base.BaseFragment;
@@ -44,6 +46,7 @@ public final class DishInfoActivity extends BaseActivity
     private String mDishId;
     private TextView mName;
     private TextView mPrice;
+    private ImageView mPic;
     private boolean mHasFavorite; // 是否收藏了
     private TextView mFavorite; // 收藏
 
@@ -67,6 +70,7 @@ public final class DishInfoActivity extends BaseActivity
         mName = findViewById(R.id.dish_info_name);
         mPrice = findViewById(R.id.dish_info_price);
         mFavorite = findViewById(R.id.dish_info_favorite);
+        mPic = findViewById(R.id.dish_info_pic);
 
         mTabView = findViewById(R.id.dish_info_middle);
         mViewPager = findViewById(R.id.dish_info_pager);
@@ -94,6 +98,7 @@ public final class DishInfoActivity extends BaseActivity
         mDishId = bundle.getString("id");
         mName.setText(bundle.getString("name"));
         mPrice.setText(String.format(Locale.CHINA, "%d", bundle.getInt("price")));
+        Glide.with(this).load(bundle.getString("picUrl")).into(mPic);
 
         HashMap<String, String> params = new HashMap<>();
         params.put("userId", "todo: userIdShouldBeHere"); // todo: 与wyj协商确定userId获取
