@@ -1,7 +1,7 @@
 package com.example.hangwei.ui.activity;
 
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
@@ -28,6 +28,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Locale;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -88,8 +89,45 @@ public final class DishInfoActivity extends BaseActivity
         mTabAdapter.addItem("餐品搭配");
         mTabAdapter.setOnTabListener(this);
 
-        Intent intent = getIntent();
-        mDishId = intent.getStringExtra("dishId");
+        Bundle bundle = getIntent().getExtras();
+        assert bundle != null;
+        mDishId = bundle.getString("id");
+        mName.setText(bundle.getString("name"));
+        mPrice.setText(String.format(Locale.CHINA, "%d", bundle.getInt("price")));
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("userId", "todo: userIdShouldBeHere"); // todo: 与wyj协商确定userId获取
+        params.put("dishId", mDishId);
+        AsyncHttpUtil.httpPost(Ports.checkFavorite, params, new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                ToastUtil.toast("读取收藏信息失败", ToastConst.successStyle);
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                System.out.println(response.message());
+                try {
+                    assert response.body() != null;
+                    JSONObject jsonObject = new JSONObject(response.body().string());
+                    if (jsonObject.getInt("code") == 0) {
+                        ToastUtil.toast(jsonObject.getString("msg"), ToastConst.errorStyle);
+                    } else {
+                        JSONObject data = jsonObject.getJSONObject("data");
+                        mHasFavorite = data.getBoolean("isFavorite");
+                        Drawable newStar;
+                        if (mHasFavorite) {
+                            newStar = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_rating_star_fill, null);
+                        } else {
+                            newStar = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_rating_star_off, null);
+                        }
+                        runOnUiThread(() -> mFavorite.setCompoundDrawablesWithIntrinsicBounds(null, newStar, null, null));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     /**

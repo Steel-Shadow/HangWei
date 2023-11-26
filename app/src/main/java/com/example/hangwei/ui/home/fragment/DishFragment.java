@@ -184,7 +184,9 @@ public final class DishFragment extends TitleBarFragment<AppActivity>
         // 创建一个 Intent 对象，指定当前的 Fragment 的上下文和要启动的 Activity 类
         Intent intent = new Intent(getActivity(), DishInfoActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString("dishId", dish.id);
+        bundle.putString("id", dish.id);
+        bundle.putString("name", dish.name);
+        bundle.putInt("price", dish.price);
         intent.putExtras(bundle);
 
         startActivity(intent);

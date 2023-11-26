@@ -18,6 +18,7 @@ public class Ports {
     public static String dishUpdate = dish + "update";
     public static String dishChoose = dish + "choose";
     public static String favorite = dish + "favorite";
+    public static String checkFavorite = dish + "checkFavorite";
     public static String dishComment = dish + "comment";
     public static String sideDish = dish + "sideDish";
 
