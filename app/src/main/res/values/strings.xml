@@ -281,5 +281,7 @@
 
     <!--  菜品详情页  -->
     <string name="comment_count">共%1$d条评论</string>
+    <string name="favorite">收藏</string>
+    <string name="canteen_time">早餐 06:30–09:00\n午餐 10:30–13:00\n晚餐 17:00–19:00</string>
 
 </resources>

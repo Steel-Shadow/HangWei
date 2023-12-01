@@ -19,9 +19,9 @@ import com.example.hangwei.base.FragmentPagerAdapter;
 import com.example.hangwei.consts.ToastConst;
 import com.example.hangwei.data.AsyncHttpUtil;
 import com.example.hangwei.data.Ports;
-import com.example.hangwei.ui.dishInfo.CommentFragment;
-import com.example.hangwei.ui.dishInfo.SideDishFragment;
 import com.example.hangwei.ui.home.adapter.TabAdapter;
+import com.example.hangwei.ui.home.dishInfo.CommentFragment;
+import com.example.hangwei.ui.home.dishInfo.SideDishFragment;
 import com.example.hangwei.utils.ToastUtil;
 import com.example.hangwei.widget.layout.XCollapsingToolbarLayout;
 
@@ -99,9 +99,12 @@ public final class DishInfoActivity extends BaseActivity
         mName.setText(bundle.getString("name"));
         mPrice.setText(String.format(Locale.CHINA, "%d", bundle.getInt("price")));
         Glide.with(this).load(bundle.getString("picUrl")).into(mPic);
+        updateFavorite();
+    }
 
-        HashMap<String, String> params = new HashMap<>();
-        params.put("userId", "todo: userIdShouldBeHere"); // todo: 与wyj协商确定userId获取
+    public void updateFavorite() {
+        HashMap<String, String> params = new HashMap<>(2);
+        params.put("userId", "获取userId"); // todo: 与wyj协商确定userId获取
         params.put("dishId", mDishId);
         AsyncHttpUtil.httpPost(Ports.checkFavorite, params, new Callback() {
             @Override
@@ -120,13 +123,7 @@ public final class DishInfoActivity extends BaseActivity
                     } else {
                         JSONObject data = jsonObject.getJSONObject("data");
                         mHasFavorite = data.getBoolean("isFavorite");
-                        Drawable newStar;
-                        if (mHasFavorite) {
-                            newStar = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_rating_star_fill, null);
-                        } else {
-                            newStar = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_rating_star_off, null);
-                        }
-                        runOnUiThread(() -> mFavorite.setCompoundDrawablesWithIntrinsicBounds(null, newStar, null, null));
+                        setFavorite(mHasFavorite);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -201,19 +198,45 @@ public final class DishInfoActivity extends BaseActivity
                     if (jsonObject.getInt("code") == 0) {
                         ToastUtil.toast(jsonObject.getString("msg"), ToastConst.errorStyle);
                     } else {
-                        Drawable newStar;
-                        if (mHasFavorite) {
-                            newStar = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_rating_star_off, null);
-                        } else {
-                            newStar = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_rating_star_fill, null);
-                        }
-                        mHasFavorite = !mHasFavorite;
-                        runOnUiThread(() -> mFavorite.setCompoundDrawablesWithIntrinsicBounds(null, newStar, null, null));
+                        changeFavorite();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
         });
+    }
+
+    private void changeFavorite() {
+        Drawable newStar;
+        if (mHasFavorite) {
+            newStar = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_rating_star_off, null);
+        } else {
+            newStar = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_rating_star_fill, null);
+        }
+        mHasFavorite = !mHasFavorite;
+        runOnUiThread(() -> mFavorite.setCompoundDrawablesWithIntrinsicBounds(null, newStar, null, null));
+    }
+
+    public void setDishId(String mDishId) {
+        this.mDishId = mDishId;
+    }
+
+    public void setName(String mName) {
+        this.mName.setText(mName);
+    }
+
+    public void setPrice(int mPrice) {
+        this.mPrice.setText(String.format(Locale.CHINA, "%d", mPrice));
+    }
+
+    public void setPic(String mPicUrl) {
+        Glide.with(this).load(mPicUrl).into(mPic);
+    }
+
+    public void setFavorite(boolean mHasFavorite) {
+        if (mHasFavorite != this.mHasFavorite) {
+            changeFavorite();
+        }
     }
 }

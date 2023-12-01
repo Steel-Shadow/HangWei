@@ -1,4 +1,4 @@
-package com.example.hangwei.ui.dishInfo;
+package com.example.hangwei.ui.home.dishInfo;
 
 import android.app.Activity;
 import android.view.View;
@@ -140,7 +140,6 @@ public final class CommentFragment extends BaseFragment<AppActivity>
      */
     @Override
     public void onItemClick(RecyclerView recyclerView, View itemView, int position) {
-        // todo: 点击评论目前无互动
 //        Comment comment = mAdapter.getItem(position);
     }
 

@@ -1,4 +1,4 @@
-package com.example.hangwei.ui.dishInfo;
+package com.example.hangwei.ui.home.dishInfo;
 
 
 import android.view.View;
@@ -14,6 +14,7 @@ import com.example.hangwei.base.BaseFragment;
 import com.example.hangwei.consts.ToastConst;
 import com.example.hangwei.data.AsyncHttpUtil;
 import com.example.hangwei.data.Ports;
+import com.example.hangwei.ui.activity.DishInfoActivity;
 import com.example.hangwei.ui.home.adapter.DishAdapter;
 import com.example.hangwei.utils.ToastUtil;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
@@ -68,10 +69,6 @@ public class SideDishFragment extends BaseFragment<BaseActivity> implements OnRe
         });
     }
 
-    public void refresh() {
-        updateDishData(true, () -> mRefreshLayout.finishRefresh());
-    }
-
     private void updateDishData(boolean setElseAdd, Runnable afterResponse) {
         HashMap<String, Object> params = new HashMap<>();
         AsyncHttpUtil.httpPostForObject(Ports.sideDish, params, new Callback() {
@@ -124,20 +121,30 @@ public class SideDishFragment extends BaseFragment<BaseActivity> implements OnRe
     }
 
     public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-        refresh();
+        updateDishData(true, refreshLayout::finishRefresh);
     }
 
     @Override
     public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
         updateDishData(false, () -> {
-            mRefreshLayout.finishLoadMore();
             mAdapter.setLastPage(mAdapter.getCount() >= MAX_LIST_ITEM_NUM);
             mRefreshLayout.setNoMoreData(mAdapter.isLastPage());
+            mRefreshLayout.finishLoadMore();
         });
     }
 
     @Override
     public void onItemClick(RecyclerView recyclerView, View itemView, int position) {
+        Dish dish = mAdapter.getItem(position);
 
+        DishInfoActivity activity = (DishInfoActivity) getAttachActivity();
+        activity.setDishId(dish.id);
+        activity.setName(dish.name);
+        activity.setPrice(dish.price);
+        activity.setPic(dish.foodPicUrl);
+        activity.updateFavorite();
+
+        updateDishData(true, () -> {
+        });
     }
 }

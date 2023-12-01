@@ -27,57 +27,59 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:id="@+id/dish_info_pic"
+                    android:id="@+id/canteen_pic"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
-                    android:contentDescription="餐品详情页的图片"
+                    android:contentDescription="食堂的图片"
                     android:src="@drawable/loading" />
+
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <TextView
-                        android:id="@+id/dish_info_name"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:fontFamily="@font/simkai"
-                        android:gravity="center_vertical"
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:paddingStart="5dp"
                         android:paddingTop="@dimen/dp_5"
                         android:paddingEnd="5dp"
                         android:paddingBottom="@dimen/dp_5"
-                        android:text="菜品名"
-                        android:textColor="@color/black"
-                        android:textSize="40sp" />
+                        android:foregroundGravity="top"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/clock" />
 
                     <TextView
-                        android:id="@+id/dish_info_favorite"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
+                        android:id="@+id/time"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
                         android:paddingStart="5dp"
+                        android:paddingTop="@dimen/dp_5"
                         android:paddingEnd="5dp"
-                        android:text="@string/favorite"
-                        android:textColor="@color/gray"
-                        app:drawableTopCompat="@drawable/ic_rating_star_off" />
+                        android:paddingBottom="@dimen/dp_5"
+                        android:text="@string/canteen_time"
+                        android:textColor="@color/black"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/location"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:drawablePadding="5dp"
+                        android:paddingStart="5dp"
+                        android:paddingTop="@dimen/dp_5"
+                        android:paddingEnd="5dp"
+                        android:paddingBottom="@dimen/dp_5"
+                        android:text="合一食堂"
+                        android:textColor="@color/black"
+                        android:textSize="15sp"
+                        app:drawableStartCompat="@drawable/map_pin" />
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/dish_info_price"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingStart="5dp"
-                    android:paddingTop="@dimen/dp_5"
-                    android:paddingEnd="5dp"
-                    android:paddingBottom="@dimen/dp_5"
-                    android:text="价格"
-                    android:textColor="@color/red"
-                    android:textSize="30sp"
-                    app:drawableStartCompat="@drawable/money"
-                    app:drawableTint="@color/red" />
 
                 <View
                     android:layout_width="match_parent"
@@ -93,15 +95,37 @@
             android:layout_height="wrap_content"
             app:layout_collapseMode="pin">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/dish_info_middle"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                tools:itemCount="2"
-                tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                tools:listitem="@layout/tab_item_design"
-                tools:spanCount="2" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/canteen_name"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/simkai"
+                    android:gravity="center_vertical"
+                    android:paddingStart="5dp"
+                    android:paddingTop="@dimen/dp_5"
+                    android:paddingEnd="5dp"
+                    android:paddingBottom="@dimen/dp_5"
+                    android:text="食堂名"
+                    android:textColor="@color/black"
+                    android:textSize="40sp" />
+
+                <TextView
+                    android:id="@+id/canteen_favorite"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:text="@string/favorite"
+                    android:textColor="@color/gray"
+                    app:drawableTopCompat="@drawable/star" />
+            </LinearLayout>
+
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
