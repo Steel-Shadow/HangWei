@@ -22,7 +22,8 @@ public class Ports {
     public static String sideDish = dish + "sideDish";
     public static String dishFavChange = dish + "favorite/change";
     public static String dishFavCheck = dish + "favorite/check";
-
+    public static String dishHistoryGet = dish + "history/get";
+    public static String dishHistoryAdd = dish + "history/add";
     /*
      * 食堂
      */

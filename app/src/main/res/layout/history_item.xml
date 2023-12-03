@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/history_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="5dp"
+    android:weightSum="1">
+
+    <ImageView
+        android:id="@+id/picUrl"
+        android:layout_width="@dimen/dp_70"
+        android:layout_height="@dimen/dp_70"
+        android:layout_marginEnd="8dp"
+        android:contentDescription="@string/dish_picture"
+        android:src="@drawable/loading" />
+
+    <LinearLayout
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="5dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/dp_5"
+            android:paddingBottom="@dimen/dp_5"
+            android:paddingEnd="0dp"
+            android:text="菜品名"
+            android:textSize="@dimen/sp_15" />
+
+        <TextView
+            android:id="@+id/time"
+            android:paddingTop="@dimen/dp_5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/dp_5"
+            android:paddingEnd="0dp"
+            android:text="浏览时间"
+            android:textSize="@dimen/sp_15" />
+    </LinearLayout>
+
+
+</LinearLayout>

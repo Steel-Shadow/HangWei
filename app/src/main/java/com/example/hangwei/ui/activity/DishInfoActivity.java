@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
@@ -13,13 +14,22 @@ import com.example.hangwei.app.Favorite;
 import com.example.hangwei.base.BaseActivity;
 import com.example.hangwei.base.BaseFragment;
 import com.example.hangwei.base.FragmentPagerAdapter;
+import com.example.hangwei.consts.ToastConst;
+import com.example.hangwei.data.AsyncHttpUtil;
 import com.example.hangwei.data.Ports;
 import com.example.hangwei.ui.adapter.TabAdapter;
 import com.example.hangwei.ui.fragment.CommentFragment;
 import com.example.hangwei.ui.fragment.SideDishFragment;
+import com.example.hangwei.utils.ToastUtil;
 import com.example.hangwei.widget.layout.XCollapsingToolbarLayout;
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.Locale;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 /**
  * desc   : 餐品详情页
@@ -81,6 +91,20 @@ public final class DishInfoActivity extends BaseActivity
         mName.setText(bundle.getString("name"));
         mPrice.setText(String.format(Locale.CHINA, "%d", bundle.getInt("price")));
         Glide.with(this).load(bundle.getString("picUrl")).into(mPic);
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("userId", getSharedPreferences("BasePrefs", MODE_PRIVATE).getString("usedID", "null"));
+        params.put("dishId", mDishId);
+        AsyncHttpUtil.httpPost(Ports.dishHistoryAdd, params, new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                ToastUtil.toast("Add history http fail!", ToastConst.errorStyle);
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+            }
+        });
     }
 
     /**

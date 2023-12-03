@@ -35,25 +35,19 @@
         android:theme="@style/Theme.HangWei"
         tools:targetApi="31">
         <activity
-            android:name=".ui.activity.CanteenActivity"
+            android:name=".ui.activity.FavoriteActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ui.activity.RegisterActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.activity.LoginActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.activity.DishInfoActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.activity.WindowActivity"
-            android:exported="false" />
+        <activity android:name=".ui.activity.RegisterActivity" />
+        <activity android:name=".ui.activity.LoginActivity" />
+        <activity android:name=".ui.activity.DishInfoActivity" />
+        <activity android:name=".ui.activity.WindowActivity" />
+        <activity android:name=".ui.activity.HistoryActivity" />
+        <activity android:name=".ui.activity.CanteenActivity" />
     </application>
 
 </manifest>
