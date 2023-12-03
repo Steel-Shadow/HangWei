@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.activity.DishInfoActivity">
+    tools:context=".ui.activity.CanteenActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -21,20 +21,60 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
             app:scrimVisibleHeightTrigger="@dimen/dp_100">
 
-            <LinearLayout
+
+            <ImageView
+                android:id="@+id/canteen_pic"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_150"
+                android:contentDescription="食堂的图片"
+                android:src="@drawable/loading" />
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:contentInsetStart="0dp"
+            app:layout_collapseMode="pin">
+
+            <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <ImageView
-                    android:id="@+id/canteen_pic"
+                <TableRow
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:contentDescription="食堂的图片"
-                    android:src="@drawable/loading" />
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
+                    <TextView
+                        android:id="@+id/canteen_name"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/simkai"
+                        android:gravity="center_vertical"
+                        android:paddingStart="5dp"
+                        android:paddingEnd="5dp"
+                        android:text="食堂名"
+                        android:textColor="@color/black"
+                        android:textSize="30sp" />
 
-                <LinearLayout
+                    <TextView
+                        android:id="@+id/canteen_favorite"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:paddingStart="5dp"
+                        android:paddingEnd="5dp"
+                        android:text="@string/favorite"
+                        android:textColor="@color/gray"
+                        android:textSize="15sp"
+                        app:drawableTopCompat="@drawable/star" />
+
+                </TableRow>
+
+                <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -42,98 +82,64 @@
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingStart="5dp"
-                        android:paddingTop="@dimen/dp_5"
-                        android:paddingEnd="5dp"
-                        android:paddingBottom="@dimen/dp_5"
                         android:foregroundGravity="top"
                         android:importantForAccessibility="no"
+                        android:paddingStart="5dp"
+                        android:paddingEnd="5dp"
                         android:src="@drawable/clock" />
 
                     <TextView
-                        android:id="@+id/time"
+                        android:id="@+id/canteen_time"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
                         android:paddingStart="5dp"
-                        android:paddingTop="@dimen/dp_5"
                         android:paddingEnd="5dp"
                         android:paddingBottom="@dimen/dp_5"
                         android:text="@string/canteen_time"
-                        android:textColor="@color/black"
-                        android:textSize="15sp" />
+                        android:textColor="@color/black" />
 
                     <TextView
-                        android:id="@+id/location"
+                        android:id="@+id/canteen_location"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:drawablePadding="5dp"
+                        android:gravity="center_vertical"
                         android:paddingStart="5dp"
-                        android:paddingTop="@dimen/dp_5"
                         android:paddingEnd="5dp"
                         android:paddingBottom="@dimen/dp_5"
-                        android:text="合一食堂"
+                        android:text="食堂地点"
                         android:textColor="@color/black"
-                        android:textSize="15sp"
                         app:drawableStartCompat="@drawable/map_pin" />
-                </LinearLayout>
-
+                </TableRow>
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_20"
-                    android:background="@color/black10" />
-
-            </LinearLayout>
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_collapseMode="pin">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/canteen_name"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/simkai"
-                    android:gravity="center_vertical"
-                    android:paddingStart="5dp"
-                    android:paddingTop="@dimen/dp_5"
-                    android:paddingEnd="5dp"
-                    android:paddingBottom="@dimen/dp_5"
-                    android:text="食堂名"
-                    android:textColor="@color/black"
-                    android:textSize="40sp" />
-
-                <TextView
-                    android:id="@+id/canteen_favorite"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:paddingStart="5dp"
-                    android:paddingEnd="5dp"
-                    android:text="@string/favorite"
-                    android:textColor="@color/gray"
-                    app:drawableTopCompat="@drawable/star" />
-            </LinearLayout>
+                    android:layout_height="@dimen/dp_3"
+                    android:layout_marginLeft="@dimen/dp_5"
+                    android:layout_marginRight="@dimen/dp_5"
+                    android:background="@color/black80" />
+            </TableLayout>
 
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
 
-    <com.example.hangwei.widget.layout.NestedViewPager
-        android:id="@+id/dish_info_pager"
+    <com.scwang.smart.refresh.layout.SmartRefreshLayout
+        android:id="@+id/canteen_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:srlEnablePreviewInEditMode="false">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/canteen_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listCount="10"
+            tools:listitem="@layout/window_item" />
+    </com.scwang.smart.refresh.layout.SmartRefreshLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

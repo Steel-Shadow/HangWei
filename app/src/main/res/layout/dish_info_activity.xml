@@ -62,7 +62,7 @@
                         android:paddingEnd="5dp"
                         android:text="@string/favorite"
                         android:textColor="@color/gray"
-                        app:drawableTopCompat="@drawable/ic_rating_star_off" />
+                        app:drawableTopCompat="@drawable/star" />
                 </LinearLayout>
 
                 <TextView

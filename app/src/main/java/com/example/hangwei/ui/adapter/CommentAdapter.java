@@ -1,4 +1,4 @@
-package com.example.hangwei.ui.home.adapter;
+package com.example.hangwei.ui.adapter;
 
 import android.content.Context;
 import android.view.ViewGroup;

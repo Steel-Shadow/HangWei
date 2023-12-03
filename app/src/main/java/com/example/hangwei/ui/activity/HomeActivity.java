@@ -1,4 +1,4 @@
-package com.example.hangwei.ui.home;
+package com.example.hangwei.ui.activity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -18,8 +18,8 @@ import com.example.hangwei.base.BaseFragment;
 import com.example.hangwei.base.FragmentPagerAdapter;
 import com.example.hangwei.consts.ToastConst;
 import com.example.hangwei.other.DoubleClickHelper;
-import com.example.hangwei.ui.home.adapter.NavigationAdapter;
-import com.example.hangwei.ui.home.fragment.HomeFragment;
+import com.example.hangwei.ui.adapter.NavigationAdapter;
+import com.example.hangwei.ui.fragment.HomeFragment;
 import com.example.hangwei.utils.ToastUtil;
 
 /**

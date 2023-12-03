@@ -2,7 +2,7 @@ package com.example.hangwei.data;
 
 public class Ports {
     //public static String api = "http://116.204.10.156:4523/";
-    public static String api = "https://mock.apifox.cn/m1/3369925-0-default/";
+    public static String api = "https://mock.apifox.com/m1/3369925-0-default/";
 
     /*
      * 用户类
@@ -17,10 +17,25 @@ public class Ports {
     public static String dish = api + "dish/";
     public static String dishUpdate = dish + "update";
     public static String dishChoose = dish + "choose";
-    public static String favorite = dish + "favorite";
-    public static String checkFavorite = dish + "checkFavorite";
-    public static String dishComment = dish + "comment";
+    public static String dishCommentGet = dish + "comment/get";
+    public static String dishCommentAdd = dish + "comment/add";
     public static String sideDish = dish + "sideDish";
+    public static String dishFavChange = dish + "favorite/change";
+    public static String dishFavCheck = dish + "favorite/check";
+
+    /*
+     * 食堂
+     */
+    public static String canteenFavChange = api + "canteen/favorite/change";
+    public static String canteenFavCheck = api + "canteen/favorite/check";
+    public static String canteenGetDishes = api + "canteen/getDishes";
+    public static String canteenInfo = api + "canteen/info";
+
+    /*
+     * 窗口
+     */
+    public static String windowFavChange = api + "window/favorite/change";
+    public static String windowFavCheck = api + "window/favorite/check";
 
     /*
      * 上传文件：POST

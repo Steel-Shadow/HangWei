@@ -35,7 +35,7 @@
         android:theme="@style/Theme.HangWei"
         tools:targetApi="31">
         <activity
-            android:name=".ui.home.HomeActivity"
+            android:name=".ui.activity.CanteenActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -50,6 +50,9 @@
             android:exported="false" />
         <activity
             android:name=".ui.activity.DishInfoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activity.WindowActivity"
             android:exported="false" />
     </application>
 

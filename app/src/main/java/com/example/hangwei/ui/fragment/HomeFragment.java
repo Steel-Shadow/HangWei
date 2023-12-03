@@ -1,4 +1,4 @@
-package com.example.hangwei.ui.home.fragment;
+package com.example.hangwei.ui.fragment;
 
 import android.annotation.SuppressLint;
 import android.view.View;
@@ -17,7 +17,7 @@ import com.example.hangwei.R;
 import com.example.hangwei.app.AppFragment;
 import com.example.hangwei.app.TitleBarFragment;
 import com.example.hangwei.base.FragmentPagerAdapter;
-import com.example.hangwei.ui.home.HomeActivity;
+import com.example.hangwei.ui.activity.HomeActivity;
 import com.example.hangwei.widget.layout.NestedViewPager;
 import com.example.hangwei.widget.layout.XCollapsingToolbarLayout;
 import com.gyf.immersionbar.ImmersionBar;

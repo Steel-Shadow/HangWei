@@ -1,4 +1,4 @@
-package com.example.hangwei.ui.home.dishInfo;
+package com.example.hangwei.ui.fragment;
 
 
 import android.view.View;
@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hangwei.R;
 import com.example.hangwei.app.Dish;
+import com.example.hangwei.app.Favorite;
 import com.example.hangwei.base.BaseActivity;
 import com.example.hangwei.base.BaseAdapter;
 import com.example.hangwei.base.BaseFragment;
@@ -15,7 +16,7 @@ import com.example.hangwei.consts.ToastConst;
 import com.example.hangwei.data.AsyncHttpUtil;
 import com.example.hangwei.data.Ports;
 import com.example.hangwei.ui.activity.DishInfoActivity;
-import com.example.hangwei.ui.home.adapter.DishAdapter;
+import com.example.hangwei.ui.adapter.DishAdapter;
 import com.example.hangwei.utils.ToastUtil;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
@@ -36,8 +37,8 @@ import okhttp3.Response;
 
 public class SideDishFragment extends BaseFragment<BaseActivity> implements OnRefreshLoadMoreListener,
         BaseAdapter.OnItemClickListener {
-    private static final int MAX_LIST_ITEM_NUM = 5;
-    private static final int LIST_ITEM_ADD_NUM = 1;
+    private static final int MAX_LIST_ITEM_NUM = Integer.MAX_VALUE;
+    private static final int LIST_ITEM_ADD_NUM = 10;
     private SmartRefreshLayout mRefreshLayout;
     private RecyclerView mRecyclerView;
     private DishAdapter mAdapter;
@@ -142,7 +143,7 @@ public class SideDishFragment extends BaseFragment<BaseActivity> implements OnRe
         activity.setName(dish.name);
         activity.setPrice(dish.price);
         activity.setPic(dish.foodPicUrl);
-        activity.updateFavorite();
+        activity.mFavorite = new Favorite(activity, activity.findViewById(R.id.dish_info_favorite), dish.id, Ports.dishFavChange, Ports.dishFavCheck);
 
         updateDishData(true, () -> {
         });

@@ -1,4 +1,4 @@
-package com.example.hangwei.ui.home.adapter;
+package com.example.hangwei.ui.adapter;
 
 import android.content.Context;
 import android.view.ViewGroup;
@@ -40,7 +40,7 @@ public final class DishAdapter extends AppAdapter<Dish> {
         private ViewHolder() {
             super(R.layout.dish_info_item);
             mName = findViewById(R.id.name);
-            mLocation = findViewById(R.id.location);
+            mLocation = findViewById(R.id.canteen_location);
             mPrice = findViewById(R.id.price);
             mLikeCount = findViewById(R.id.like);
             mCommentCount = findViewById(R.id.comment);
@@ -50,7 +50,7 @@ public final class DishAdapter extends AppAdapter<Dish> {
         @Override
         public void onBindView(int position) {
             Dish dish = getItem(position);
-            
+
             mName.setText(dish.name);
             mLocation.setText(dish.location);
             mPrice.setText(String.format(Locale.CHINA, "%d", dish.price));

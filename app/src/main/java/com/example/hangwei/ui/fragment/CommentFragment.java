@@ -1,22 +1,26 @@
-package com.example.hangwei.ui.home.dishInfo;
+package com.example.hangwei.ui.fragment;
+
+import static android.content.Context.MODE_PRIVATE;
 
 import android.app.Activity;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hangwei.R;
-import com.example.hangwei.app.AppActivity;
 import com.example.hangwei.app.Comment;
+import com.example.hangwei.base.BaseActivity;
 import com.example.hangwei.base.BaseAdapter;
 import com.example.hangwei.base.BaseFragment;
 import com.example.hangwei.consts.ToastConst;
 import com.example.hangwei.data.AsyncHttpUtil;
 import com.example.hangwei.data.Ports;
 import com.example.hangwei.ui.activity.DishInfoActivity;
-import com.example.hangwei.ui.home.adapter.CommentAdapter;
+import com.example.hangwei.ui.adapter.CommentAdapter;
 import com.example.hangwei.utils.ToastUtil;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
@@ -38,19 +42,21 @@ import okhttp3.Response;
 /**
  * desc   : 餐品详情页 的 评论区
  */
-public final class CommentFragment extends BaseFragment<AppActivity>
+public final class CommentFragment extends BaseFragment<BaseActivity>
         implements OnRefreshLoadMoreListener,
         BaseAdapter.OnItemClickListener {
-    private static final int MAX_LIST_ITEM_NUM = 10;
-    private static final int LIST_ITEM_ADD_NUM = 5;
+    private static final int MAX_LIST_ITEM_NUM = Integer.MAX_VALUE;
+    private static final int LIST_ITEM_ADD_NUM = 10;
 
     public static CommentFragment newInstance() {
         return new CommentFragment();
     }
 
+    private EditText mAddComment;
     private SmartRefreshLayout mRefreshLayout;
     private RecyclerView mRecyclerView;
-    private TextView commentCount;
+    private TextView mCommentCountTextView;
+    private int mCommentCount;
     private CommentAdapter mAdapter;
 
     @Override
@@ -60,7 +66,8 @@ public final class CommentFragment extends BaseFragment<AppActivity>
 
     @Override
     protected void initView() {
-        commentCount = findViewById(R.id.comment_count);
+        mCommentCountTextView = findViewById(R.id.comment_count);
+        mAddComment = findViewById(R.id.add_comment);
 
         mRefreshLayout = findViewById(R.id.comment_refresh);
         mRecyclerView = findViewById(R.id.comment_list);
@@ -69,6 +76,26 @@ public final class CommentFragment extends BaseFragment<AppActivity>
         mAdapter.setOnItemClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
         mRefreshLayout.setOnRefreshLoadMoreListener(this);
+
+        mAddComment.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                hideKeyboard(getView());
+                // 隐藏光标
+                mAddComment.setCursorVisible(false);
+
+                String userPicUrl = getContext().getSharedPreferences("BasePrefs", MODE_PRIVATE).getString("usedAvatar", "null");
+                String userName = getContext().getSharedPreferences("BasePrefs", MODE_PRIVATE).getString("usedName", "我");
+
+                mAdapter.addItem(0, new Comment(userName, userPicUrl, "刚刚", mAddComment.getText().toString()));
+
+                String userId = getContext().getSharedPreferences("BasePrefs", MODE_PRIVATE).getString("usedID", "null");
+
+                if (!mAddComment.getText().toString().equals("")) {
+                    addComment(userId, mAddComment.getText().toString());
+                }
+            }
+            return false;
+        });
     }
 
     @Override
@@ -86,7 +113,7 @@ public final class CommentFragment extends BaseFragment<AppActivity>
         assert activity != null;
         params.put("dishId", ((DishInfoActivity) activity).getDishId());
 
-        AsyncHttpUtil.httpPost(Ports.dishComment, params, new Callback() {
+        AsyncHttpUtil.httpPost(Ports.dishCommentGet, params, new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 ToastUtil.toast("餐品评论获取失败，请稍候再试", ToastConst.warnStyle);
@@ -115,13 +142,47 @@ public final class CommentFragment extends BaseFragment<AppActivity>
                             comments.add(new Comment(userName, picUrl, date, text));
                         }
                         activity.runOnUiThread(() -> {
-                            commentCount.setText(String.format(getString(R.string.comment_count), count));
+                            mCommentCount = count;
+                            mCommentCountTextView.setText(String.format(getString(R.string.comment_count), count));
                             if (setElseAdd) {
                                 mAdapter.setData(comments);
                             } else {
                                 mAdapter.addData(comments);
                             }
                             afterResponse.run();
+                        });
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void addComment(String userId, String comment) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("userId", userId);
+        params.put("comment", comment);
+
+        AsyncHttpUtil.httpPost(Ports.dishCommentAdd, params, new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                ToastUtil.toast("餐品添加获取失败", ToastConst.warnStyle);
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                try {
+                    assert response.body() != null;
+                    JSONObject jsonObject = new JSONObject(response.body().string());
+
+                    if (jsonObject.getInt("code") == 0) {
+                        ToastUtil.toast(jsonObject.getString("msg"), ToastConst.errorStyle);
+                    } else {
+                        getAttachActivity().runOnUiThread(() -> {
+                            mCommentCount += 1;
+                            mCommentCountTextView.setText(String.format(getString(R.string.comment_count), mCommentCount));
+                            mAddComment.setText("");
                         });
                     }
                 } catch (JSONException e) {

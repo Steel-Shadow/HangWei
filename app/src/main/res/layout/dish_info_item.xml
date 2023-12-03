@@ -5,19 +5,22 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="16dp">
+    android:padding="5dp"
+    android:weightSum="1">
 
     <ImageView
         android:id="@+id/picUrl"
-        android:layout_width="@dimen/dp_150"
-        android:layout_height="@dimen/dp_150"
-        android:layout_marginEnd="16dp"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_100"
+        android:layout_marginEnd="8dp"
+        android:layout_weight="0.382"
         android:contentDescription="@string/dish_picture"
         android:src="@drawable/loading" />
 
     <TableLayout
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_weight="0.618"
         android:orientation="vertical">
 
         <TextView
@@ -25,12 +28,14 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            android:paddingStart="@dimen/dp_5"
             android:text="菜品名"
-            android:textSize="18sp" />
+            android:textSize="@dimen/sp_15" />
 
         <TextView
-            android:id="@+id/location"
+            android:id="@+id/canteen_location"
             android:layout_width="match_parent"
+            android:drawablePadding="@dimen/dp_5"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:gravity="center_vertical"
@@ -43,6 +48,7 @@
             android:id="@+id/price"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:drawablePadding="@dimen/dp_5"
             android:layout_weight="1"
             android:gravity="center_vertical"
             android:text="价格"
@@ -61,9 +67,9 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:drawablePadding="@dimen/dp_5"
                 android:gravity="center_vertical"
                 android:text="123"
-                android:drawablePadding="@dimen/dp_5"
                 android:textColor="@color/black50"
                 android:textSize="@dimen/sp_15"
                 app:drawableStartCompat="@drawable/like" />
@@ -74,7 +80,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
-                android:drawablePadding="@dimen/dp_10"
+                android:drawablePadding="@dimen/dp_5"
                 android:text="456"
                 android:textColor="@color/black50"
                 android:textSize="@dimen/sp_15"

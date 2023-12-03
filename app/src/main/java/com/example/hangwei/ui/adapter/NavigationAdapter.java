@@ -1,4 +1,4 @@
-package com.example.hangwei.ui.home.adapter;
+package com.example.hangwei.ui.adapter;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -17,15 +17,19 @@ import com.example.hangwei.app.AppAdapter;
 import com.example.hangwei.base.BaseAdapter;
 
 /**
- *    desc   : 导航栏适配器
+ * desc   : 导航栏适配器
  */
 public final class NavigationAdapter extends AppAdapter<NavigationAdapter.MenuItem>
         implements BaseAdapter.OnItemClickListener {
 
-    /** 当前选中条目位置 */
+    /**
+     * 当前选中条目位置
+     */
     private int mSelectedPosition = 0;
 
-    /** 导航栏点击监听 */
+    /**
+     * 导航栏点击监听
+     */
     @Nullable
     private OnNavigationListener mListener;
 

@@ -10,9 +10,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatButton;
 
-import com.example.hangwei.consts.ToastConst;
 import com.example.hangwei.R;
 import com.example.hangwei.base.BaseActivity;
+import com.example.hangwei.consts.ToastConst;
 import com.example.hangwei.data.AsyncHttpUtil;
 import com.example.hangwei.data.Ports;
 import com.example.hangwei.utils.CheckUtil1;
@@ -52,11 +52,11 @@ public class RegisterActivity extends BaseActivity {
         password_input2 = findViewById(R.id.register_password_confirm);
 
         email_input = findViewById(R.id.register_email_input);
-        code_input= findViewById(R.id.register_code_input);
+        code_input = findViewById(R.id.register_code_input);
 
         code_send = findViewById(R.id.register_code_send);
-        btn_register= findViewById(R.id.register_btn_register);
-        btn_backTo_login= findViewById(R.id.register_btn_login);
+        btn_register = findViewById(R.id.register_btn_register);
+        btn_backTo_login = findViewById(R.id.register_btn_login);
 
         code_send.setOnClickListener(view -> {
             email = email_input.getText().toString().trim();

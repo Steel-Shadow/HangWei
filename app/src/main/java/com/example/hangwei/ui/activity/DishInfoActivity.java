@@ -1,40 +1,25 @@
 package com.example.hangwei.ui.activity;
 
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.example.hangwei.R;
+import com.example.hangwei.app.Favorite;
 import com.example.hangwei.base.BaseActivity;
 import com.example.hangwei.base.BaseFragment;
 import com.example.hangwei.base.FragmentPagerAdapter;
-import com.example.hangwei.consts.ToastConst;
-import com.example.hangwei.data.AsyncHttpUtil;
 import com.example.hangwei.data.Ports;
-import com.example.hangwei.ui.home.adapter.TabAdapter;
-import com.example.hangwei.ui.home.dishInfo.CommentFragment;
-import com.example.hangwei.ui.home.dishInfo.SideDishFragment;
-import com.example.hangwei.utils.ToastUtil;
+import com.example.hangwei.ui.adapter.TabAdapter;
+import com.example.hangwei.ui.fragment.CommentFragment;
+import com.example.hangwei.ui.fragment.SideDishFragment;
 import com.example.hangwei.widget.layout.XCollapsingToolbarLayout;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.Locale;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
 
 /**
  * desc   : 餐品详情页
@@ -47,8 +32,7 @@ public final class DishInfoActivity extends BaseActivity
     private TextView mName;
     private TextView mPrice;
     private ImageView mPic;
-    private boolean mHasFavorite; // 是否收藏了
-    private TextView mFavorite; // 收藏
+    public Favorite mFavorite;
 
     private RecyclerView mTabView;
     private ViewPager mViewPager;
@@ -69,7 +53,7 @@ public final class DishInfoActivity extends BaseActivity
     protected void initView() {
         mName = findViewById(R.id.dish_info_name);
         mPrice = findViewById(R.id.dish_info_price);
-        mFavorite = findViewById(R.id.dish_info_favorite);
+        mFavorite = new Favorite(this, findViewById(R.id.dish_info_favorite), mDishId, Ports.dishFavChange, Ports.dishFavCheck);
         mPic = findViewById(R.id.dish_info_pic);
 
         mTabView = findViewById(R.id.dish_info_middle);
@@ -83,8 +67,6 @@ public final class DishInfoActivity extends BaseActivity
 
         mTabAdapter = new TabAdapter(this.getContext());
         mTabView.setAdapter(mTabAdapter);
-
-        mFavorite.setOnClickListener(this::clickFavorite);
     }
 
     @Override
@@ -99,37 +81,6 @@ public final class DishInfoActivity extends BaseActivity
         mName.setText(bundle.getString("name"));
         mPrice.setText(String.format(Locale.CHINA, "%d", bundle.getInt("price")));
         Glide.with(this).load(bundle.getString("picUrl")).into(mPic);
-        updateFavorite();
-    }
-
-    public void updateFavorite() {
-        HashMap<String, String> params = new HashMap<>(2);
-        params.put("userId", "获取userId"); // todo: 与wyj协商确定userId获取
-        params.put("dishId", mDishId);
-        AsyncHttpUtil.httpPost(Ports.checkFavorite, params, new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                ToastUtil.toast("读取收藏信息失败", ToastConst.successStyle);
-            }
-
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                System.out.println(response.message());
-                try {
-                    assert response.body() != null;
-                    JSONObject jsonObject = new JSONObject(response.body().string());
-                    if (jsonObject.getInt("code") == 0) {
-                        ToastUtil.toast(jsonObject.getString("msg"), ToastConst.errorStyle);
-                    } else {
-                        JSONObject data = jsonObject.getJSONObject("data");
-                        mHasFavorite = data.getBoolean("isFavorite");
-                        setFavorite(mHasFavorite);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
     }
 
     /**
@@ -179,45 +130,6 @@ public final class DishInfoActivity extends BaseActivity
         return mDishId;
     }
 
-    private void clickFavorite(View v) {
-        HashMap<String, String> params = new HashMap<>();
-        params.put("userId", "todo: userIdShouldBeHere"); // todo: 与wyj协商确定userId获取
-        params.put("dishId", mDishId);
-        AsyncHttpUtil.httpPost(Ports.favorite, params, new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                ToastUtil.toast("收藏失败", ToastConst.successStyle);
-            }
-
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                System.out.println(response.message());
-                try {
-                    assert response.body() != null;
-                    JSONObject jsonObject = new JSONObject(response.body().string());
-                    if (jsonObject.getInt("code") == 0) {
-                        ToastUtil.toast(jsonObject.getString("msg"), ToastConst.errorStyle);
-                    } else {
-                        changeFavorite();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
-
-    private void changeFavorite() {
-        Drawable newStar;
-        if (mHasFavorite) {
-            newStar = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_rating_star_off, null);
-        } else {
-            newStar = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_rating_star_fill, null);
-        }
-        mHasFavorite = !mHasFavorite;
-        runOnUiThread(() -> mFavorite.setCompoundDrawablesWithIntrinsicBounds(null, newStar, null, null));
-    }
-
     public void setDishId(String mDishId) {
         this.mDishId = mDishId;
     }
@@ -232,11 +144,5 @@ public final class DishInfoActivity extends BaseActivity
 
     public void setPic(String mPicUrl) {
         Glide.with(this).load(mPicUrl).into(mPic);
-    }
-
-    public void setFavorite(boolean mHasFavorite) {
-        if (mHasFavorite != this.mHasFavorite) {
-            changeFavorite();
-        }
     }
 }

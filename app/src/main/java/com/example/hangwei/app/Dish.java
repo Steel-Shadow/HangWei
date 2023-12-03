@@ -1,5 +1,7 @@
 package com.example.hangwei.app;
 
+import org.json.JSONObject;
+
 public class Dish {
     public String id;
     public String name;
@@ -17,5 +19,19 @@ public class Dish {
         this.likeCount = likeCount;
         this.commentCount = commentCount;
         this.foodPicUrl = foodPicUrl;
+    }
+
+    public Dish(JSONObject jsonDish) {
+        try {
+            this.id = jsonDish.getString("dishId");
+            this.name = jsonDish.getString("dishName");
+            this.location = jsonDish.getString("campus");
+            this.price = jsonDish.getInt("price");
+            this.likeCount = jsonDish.getInt("likeCount");
+            this.commentCount = jsonDish.getInt("commentCount");
+            this.foodPicUrl = jsonDish.getString("picture");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

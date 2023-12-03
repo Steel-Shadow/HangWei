@@ -15,7 +15,6 @@ import com.example.hangwei.consts.ToastConst;
 import com.example.hangwei.data.AsyncHttpUtil;
 import com.example.hangwei.data.Ports;
 import com.example.hangwei.data.SyncHttpUtil;
-import com.example.hangwei.ui.home.HomeActivity;
 import com.example.hangwei.utils.CheckUtil1;
 import com.example.hangwei.utils.ToastUtil;
 import com.example.hangwei.widget.view.SubmitButton;

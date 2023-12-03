@@ -1,27 +1,25 @@
-package com.example.hangwei.ui.home.fragment;
+package com.example.hangwei.ui.activity;
 
 import static java.lang.Math.min;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hangwei.R;
-import com.example.hangwei.app.AppActivity;
 import com.example.hangwei.app.Dish;
-import com.example.hangwei.app.TitleBarFragment;
+import com.example.hangwei.base.BaseActivity;
 import com.example.hangwei.base.BaseAdapter;
 import com.example.hangwei.consts.ToastConst;
 import com.example.hangwei.data.AsyncHttpUtil;
 import com.example.hangwei.data.Ports;
-import com.example.hangwei.ui.activity.DishInfoActivity;
-import com.example.hangwei.ui.home.adapter.DishAdapter;
+import com.example.hangwei.ui.adapter.DishAdapter;
 import com.example.hangwei.utils.ToastUtil;
 import com.example.hangwei.widget.layout.WrapRecyclerView;
-import com.example.hangwei.widget.layout.XCollapsingToolbarLayout;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener;
@@ -40,78 +38,59 @@ import okhttp3.Callback;
 import okhttp3.Response;
 
 /**
- * desc   : 菜品列表 Fragment
+ * desc   : 窗口的菜品展示页
  */
-public final class DishFragment extends TitleBarFragment<AppActivity>
+public final class WindowActivity extends BaseActivity
         implements OnRefreshLoadMoreListener,
-        BaseAdapter.OnItemClickListener,
-        XCollapsingToolbarLayout.OnScrimsListener {
-    private static final int MAX_LIST_ITEM_NUM = 5;
-    private static final int LIST_ITEM_ADD_NUM = 1;
+        BaseAdapter.OnItemClickListener {
+    private static final int MAX_LIST_ITEM_NUM = Integer.MAX_VALUE;
+    private static final int LIST_ITEM_ADD_NUM = 10;
 
-    public static DishFragment newInstance() {
-        return new DishFragment();
+    public static WindowActivity newInstance() {
+        return new WindowActivity();
     }
 
-    private int type; // [0: 全部]，[1：早餐]，[2：中晚]，[3：早中晚]
-    private String campus; // 学院路 沙河
-    private CharSequence search; // 搜索词
+    private String mId;
+    private TextView mWindowName;
     private SmartRefreshLayout mRefreshLayout;
     private WrapRecyclerView mRecyclerView;
     private DishAdapter mAdapter;
 
     @Override
     protected int getLayoutId() {
-        return R.layout.dish_fragment;
+        return R.layout.window_activity;
     }
 
     @Override
     protected void initView() {
-        mRefreshLayout = findViewById(R.id.dish_refresh_layout);
-        mRecyclerView = findViewById(R.id.dish_list);
+        mWindowName = findViewById(R.id.window_name);
+        mRefreshLayout = findViewById(R.id.window_refresh_layout);
+        mRecyclerView = findViewById(R.id.window_dish_list);
 
-        mAdapter = new DishAdapter(getAttachActivity());
+        mAdapter = new DishAdapter(this);
         mAdapter.setOnItemClickListener(this);
+
         mRecyclerView.setAdapter(mAdapter);
-
-//        TextView headerView = mRecyclerView.addHeaderView(R.layout.picker_item);
-//        headerView.setText("我是头部");
-//        headerView.setOnClickListener(v -> ToastUtil.toast("点击了头部", ToastConst.successStyle));
-
-//        TextView footerView = mRecyclerView.addFooterView(R.layout.picker_item);
-//        footerView.setText("下拉加载");
-//        footerView.setOnClickListener(v -> ToastUtil.toast("点击了尾部", ToastConst.errorStyle));
-
         mRefreshLayout.setOnRefreshLoadMoreListener(this);
     }
 
     @Override
     protected void initData() {
-        type = 0;
-        campus = "学院路";
-        search = "";
+        Bundle bundle = getIntent().getExtras();
+        assert bundle != null;
+        mId = bundle.getString("id");
+        mWindowName.setText(bundle.getString("name"));
+//        mRefreshLayout.autoRefresh(0);
         updateDishData(true, () -> {
         });
     }
 
-    public void refresh() {
-        updateDishData(true, () -> mRefreshLayout.finishRefresh());
-    }
-
-
     /**
      * 网络请求获取新信息
-     * campus 学院路 沙河
-     * type [1：早餐]，[2：正餐]，[3：饮品]
-     * search 搜索关键词
      * setOrAdd: false:set true:add
      */
     private void updateDishData(boolean setElseAdd, Runnable afterResponse) {
         HashMap<String, Object> params = new HashMap<>();
-        params.put("campus", campus);
-        params.put("type", type);
-        params.put("search", search);
-
         AsyncHttpUtil.httpPostForObject(Ports.dishChoose, params, new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -127,12 +106,12 @@ public final class DishFragment extends TitleBarFragment<AppActivity>
 
                     if (jsonObject.getInt("code") == 0) {
                         ToastUtil.toast(jsonObject.getString("msg"), ToastConst.errorStyle);
-                        getAttachActivity().runOnUiThread(afterResponse);
+                        runOnUiThread(afterResponse);
                     } else {
                         JSONObject data = jsonObject.getJSONObject("data");
                         dishes.addAll(locationGetDishes(data.getJSONArray("学院路")));
                         dishes.addAll(locationGetDishes(data.getJSONArray("沙河")));
-                        getAttachActivity().runOnUiThread(() -> {
+                        runOnUiThread(() -> {
                             if (setElseAdd) {
                                 mAdapter.setData(dishes);
                             } else {
@@ -142,6 +121,7 @@ public final class DishFragment extends TitleBarFragment<AppActivity>
                         });
                     }
                 } catch (JSONException e) {
+                    runOnUiThread(afterResponse);
                     e.printStackTrace();
                 }
             }
@@ -181,7 +161,6 @@ public final class DishFragment extends TitleBarFragment<AppActivity>
     public void onItemClick(RecyclerView recyclerView, View itemView, int position) {
         Dish dish = mAdapter.getItem(position);
 
-        // 创建一个 Intent 对象，指定当前的 Fragment 的上下文和要启动的 Activity 类
         Intent intent = new Intent(getActivity(), DishInfoActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString("id", dish.id);
@@ -197,6 +176,10 @@ public final class DishFragment extends TitleBarFragment<AppActivity>
      * {@link OnRefreshLoadMoreListener}
      */
 
+    public void refresh() {
+        updateDishData(true, () -> mRefreshLayout.finishRefresh());
+    }
+
     @Override
     public void onRefresh(@NonNull RefreshLayout refreshLayout) {
         refresh();
@@ -209,26 +192,5 @@ public final class DishFragment extends TitleBarFragment<AppActivity>
             mAdapter.setLastPage(mAdapter.getCount() >= MAX_LIST_ITEM_NUM);
             mRefreshLayout.setNoMoreData(mAdapter.isLastPage());
         });
-    }
-
-    @Override
-    public void onScrimsStateChange(XCollapsingToolbarLayout layout, boolean shown) {
-
-    }
-
-    public void setType(int type) {
-        this.type = type;
-    }
-
-    public void setCampus(String campus) {
-        this.campus = campus;
-    }
-
-    public String getCampus() {
-        return campus;
-    }
-
-    public void setSearch(CharSequence search) {
-        this.search = search;
     }
 }
