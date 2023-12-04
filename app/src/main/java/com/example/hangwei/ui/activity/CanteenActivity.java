@@ -1,5 +1,6 @@
 package com.example.hangwei.ui.activity;
 
+import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -79,11 +80,10 @@ public final class CanteenActivity extends BaseActivity
 
     @Override
     protected void initData() {
-        //todo: 在这里传入你的id mId = ???
-//        Bundle bundle = getIntent().getExtras();
-//        assert bundle != null;
-//        bundle.getString("id");
-//        mId = bundle.getString("id");
+        Bundle bundle = getIntent().getExtras();
+        assert bundle != null;
+        bundle.getString("id");
+        mId = bundle.getString("id");
 
         HashMap<String, String> params = new HashMap<>();
         params.put("id", mId);
@@ -99,7 +99,7 @@ public final class CanteenActivity extends BaseActivity
                     assert response.body() != null;
                     JSONObject jsonObject = new JSONObject(response.body().string());
 
-                    if (jsonObject.getInt("code") == 0) {
+                    if (jsonObject.getInt("code") == 2) {
                         ToastUtil.toast(jsonObject.getString("msg"), ToastConst.errorStyle);
                     } else {
                         JSONObject data = jsonObject.getJSONObject("data");
@@ -164,7 +164,7 @@ public final class CanteenActivity extends BaseActivity
                     JSONObject jsonObject = new JSONObject(response.body().string());
                     List<Window> windows = new ArrayList<>();
 
-                    if (jsonObject.getInt("code") == 0) {
+                    if (jsonObject.getInt("code") == 2) {
                         ToastUtil.toast(jsonObject.getString("msg"), ToastConst.errorStyle);
                         runOnUiThread(afterResponse);
                     } else {

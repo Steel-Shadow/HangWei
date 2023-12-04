@@ -1,4 +1,6 @@
-package com.example.hangwei.ui.activity;
+package com.example.hangwei.ui.fragment;
+
+import static android.content.Context.MODE_PRIVATE;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,14 +10,15 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hangwei.R;
-import com.example.hangwei.app.Dish;
-import com.example.hangwei.app.History;
+import com.example.hangwei.app.Window;
 import com.example.hangwei.base.BaseActivity;
 import com.example.hangwei.base.BaseAdapter;
+import com.example.hangwei.base.BaseFragment;
 import com.example.hangwei.consts.ToastConst;
 import com.example.hangwei.data.AsyncHttpUtil;
 import com.example.hangwei.data.Ports;
-import com.example.hangwei.ui.adapter.HistoryAdapter;
+import com.example.hangwei.ui.activity.WindowActivity;
+import com.example.hangwei.ui.adapter.WindowFavAdapter;
 import com.example.hangwei.utils.ToastUtil;
 
 import org.json.JSONArray;
@@ -31,28 +34,25 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
-/**
- * desc   : 历史展示页
- */
-public final class HistoryActivity extends BaseActivity
+public class FavWindowFragment extends BaseFragment<BaseActivity>
         implements BaseAdapter.OnItemClickListener {
-    public static HistoryActivity newInstance() {
-        return new HistoryActivity();
+    public static FavWindowFragment newInstance() {
+        return new FavWindowFragment();
     }
 
     private RecyclerView mRecyclerView;
-    private HistoryAdapter mAdapter;
+    private WindowFavAdapter mAdapter;
 
     @Override
     protected int getLayoutId() {
-        return R.layout.history_activity;
+        return R.layout.fav_fragment;
     }
 
     @Override
     protected void initView() {
-        mRecyclerView = findViewById(R.id.history_list);
+        mRecyclerView = findViewById(R.id.fav_recycler_view);
 
-        mAdapter = new HistoryAdapter(this);
+        mAdapter = new WindowFavAdapter(getAttachActivity());
         mAdapter.setOnItemClickListener(this);
 
         mRecyclerView.setAdapter(mAdapter);
@@ -61,12 +61,12 @@ public final class HistoryActivity extends BaseActivity
     @Override
     protected void initData() {
         HashMap<String, Object> params = new HashMap<>();
-        String id = getContext().getSharedPreferences("BasePrefs", MODE_PRIVATE).getString("usedID", "null");
-        params.put("userId", id);
-        AsyncHttpUtil.httpPostForObject(Ports.dishHistoryGet, params, new Callback() {
+        String userId = getContext().getSharedPreferences("BasePrefs", MODE_PRIVATE).getString("usedID", "null");
+        params.put("userId", userId);
+        AsyncHttpUtil.httpPostForObject(Ports.windowFavAll, params, new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                ToastUtil.toast("Get history http fail!", ToastConst.errorStyle);
+                ToastUtil.toast("Get dish data http fail!", ToastConst.errorStyle);
             }
 
             @Override
@@ -74,22 +74,21 @@ public final class HistoryActivity extends BaseActivity
                 try {
                     assert response.body() != null;
                     JSONObject jsonObject = new JSONObject(response.body().string());
+                    List<Window> windows = new ArrayList<>();
 
                     if (jsonObject.getInt("code") == 2) {
                         ToastUtil.toast(jsonObject.getString("msg"), ToastConst.errorStyle);
                     } else {
                         JSONObject data = jsonObject.getJSONObject("data");
-                        JSONArray jsonHistories = data.getJSONArray("histories");
-                        List<History> histories = new ArrayList<>(jsonHistories.length());
-                        for (int i = 0; i < jsonHistories.length(); i++) {
-                            JSONObject jsonHistory = jsonHistories.getJSONObject(i);
-
-                            String time = jsonHistory.getString("queryTime");
-                            JSONObject jsonDish = jsonHistory.getJSONObject("dish");
-
-                            histories.add(new History(new Dish(jsonDish), time));
+                        JSONArray jsonWindows = data.getJSONArray("windows");
+                        for (int i = 0; i < jsonWindows.length(); i++) {
+                            JSONObject jsonWindow = jsonWindows.getJSONObject(i);
+                            windows.add(new Window(
+                                    jsonWindow.getString("windowId"),
+                                    jsonWindow.getString("windowName"),
+                                    null, null));
                         }
-                        runOnUiThread(() -> mAdapter.setData(histories));
+                        getAttachActivity().runOnUiThread(() -> mAdapter.setData(windows));
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -108,15 +107,12 @@ public final class HistoryActivity extends BaseActivity
      */
     @Override
     public void onItemClick(RecyclerView recyclerView, View itemView, int position) {
-        History history = mAdapter.getItem(position);
+        Window window = mAdapter.getItem(position);
 
-        Intent intent = new Intent(getActivity(), DishInfoActivity.class);
+        Intent intent = new Intent(getActivity(), WindowActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString("id", history.dish.id);
-        bundle.putString("name", history.dish.name);
-        bundle.putInt("price", history.dish.price);
-        bundle.putString("picUrl", history.dish.foodPicUrl);
-        bundle.putString("time", history.time);
+        bundle.putString("id", window.id);
+        bundle.putString("name", window.name);
         intent.putExtras(bundle);
 
         startActivity(intent);

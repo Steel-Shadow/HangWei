@@ -83,6 +83,11 @@ public final class CommentFragment extends BaseFragment<BaseActivity>
                 // 隐藏光标
                 mAddComment.setCursorVisible(false);
 
+                boolean isForbidden = getContext().getSharedPreferences("BasePrefs", MODE_PRIVATE).getBoolean("isForbidden", false);
+                if (isForbidden) {
+                    ToastUtil.toast("您已被禁言，无法评论", ToastConst.errorStyle);
+                }
+
                 String userPicUrl = getContext().getSharedPreferences("BasePrefs", MODE_PRIVATE).getString("usedAvatar", "null");
                 String userName = getContext().getSharedPreferences("BasePrefs", MODE_PRIVATE).getString("usedName", "我");
 
@@ -126,7 +131,7 @@ public final class CommentFragment extends BaseFragment<BaseActivity>
                     JSONObject jsonObject = new JSONObject(response.body().string());
                     List<Comment> comments = new ArrayList<>();
 
-                    if (jsonObject.getInt("code") == 0) {
+                    if (jsonObject.getInt("code") == 2) {
                         ToastUtil.toast(jsonObject.getString("msg"), ToastConst.errorStyle);
                         activity.runOnUiThread(afterResponse);
                     } else {
@@ -176,7 +181,7 @@ public final class CommentFragment extends BaseFragment<BaseActivity>
                     assert response.body() != null;
                     JSONObject jsonObject = new JSONObject(response.body().string());
 
-                    if (jsonObject.getInt("code") == 0) {
+                    if (jsonObject.getInt("code") == 2) {
                         ToastUtil.toast(jsonObject.getString("msg"), ToastConst.errorStyle);
                     } else {
                         getAttachActivity().runOnUiThread(() -> {

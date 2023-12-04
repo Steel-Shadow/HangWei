@@ -24,6 +24,9 @@ public class Ports {
     public static String dishFavCheck = dish + "favorite/check";
     public static String dishHistoryGet = dish + "history/get";
     public static String dishHistoryAdd = dish + "history/add";
+    //    public static String dishFavAll = dish + "favorite/all"; //todo: apifox url wtf
+    public static String dishFavAll = "https://mock.apifox.com/m2/3369925-0-default/130207478"; //todo: apifox url wtf
+
     /*
      * 食堂
      */
@@ -31,12 +34,15 @@ public class Ports {
     public static String canteenFavCheck = api + "canteen/favorite/check";
     public static String canteenGetDishes = api + "canteen/getDishes";
     public static String canteenInfo = api + "canteen/info";
+    public static String canteenFavAll = api + "canteen/favorite/all";
 
     /*
      * 窗口
      */
+    public static String windowDishes = api + "window/dishes";
     public static String windowFavChange = api + "window/favorite/change";
     public static String windowFavCheck = api + "window/favorite/check";
+    public static String windowFavAll = api + "window/favorite/all";
 
     /*
      * 上传文件：POST

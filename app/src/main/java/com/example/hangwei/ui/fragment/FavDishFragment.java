@@ -1,4 +1,6 @@
-package com.example.hangwei.ui.activity;
+package com.example.hangwei.ui.fragment;
+
+import static android.content.Context.MODE_PRIVATE;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,13 +11,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hangwei.R;
 import com.example.hangwei.app.Dish;
-import com.example.hangwei.app.History;
 import com.example.hangwei.base.BaseActivity;
 import com.example.hangwei.base.BaseAdapter;
+import com.example.hangwei.base.BaseFragment;
 import com.example.hangwei.consts.ToastConst;
 import com.example.hangwei.data.AsyncHttpUtil;
 import com.example.hangwei.data.Ports;
-import com.example.hangwei.ui.adapter.HistoryAdapter;
+import com.example.hangwei.ui.activity.DishInfoActivity;
+import com.example.hangwei.ui.adapter.DishFavAdapter;
 import com.example.hangwei.utils.ToastUtil;
 
 import org.json.JSONArray;
@@ -31,28 +34,25 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
-/**
- * desc   : 历史展示页
- */
-public final class HistoryActivity extends BaseActivity
+public class FavDishFragment extends BaseFragment<BaseActivity>
         implements BaseAdapter.OnItemClickListener {
-    public static HistoryActivity newInstance() {
-        return new HistoryActivity();
+    public static FavDishFragment newInstance() {
+        return new FavDishFragment();
     }
 
     private RecyclerView mRecyclerView;
-    private HistoryAdapter mAdapter;
+    private DishFavAdapter mAdapter;
 
     @Override
     protected int getLayoutId() {
-        return R.layout.history_activity;
+        return R.layout.fav_fragment;
     }
 
     @Override
     protected void initView() {
-        mRecyclerView = findViewById(R.id.history_list);
+        mRecyclerView = findViewById(R.id.fav_recycler_view);
 
-        mAdapter = new HistoryAdapter(this);
+        mAdapter = new DishFavAdapter(getAttachActivity());
         mAdapter.setOnItemClickListener(this);
 
         mRecyclerView.setAdapter(mAdapter);
@@ -60,13 +60,13 @@ public final class HistoryActivity extends BaseActivity
 
     @Override
     protected void initData() {
-        HashMap<String, Object> params = new HashMap<>();
-        String id = getContext().getSharedPreferences("BasePrefs", MODE_PRIVATE).getString("usedID", "null");
-        params.put("userId", id);
-        AsyncHttpUtil.httpPostForObject(Ports.dishHistoryGet, params, new Callback() {
+        HashMap<String, String> params = new HashMap<>();
+        String userId = getContext().getSharedPreferences("BasePrefs", MODE_PRIVATE).getString("usedID", "null");
+        params.put("userId", userId);
+        AsyncHttpUtil.httpPost(Ports.dishFavAll, params, new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                ToastUtil.toast("Get history http fail!", ToastConst.errorStyle);
+                ToastUtil.toast("Get dish data http fail!", ToastConst.errorStyle);
             }
 
             @Override
@@ -74,22 +74,29 @@ public final class HistoryActivity extends BaseActivity
                 try {
                     assert response.body() != null;
                     JSONObject jsonObject = new JSONObject(response.body().string());
+                    List<Dish> dishes = new ArrayList<>();
 
                     if (jsonObject.getInt("code") == 2) {
                         ToastUtil.toast(jsonObject.getString("msg"), ToastConst.errorStyle);
                     } else {
                         JSONObject data = jsonObject.getJSONObject("data");
-                        JSONArray jsonHistories = data.getJSONArray("histories");
-                        List<History> histories = new ArrayList<>(jsonHistories.length());
-                        for (int i = 0; i < jsonHistories.length(); i++) {
-                            JSONObject jsonHistory = jsonHistories.getJSONObject(i);
+                        JSONArray jsonDishes = data.getJSONArray("dishes");
 
-                            String time = jsonHistory.getString("queryTime");
-                            JSONObject jsonDish = jsonHistory.getJSONObject("dish");
-
-                            histories.add(new History(new Dish(jsonDish), time));
+                        for (int dish_index = 0; dish_index < jsonDishes.length(); dish_index++) {
+                            JSONObject jsonDish = jsonDishes.getJSONObject(dish_index);
+                            Dish dish = new Dish(
+                                    jsonDish.getString("dishId"),
+                                    jsonDish.getString("dishName"),
+                                    jsonDish.getString("campus"),
+                                    jsonDish.getInt("price"),
+                                    jsonDish.getInt("likeCount"),
+                                    jsonDish.getInt("commentCount"),
+                                    jsonDish.getString("picture"));
+                            dishes.add(dish);
                         }
-                        runOnUiThread(() -> mAdapter.setData(histories));
+                        getAttachActivity().runOnUiThread(() -> {
+                            mAdapter.setData(dishes);
+                        });
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -108,15 +115,14 @@ public final class HistoryActivity extends BaseActivity
      */
     @Override
     public void onItemClick(RecyclerView recyclerView, View itemView, int position) {
-        History history = mAdapter.getItem(position);
+        Dish dish = mAdapter.getItem(position);
 
         Intent intent = new Intent(getActivity(), DishInfoActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString("id", history.dish.id);
-        bundle.putString("name", history.dish.name);
-        bundle.putInt("price", history.dish.price);
-        bundle.putString("picUrl", history.dish.foodPicUrl);
-        bundle.putString("time", history.time);
+        bundle.putString("id", dish.id);
+        bundle.putString("name", dish.name);
+        bundle.putInt("price", dish.price);
+        bundle.putString("picUrl", dish.foodPicUrl);
         intent.putExtras(bundle);
 
         startActivity(intent);

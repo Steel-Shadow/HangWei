@@ -8,7 +8,9 @@ import com.example.hangwei.base.BaseActivity;
 import com.example.hangwei.base.BaseFragment;
 import com.example.hangwei.base.FragmentPagerAdapter;
 import com.example.hangwei.ui.adapter.TabAdapter;
-import com.example.hangwei.ui.fragment.FavoriteFragment;
+import com.example.hangwei.ui.fragment.FavCanteenFragment;
+import com.example.hangwei.ui.fragment.FavDishFragment;
+import com.example.hangwei.ui.fragment.FavWindowFragment;
 
 public class FavoriteActivity extends BaseActivity
         implements TabAdapter.OnTabListener,
@@ -28,11 +30,10 @@ public class FavoriteActivity extends BaseActivity
         mTabView = findViewById(R.id.favorite_choose_tab);
         mViewPager = findViewById(R.id.favorite_pager);
 
-
         mPagerAdapter = new FragmentPagerAdapter<>(this);
-        mPagerAdapter.addFragment(FavoriteFragment.newInstance("食堂"), "食堂");
-        mPagerAdapter.addFragment(FavoriteFragment.newInstance("窗口"), "窗口");
-        mPagerAdapter.addFragment(FavoriteFragment.newInstance("菜品"), "菜品");
+        mPagerAdapter.addFragment(FavCanteenFragment.newInstance(), "食堂");
+        mPagerAdapter.addFragment(FavWindowFragment.newInstance(), "窗口");
+        mPagerAdapter.addFragment(FavDishFragment.newInstance(), "菜品");
         mViewPager.setAdapter(mPagerAdapter);
         mViewPager.addOnPageChangeListener(this);
 

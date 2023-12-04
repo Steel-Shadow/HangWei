@@ -1,7 +1,5 @@
 package com.example.hangwei.ui.activity;
 
-import static java.lang.Math.min;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -87,11 +85,10 @@ public final class WindowActivity extends BaseActivity
 
     /**
      * 网络请求获取新信息
-     * setOrAdd: false:set true:add
      */
     private void updateDishData(boolean setElseAdd, Runnable afterResponse) {
         HashMap<String, Object> params = new HashMap<>();
-        AsyncHttpUtil.httpPostForObject(Ports.dishChoose, params, new Callback() {
+        AsyncHttpUtil.httpPostForObject(Ports.windowDishes, params, new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 ToastUtil.toast("Get dish data http fail!", ToastConst.errorStyle);
@@ -104,13 +101,25 @@ public final class WindowActivity extends BaseActivity
                     JSONObject jsonObject = new JSONObject(response.body().string());
                     List<Dish> dishes = new ArrayList<>();
 
-                    if (jsonObject.getInt("code") == 0) {
+                    if (jsonObject.getInt("code") == 2) {
                         ToastUtil.toast(jsonObject.getString("msg"), ToastConst.errorStyle);
                         runOnUiThread(afterResponse);
                     } else {
                         JSONObject data = jsonObject.getJSONObject("data");
-                        dishes.addAll(locationGetDishes(data.getJSONArray("学院路")));
-                        dishes.addAll(locationGetDishes(data.getJSONArray("沙河")));
+                        JSONArray jsonDishes = data.getJSONArray("dishes");
+
+                        for (int dish_index = 0; dish_index < jsonDishes.length(); dish_index++) {
+                            JSONObject jsonDish = jsonDishes.getJSONObject(dish_index);
+                            Dish dish = new Dish(
+                                    jsonDish.getString("dishId"),
+                                    jsonDish.getString("dishName"),
+                                    jsonDish.getString("campus"),
+                                    jsonDish.getInt("price"),
+                                    jsonDish.getInt("likeCount"),
+                                    jsonDish.getInt("commentCount"),
+                                    jsonDish.getString("picture"));
+                            dishes.add(dish);
+                        }
                         runOnUiThread(() -> {
                             if (setElseAdd) {
                                 mAdapter.setData(dishes);
@@ -126,27 +135,6 @@ public final class WindowActivity extends BaseActivity
                 }
             }
         });
-    }
-
-    private List<Dish> locationGetDishes(JSONArray location) throws JSONException {
-        List<Dish> dishes = new ArrayList<>();
-        for (int canteen_index = 0; canteen_index < location.length(); canteen_index++) {
-            JSONArray canteen = location.getJSONArray(canteen_index);
-
-            for (int dish_index = 0; dish_index < min(LIST_ITEM_ADD_NUM, canteen.length()); dish_index++) {
-                JSONObject jsonDish = canteen.getJSONObject(dish_index);
-                Dish dish = new Dish(
-                        jsonDish.getString("dishId"),
-                        jsonDish.getString("dishName"),
-                        jsonDish.getString("campus"),
-                        jsonDish.getInt("price"),
-                        jsonDish.getInt("likeCount"),
-                        jsonDish.getInt("commentCount"),
-                        jsonDish.getString("picture"));
-                dishes.add(dish);
-            }
-        }
-        return dishes;
     }
 
     /**

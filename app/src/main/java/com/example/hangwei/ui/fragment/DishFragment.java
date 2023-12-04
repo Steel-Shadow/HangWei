@@ -112,7 +112,7 @@ public final class DishFragment extends TitleBarFragment<AppActivity>
                     JSONObject jsonObject = new JSONObject(response.body().string());
                     List<Dish> dishes = new ArrayList<>();
 
-                    if (jsonObject.getInt("code") == 0) {
+                    if (jsonObject.getInt("code") == 2) {
                         ToastUtil.toast(jsonObject.getString("msg"), ToastConst.errorStyle);
                         getAttachActivity().runOnUiThread(afterResponse);
                     } else {

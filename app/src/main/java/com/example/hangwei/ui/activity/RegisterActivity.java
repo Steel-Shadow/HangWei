@@ -157,7 +157,7 @@ public class RegisterActivity extends BaseActivity {
                 System.out.println(response.message());
                 try {
                     JSONObject jsonObject = new JSONObject(response.body().string());
-                    if (jsonObject.getInt("code") == 0) {
+                    if (jsonObject.getInt("code") == 2) {
                         try {
                             ToastUtil.toast(jsonObject.getString("msg"), ToastConst.errorStyle);
                         } catch (JSONException e) {
@@ -199,7 +199,7 @@ public class RegisterActivity extends BaseActivity {
                 System.out.println(response.message());
                 try {
                     JSONObject jsonObject = new JSONObject(response.body().string());
-                    if (jsonObject.getInt("code") == 0) {
+                    if (jsonObject.getInt("code") == 2) {
                         postDelayed(() -> {
                             try {
                                 ToastUtil.toast(jsonObject.getString("msg"), ToastConst.errorStyle);
