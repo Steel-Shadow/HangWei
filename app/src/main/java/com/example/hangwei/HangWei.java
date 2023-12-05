@@ -4,6 +4,7 @@ import android.app.Application;
 
 import androidx.core.content.ContextCompat;
 
+import com.example.hangwei.manager.ActivityManager;
 import com.example.hangwei.other.SmartBallPulseFooter;
 import com.example.hangwei.other.TitleBarStyle;
 import com.hjq.bar.TitleBar;
@@ -16,12 +17,19 @@ public class HangWei extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        initSdk(this);
+    }
 
-        // 在应用程序创建时执行的初始化操作
-        // 可以在这里初始化全局的变量、配置、第三方库等
-
+    /**
+     * 在应用程序创建时执行的初始化操作
+     * 在这里初始化全局的变量、配置、第三方库等
+     */
+    public void initSdk(Application application) {
         // 初始化 Toast 框架
-        Toaster.init(this);
+        Toaster.init(application);
+
+        // Activity 栈管理初始化
+        ActivityManager.getInstance().init(application);
 
         // 设置标题栏初始化器
         TitleBar.setDefaultStyle(new TitleBarStyle());

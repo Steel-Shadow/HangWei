@@ -26,22 +26,16 @@ import com.trello.rxlifecycle4.components.support.RxFragment;
 import java.util.List;
 
 /**
- * desc   : Fragment 技术基类
+ *    desc   : Fragment 技术基类
  */
 public abstract class BaseFragment<A extends BaseActivity> extends RxFragment implements
         ActivityAction, ResourcesAction, HandlerAction, ClickAction, BundleAction, KeyboardAction {
 
-    /**
-     * Activity 对象
-     */
+    /** Activity 对象 */
     private A mActivity;
-    /**
-     * 根布局
-     */
+    /** 根布局 */
     private View mRootView;
-    /**
-     * 当前是否加载过
-     */
+    /** 当前是否加载过 */
     private boolean mLoading;
 
     @SuppressWarnings("unchecked")
@@ -84,16 +78,14 @@ public abstract class BaseFragment<A extends BaseActivity> extends RxFragment im
     /**
      * Fragment 可见回调
      *
-     * @param first 是否首次调用
+     * @param first                 是否首次调用
      */
-    protected void onFragmentResume(boolean first) {
-    }
+    protected void onFragmentResume(boolean first) {}
 
     /**
      * Activity 可见回调
      */
-    protected void onActivityResume() {
-    }
+    protected void onActivityResume() {}
 
     @Override
     public void onDestroyView() {

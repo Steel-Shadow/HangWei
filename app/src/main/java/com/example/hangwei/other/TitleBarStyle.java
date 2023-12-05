@@ -53,7 +53,7 @@ public final class TitleBarStyle extends LightBarStyle {
     }
 
     @Override
-    public int getChildHorizontalPadding(Context context) {
+    public int getTitleHorizontalPadding(Context context) {
         return (int) context.getResources().getDimension(R.dimen.dp_12);
     }
 

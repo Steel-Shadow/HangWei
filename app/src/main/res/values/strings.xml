@@ -268,7 +268,6 @@
     <!-- 拍照和拍摄 -->
     <string name="camera_launch_fail">无法启动相机</string>
     <string name="camera_image_error">目标地址错误</string>
-    <string name="title_activity_main">MainActivity</string>
 
     <!--  Home主页  -->
     <string name="home_location_text">学院路</string>

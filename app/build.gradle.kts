@@ -1,28 +1,23 @@
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.android")
 }
 
 android {
     namespace = "com.example.hangwei"
-    compileSdk = 34
+    compileSdk = 33
 
     defaultConfig {
         applicationId = "com.example.hangwei"
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 32
         versionCode = 1
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables {
-            useSupportLibrary = true
-        }
     }
 
     buildFeatures {
         dataBinding = true
-        compose = true
     }
 
     buildTypes {
@@ -35,41 +30,9 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.3"
-    }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
 }
 
 dependencies {
-    implementation("com.github.bumptech.glide:glide:4.16.0")
-
-    // 上拉刷新下拉加载框架：https://github.com/scwang90/SmartRefreshLayout
-    implementation("com.scwang.smart:refresh-layout-kernel:2.0.3")
-    implementation("com.scwang.smart:refresh-header-material:2.0.3")
-
-    // ShapeView：https://github.com/getActivity/ShapeView
-    implementation("com.github.getActivity:ShapeView:9.0")
-
-    // ShapeDrawable：https://github.com/getActivity/ShapeDrawable
-    implementation("com.github.getActivity:ShapeDrawable:3.0")
-
-    implementation("com.airbnb.android:lottie:4.1.0")
-
-    // 标题栏框架：https://github.com/getActivity/TitleBar
-    // do not update it
-    implementation("com.github.getActivity:TitleBar:9.2")
-
-    // 沉浸式框架：https://github.com/gyf-dev/ImmersionBar
-    implementation("com.gyf.immersionbar:immersionbar:3.0.0")
-
     // okhttp依赖
     implementation("com.squareup.okhttp3:okhttp:4.3.0")
     // retrofit依赖
@@ -89,24 +52,45 @@ dependencies {
     implementation("com.github.getActivity:Toaster:12.5")
     // 定制化material-dialogs
     implementation("com.afollestad.material-dialogs:core:3.3.0")
+    // 指示器框架：https://github.com/ongakuer/CircleIndicator
+    implementation("me.relex:circleindicator:2.1.6")
+    // 动画解析库：https://github.com/airbnb/lottie-android
+    // 动画资源：https://lottiefiles.com、https://icons8.com/animated-icons
+    implementation("com.airbnb.android:lottie:6.1.0")
+    // 标题栏框架
+    implementation("com.github.getActivity:TitleBar:10.5")
+    // 沉浸式框架：https://github.com/gyf-dev/ImmersionBar
+    implementation("com.geyifeng.immersionbar:immersionbar:3.2.2")
+    // 腾讯Bugly异常捕捉
+    implementation("com.tencent.bugly:crashreport:latest.release")
+    // 日志打印框架：https://github.com/JakeWharton/timber
+    implementation("com.jakewharton.timber:timber:4.7.1")
+    // AOP 插件库：https://mvnrepository.com/artifact/org.aspectj/aspectjrt
+    implementation("org.aspectj:aspectjrt:1.9.6")
+    // 权限请求框架
+    implementation("com.github.getActivity:XXPermissions:18.5")
+    // ShapeView：https://github.com/getActivity/ShapeView
+    implementation("com.github.getActivity:ShapeView:9.0")
+    // ShapeDrawable：https://github.com/getActivity/ShapeDrawable
+    implementation("com.github.getActivity:ShapeDrawable:3.0")
+    // 图片加载框架：https://github.com/bumptech/glide
+    // 官方使用文档：https://github.com/Muyangmin/glide-docs-cn
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
+    // photoView
+    implementation("com.github.chrisbanes:PhotoView:latest.release")
+    // 网络请求框架：https://github.com/getActivity/EasyHttp
+    implementation("com.github.getActivity:EasyHttp:12.6")
+    // 上拉刷新下拉加载框架：https://github.com/scwang90/SmartRefreshLayout
+    implementation("io.github.scwang90:refresh-layout-kernel:2.1.0")
+    implementation("io.github.scwang90:refresh-header-material:2.0.6")
+    // GSon
+    implementation("com.google.code.gson:gson:2.10.1")
 
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.8.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
-    implementation("androidx.activity:activity-compose:1.8.0")
-    implementation(platform("androidx.compose:compose-bom:2023.03.00"))
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-graphics")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2023.03.00"))
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
 }

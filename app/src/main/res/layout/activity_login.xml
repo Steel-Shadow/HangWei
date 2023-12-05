@@ -8,7 +8,7 @@
     android:gravity="center_horizontal"
     android:layoutAnimation="@anim/layout_from_bottom"
     android:orientation="vertical"
-    tools:context=".ui.activity.LoginActivity"
+    tools:context=".ui.init.LoginActivity"
     tools:layoutAnimation="@null">
 
 
@@ -35,10 +35,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="40dp"
-        android:alpha="0.83"
         android:background="@drawable/bg_corner"
-        android:orientation="vertical"
-        android:paddingHorizontal="10dp">
+        android:alpha="0.83"
+        android:paddingHorizontal="10dp"
+        android:orientation="vertical">
 
         <com.example.hangwei.widget.view.ClearEditText
             android:id="@+id/login_input_username"
@@ -113,7 +113,10 @@
 
     </LinearLayout>
 
-
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="0px"
+        android:layout_weight="1" />
 
     <LinearLayout
         android:id="@+id/ll_login_other"

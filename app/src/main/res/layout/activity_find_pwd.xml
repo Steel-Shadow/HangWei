@@ -1,6 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.init.FindPwdActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <com.hjq.bar.TitleBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:title="设置登录密码" />
+
+    <com.example.hangwei.widget.view.PasswordEditText
+        android:id="@+id/findPwd_password_input"
+        style="@style/EditTextStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableStart="@drawable/ic_password"
+        android:layout_marginTop="@dimen/dp_15"
+        android:drawablePadding="@dimen/dp_15"
+        android:paddingHorizontal="@dimen/dp_20"
+        android:paddingVertical="@dimen/dp_18"
+        android:hint="输入6-18位新密码"
+        android:imeOptions="actionDone"
+        android:background="@color/white"
+        android:maxLength="20"
+        android:singleLine="true" />
+
+    <View
+        style="@style/HorizontalLineStyle"
+        android:layout_marginHorizontal="5dp" />
+
+    <com.example.hangwei.widget.view.PasswordEditText
+        android:id="@+id/findPwd_password_confirm"
+        style="@style/EditTextStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableStart="@drawable/ic_password"
+        android:layout_marginTop="@dimen/dp_15"
+        android:drawablePadding="@dimen/dp_15"
+        android:paddingHorizontal="@dimen/dp_20"
+        android:paddingVertical="@dimen/dp_18"
+        android:hint="@string/register_password_confirm"
+        android:imeOptions="actionDone"
+        android:background="@color/white"
+        android:maxLength="20"
+        android:singleLine="true" />
+
+    <com.example.hangwei.widget.view.ClearEditText
+        android:id="@+id/findPwd_email_input"
+        style="@style/EditTextStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableStart="@drawable/ic_email"
+        android:layout_marginTop="@dimen/dp_15"
+        android:drawablePadding="@dimen/dp_15"
+        android:paddingHorizontal="@dimen/dp_20"
+        android:paddingVertical="@dimen/dp_18"
+        android:hint="@string/register_email_input"
+        android:inputType="textVisiblePassword"
+        android:background="@color/white"
+        android:singleLine="true"
+        app:regexType="anything" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <com.example.hangwei.widget.view.ClearEditText
+            android:id="@+id/findPwd_code_input"
+            style="@style/EditTextStyle"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:drawableStart="@drawable/ic_safe"
+            android:layout_marginTop="@dimen/dp_15"
+            android:drawablePadding="@dimen/dp_15"
+            android:paddingHorizontal="@dimen/dp_20"
+            android:paddingVertical="@dimen/dp_18"
+            android:hint="@string/common_code_input"
+            android:background="@color/white"
+            android:inputType="textVisiblePassword"
+            android:singleLine="true"
+            app:regexType="anything" />
+
+        <com.example.hangwei.widget.view.CountdownView
+            android:id="@+id/findPwd_code_send"
+            style="@style/CountdownViewStyle"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_gravity="center"
+            tools:ignore="TextContrastCheck" />
+
+    </LinearLayout>
+
+    <com.example.hangwei.widget.view.SubmitButton
+        android:id="@+id/btn_findPwd_finish"
+        style="@style/ButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/dp_40"
+        android:layout_marginVertical="@dimen/dp_30"
+        android:background="@drawable/button_circle_selector_gold"
+        android:text="完成" />
+
+</LinearLayout>

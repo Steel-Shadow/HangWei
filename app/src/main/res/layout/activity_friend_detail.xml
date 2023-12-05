@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.commu.friends.detail.FriendDetailActivity">
+
+    <com.hjq.bar.TitleBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:title="主页">
+    </com.hjq.bar.TitleBar>
+
+    <com.example.hangwei.widget.layout.XCollapsingToolbarLayout
+        android:id="@+id/friend_detail_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:contentScrim="@color/white"
+        app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+        app:scrimVisibleHeightTrigger="@dimen/dp_100">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:layout_marginVertical="10dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/friend_detail_avatar"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="center"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_avatar_placeholder" />
+
+                <TextView
+                    android:id="@+id/friend_detail_userName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="5dp"
+                    android:text="用户名"
+                    android:textSize="25dp"
+                    android:textColor="@color/pink" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/friend_detail_gonelay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginEnd="20dp"
+                android:gravity="right"
+                android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/friend_detail_report"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="right"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="30dp"
+                    android:background="@drawable/ic_report"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:gravity="right|center"
+                    android:orientation="horizontal"
+                    android:padding="5dp">
+
+                    <ToggleButton
+                        android:id="@+id/friend_detail_follow"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="@drawable/post_followbtn"
+                        android:clickable="false"
+                        android:textOn=""
+                        android:textOff="" />
+
+                    <TextView
+                        android:id="@+id/friend_detail_followdetail"
+                        android:layout_width="90dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:gravity="center"
+                        android:paddingVertical="3dp"
+                        android:background="@drawable/bg_vary_corner"
+                        android:text="= 已关注"
+                        android:textSize="20sp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </com.example.hangwei.widget.layout.XCollapsingToolbarLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:gravity="center"
+        android:layout_marginVertical="1dp"
+        android:text="动态"
+        android:textStyle="bold"/>
+
+    <com.example.hangwei.widget.view.WrapRecyclerView
+        android:id="@+id/friend_detail_posts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:listCount="1000"
+        tools:listitem="@layout/item_post_simple">
+
+    </com.example.hangwei.widget.view.WrapRecyclerView>
+
+</LinearLayout>

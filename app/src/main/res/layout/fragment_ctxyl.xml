@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.home.fragment.CtXylFragment">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- 学一 & 清真 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ctxyl_image_ct1"
+                    android:layout_width="0dp"
+                    android:layout_height="150dp"
+                    android:scaleType="fitXY"
+                    android:layout_weight="1"
+                    android:src="@drawable/xyl_ct1">
+
+                </androidx.appcompat.widget.AppCompatImageView>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:id="@+id/ctxyl_ct1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="@dimen/dp_10"
+                        android:text="学一食堂"
+                        android:textSize="@dimen/dp_15">
+
+                    </TextView>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="bottom"
+                        android:drawableStart="@drawable/ic_pos"
+                        android:drawablePadding="2dp"
+                        android:text="学院路校区合一楼二层"
+                        android:textSize="10dp">
+
+                    </TextView>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:id="@+id/ctxyl_ct4"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="@dimen/dp_10"
+                        android:text="学四食堂"
+                        android:textSize="@dimen/dp_15">
+
+                    </TextView>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="bottom"
+                        android:drawableStart="@drawable/ic_pos"
+                        android:drawablePadding="2dp"
+                        android:text="学院路校区合一楼三层"
+                        android:textSize="10dp">
+
+                    </TextView>
+
+                </LinearLayout>
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ctxyl_image_ct4"
+                    android:layout_width="0dp"
+                    android:layout_height="150dp"
+                    android:scaleType="fitXY"
+                    android:layout_weight="1"
+                    android:src="@drawable/xyl_ct4">
+
+                </androidx.appcompat.widget.AppCompatImageView>
+
+            </LinearLayout>
+
+
+            <!-- 合一 & 学五 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ctxyl_image_qz"
+                    android:layout_width="0dp"
+                    android:layout_height="150dp"
+                    android:scaleType="fitXY"
+                    android:layout_weight="1"
+                    android:src="@drawable/xyl_qz">
+
+                </androidx.appcompat.widget.AppCompatImageView>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:id="@+id/ctxyl_qz"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="@dimen/dp_10"
+                        android:text="清真食堂"
+                        android:textSize="@dimen/dp_15">
+
+                    </TextView>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="bottom"
+                        android:drawableStart="@drawable/ic_pos"
+                        android:drawablePadding="2dp"
+                        android:text="学院路校区合一楼四层南侧"
+                        android:textSize="10dp">
+
+                    </TextView>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:id="@+id/ctxyl_hy"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="@dimen/dp_10"
+                        android:text="合一厅"
+                        android:textSize="@dimen/dp_15">
+
+                    </TextView>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="bottom"
+                        android:drawableStart="@drawable/ic_pos"
+                        android:drawablePadding="2dp"
+                        android:text="学院路校区合一楼四层北侧"
+                        android:textSize="10dp">
+
+                    </TextView>
+
+                </LinearLayout>
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ctxyl_image_hy"
+                    android:layout_width="0dp"
+                    android:layout_height="150dp"
+                    android:scaleType="fitXY"
+                    android:layout_weight="1"
+                    android:src="@drawable/xyl_hyt">
+
+                </androidx.appcompat.widget.AppCompatImageView>
+
+            </LinearLayout>
+
+            <!-- 学二 & 教工 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ctxyl_image_ct2"
+                    android:layout_width="0dp"
+                    android:layout_height="150dp"
+                    android:scaleType="fitXY"
+                    android:layout_weight="1"
+                    android:src="@drawable/xyl_ct2">
+
+                </androidx.appcompat.widget.AppCompatImageView>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:id="@+id/ctxyl_ct2"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="@dimen/dp_10"
+                        android:text="学二食堂"
+                        android:textSize="@dimen/dp_15">
+
+                    </TextView>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="bottom"
+                        android:drawableStart="@drawable/ic_pos"
+                        android:drawablePadding="2dp"
+                        android:text="学院路校区东区食堂一层"
+                        android:textSize="10dp">
+
+                    </TextView>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:id="@+id/ctxyl_jg"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="@dimen/dp_10"
+                        android:text="教工食堂"
+                        android:textSize="@dimen/dp_15">
+
+                    </TextView>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="bottom"
+                        android:drawableStart="@drawable/ic_pos"
+                        android:drawablePadding="2dp"
+                        android:text="学院路校区东区食堂二层"
+                        android:textSize="10dp">
+
+                    </TextView>
+
+                </LinearLayout>
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ctxyl_image_jg"
+                    android:layout_width="0dp"
+                    android:layout_height="150dp"
+                    android:scaleType="fitXY"
+                    android:layout_weight="1"
+                    android:src="@drawable/xyl_jg">
+
+                </androidx.appcompat.widget.AppCompatImageView>
+
+            </LinearLayout>
+
+            <!-- 学三 & 学五 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ctxyl_image_ct3"
+                    android:layout_width="0dp"
+                    android:layout_height="150dp"
+                    android:scaleType="fitXY"
+                    android:layout_weight="1"
+                    android:src="@drawable/xyl_ct3">
+
+                </androidx.appcompat.widget.AppCompatImageView>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:id="@+id/ctxyl_ct3"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="@dimen/dp_10"
+                        android:text="学三食堂"
+                        android:textSize="@dimen/dp_15">
+
+                    </TextView>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="bottom"
+                        android:drawableStart="@drawable/ic_pos"
+                        android:drawablePadding="2dp"
+                        android:text="学院路校区北区食堂B1层"
+                        android:textSize="10dp">
+
+                    </TextView>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:id="@+id/ctxyl_ct5"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="@dimen/dp_10"
+                        android:text="学五食堂"
+                        android:textSize="@dimen/dp_15">
+
+                    </TextView>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="bottom"
+                        android:drawableStart="@drawable/ic_pos"
+                        android:drawablePadding="2dp"
+                        android:text="学院路校区北区食堂一层"
+                        android:textSize="10dp">
+
+                    </TextView>
+
+                </LinearLayout>
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ctxyl_image_ct5"
+                    android:layout_width="0dp"
+                    android:layout_height="150dp"
+                    android:scaleType="fitXY"
+                    android:layout_weight="1"
+                    android:src="@drawable/xyl_ct5">
+
+                </androidx.appcompat.widget.AppCompatImageView>
+
+            </LinearLayout>
+
+            <!-- 学六 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ctxyl_image_ct6"
+                    android:layout_width="0dp"
+                    android:layout_height="150dp"
+                    android:scaleType="fitXY"
+                    android:layout_weight="1"
+                    android:src="@drawable/xyl_ct6">
+
+                </androidx.appcompat.widget.AppCompatImageView>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:id="@+id/ctxyl_ct6"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="@dimen/dp_10"
+                        android:text="学六食堂"
+                        android:textSize="@dimen/dp_15">
+
+                    </TextView>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="bottom"
+                        android:drawableStart="@drawable/ic_pos"
+                        android:drawablePadding="2dp"
+                        android:text="学院路校区北区食堂二层"
+                        android:textSize="10dp">
+
+                    </TextView>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</LinearLayout>

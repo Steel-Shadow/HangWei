@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.example.hangwei.widget.view.ClearEditText
+        android:id="@+id/search_result_searchBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginBottom="@dimen/dp_10"
+        android:background="@drawable/home_search_bar_transparent_bg"
+        android:drawableStart="@drawable/search"
+        android:drawablePadding="@dimen/dp_5"
+        android:gravity="center_vertical"
+        android:hint="@string/home_search_hint"
+        android:imeOptions="actionSearch"
+        android:paddingVertical="@dimen/dp_5"
+        android:paddingStart="@dimen/dp_10"
+        android:paddingEnd="@dimen/dp_10"
+        android:singleLine="true"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black50"
+        android:textSize="@dimen/sp_13" />
+
+<!--    <androidx.recyclerview.widget.RecyclerView-->
+<!--        android:id="@+id/history_list"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        tools:listCount="10"-->
+<!--        tools:listitem="@layout/dish_info_item" />-->
+<include layout="@layout/fragment_dish"/>
+
+</LinearLayout>

@@ -15,9 +15,9 @@
             <gradient
                 android:angle="270"
                 android:centerColor="@color/white"
-                android:centerY="0.75"
-                android:endColor="#B5B3B2"
-                android:startColor="#B5B3B2" />
+                android:centerY="0.5"
+                android:endColor="#F5F5F5"
+                android:startColor="#F5F5F5" />
         </shape>
     </item>
     <item android:id="@android:id/progress">

@@ -3,6 +3,8 @@
     android:id="@+id/history_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/dp_10"
+    android:layout_marginBottom="@dimen/dp_10"
     android:orientation="horizontal"
     android:padding="5dp"
     android:weightSum="1">
@@ -16,30 +18,31 @@
         android:src="@drawable/loading" />
 
     <LinearLayout
-        android:gravity="center_vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="5dp"
-        android:orientation="vertical">
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:padding="5dp">
 
         <TextView
             android:id="@+id/name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingStart="@dimen/dp_5"
-            android:paddingBottom="@dimen/dp_5"
             android:paddingEnd="0dp"
+            android:paddingBottom="@dimen/dp_5"
             android:text="菜品名"
             android:textSize="@dimen/sp_15" />
 
         <TextView
             android:id="@+id/time"
-            android:paddingTop="@dimen/dp_5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingStart="@dimen/dp_5"
+            android:paddingTop="@dimen/dp_5"
             android:paddingEnd="0dp"
             android:text="浏览时间"
+            android:textColor="@color/gray"
             android:textSize="@dimen/sp_15" />
     </LinearLayout>
 

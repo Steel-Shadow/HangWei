@@ -1,6 +1,8 @@
 package com.example.hangwei.data;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 import org.json.JSONObject;
 
@@ -23,6 +25,12 @@ public class AsyncHttpUtil {
             .connectTimeout(100000, TimeUnit.SECONDS)//设置连接超时时间
             .readTimeout(200000, TimeUnit.SECONDS)//设置读取超时时间
             .build();
+
+    public static boolean checkConnectNetwork(Context context) {
+        ConnectivityManager conn = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo net = conn.getActiveNetworkInfo();
+        return net != null && net.isConnected();
+    }
 
     /*
      * GET

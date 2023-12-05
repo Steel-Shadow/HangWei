@@ -2,25 +2,38 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" /> <!-- 网络相关 -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+    <!-- 通知权限 -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!-- 网络相关 -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.INTERNET" /> <!-- 外部存储 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- 外部存储 -->
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        tools:ignore="ScopedStorage" />
-    <uses-permission
-        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
-        tools:ignore="ScopedStorage" /> <!-- 拍照权限 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <!-- 拍照权限 -->
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
-    <uses-permission android:name="android.permission.CAMERA" /> <!-- 安装权限 -->
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" /> <!-- 定位权限（用于 WebView 定位） -->
+    <!-- 安装权限 -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+
+    <!-- 定位权限（用于 WebView 定位）-->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <!-- 日志权限 -->
+    <uses-permission
+        android:name="android.permission.READ_LOGS"
+        tools:ignore="ProtectedPermissions" />
 
     <application
         android:name=".HangWei"
@@ -30,25 +43,257 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:networkSecurityConfig="@xml/network_security_config"
+        android:requestLegacyExternalStorage="true"
+        android:resizeableActivity="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.HangWei"
+        android:theme="@style/AppTheme"
         tools:targetApi="31">
+
+        <!-- 告知 XXPermissions 当前项目已经适配了分区存储特性 -->
+        <meta-data
+            android:name="ScopedStorage"
+            android:value="true" />
+        <!-- 适配 Android 7.0 文件意图 -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+        <!-- 闪屏页 -->
         <activity
-            android:name=".ui.activity.LoginActivity"
-            android:exported="true">
+            android:name=".ui.init.SplashActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme">
+
+            <!-- 程序入口 -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
-        <activity android:name=".ui.activity.RegisterActivity" />
-        <activity android:name=".ui.activity.HomeActivity" />
-        <activity android:name=".ui.activity.DishInfoActivity" />
-        <activity android:name=".ui.activity.WindowActivity" />
-        <activity android:name=".ui.activity.CanteenActivity" />
-        <activity android:name=".ui.activity.HistoryActivity" />
-        <activity android:name=".ui.activity.FavoriteActivity" />
+
+
+        <!-- 引导页 -->
+        <activity
+            android:name=".ui.init.GuideActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
+
+        <!-- 登录页 -->
+        <activity
+            android:name=".ui.init.LoginActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+
+        <!-- 注册页 -->
+        <activity
+            android:name=".ui.init.RegisterActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+
+        <!-- 主页 -->
+        <activity
+            android:name=".ui.home.activity.HomeActivity"
+            android:exported="false" />
+
+        <!-- 找回密码 -->
+        <activity
+            android:name=".ui.init.FindPwdActivity"
+            android:label="@string/password_forget_title"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+
+        <!-- 拍照选择 -->
+        <activity
+            android:name=".ui.home.activity.CameraActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
+
+        <!-- 图片裁剪 -->
+        <activity
+            android:name=".ui.home.activity.ImageCropActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
+
+        <!-- 图片选择 -->
+        <activity
+            android:name=".ui.home.activity.ImageSelectActivity"
+            android:label="@string/image_select_title"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
+
+        <!-- 查看大图 -->
+        <activity
+            android:name=".ui.home.activity.ImagePreviewActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
+
+        <!-- 播放视频（自适应方向） -->
+        <activity
+            android:name=".ui.home.activity.VideoPlayActivity"
+            android:launchMode="singleTop"
+            android:theme="@style/FullScreenTheme" />
+
+        <!-- 播放视频（竖屏方向） -->
+        <activity
+            android:name=".ui.home.activity.VideoPlayActivity$Portrait"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/FullScreenTheme" />
+
+        <!-- 播放视频（横屏方向） -->
+        <activity
+            android:name=".ui.home.activity.VideoPlayActivity$Landscape"
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape"
+            android:theme="@style/FullScreenTheme" />
+
+        <!-- 选择视频 -->
+        <activity
+            android:name=".ui.home.activity.VideoSelectActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
+
+        <!-- 网页浏览 -->
+        <activity
+            android:name=".ui.home.activity.BrowserActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:hardwareAccelerated="true"
+            android:label="@string/web_title"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
+
+        <!-- 餐品类 -->
+        <activity
+            android:name=".ui.home.activity.DishInfoActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.home.activity.WindowActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.home.activity.CanteenActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.home.activity.HistoryActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.home.activity.FavoriteActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.home.activity.SearchResultActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.home.activity.SearchActivity"
+            android:exported="false" />
+
+        <!-- 设置页 -->
+        <activity
+            android:name=".ui.home.activity.SettingsActivity"
+            android:label="@string/setting_title"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
+
+        <!-- 更换邮箱 -->
+        <activity
+            android:name=".ui.home.activity.EmailResetActivity"
+            android:label="更换邮箱"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+
+        <!-- 关于我们 -->
+        <activity
+            android:name=".ui.home.activity.AboutActivity"
+            android:label="@string/about_title"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
+
+        <!-- 社区类：交友 -->
+        <!-- 好友列表 -->
+        <activity
+            android:name=".ui.commu.friends.list.FriendsListActivity"
+            android:exported="false" />
+
+        <!-- 好友详情 -->
+        <activity
+            android:name=".ui.commu.friends.detail.FriendDetailActivity"
+            android:exported="false" />
+
+        <!-- 社区类：帖子 -->
+        <!-- 贴吧广场 -->
+        <activity
+            android:name=".ui.commu.posts.list.PostsListActivity"
+            android:exported="false" />
+
+        <!-- 帖子详情 -->
+        <activity
+            android:name=".ui.commu.posts.detail.PostDetailActivity"
+            android:exported="false" />
+
+        <!-- 发帖 -->
+        <activity
+            android:name=".ui.commu.posts.add.AddPostActivity"
+            android:exported="false" />
+
+
     </application>
+
+    <queries>
+        <!-- 拍照意图：MediaStore.ACTION_IMAGE_CAPTURE -->
+        <intent>
+            <action android:name="android.media.action.IMAGE_CAPTURE" />
+        </intent>
+
+        <!-- 拍摄意图：MediaStore.ACTION_VIDEO_CAPTURE -->
+        <intent>
+            <action android:name="android.media.action.VIDEO_CAPTURE" />
+        </intent>
+
+        <!-- 图片裁剪意图 -->
+        <intent>
+            <action android:name="com.android.camera.action.CROP" />
+        </intent>
+
+        <!-- 打电话意图：Intent.ACTION_DIAL -->
+        <intent>
+            <action android:name="android.intent.action.DIAL" />
+        </intent>
+
+        <!-- 调起分享意图：Intent.ACTION_SEND -->
+        <intent>
+            <action android:name="android.intent.action.SEND" />
+        </intent>
+
+        <!-- 调起其他页面意图：Intent.ACTION_VIEW -->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+        </intent>
+
+        <!-- 调起系统文件选择器：Intent.ACTION_GET_CONTENT -->
+        <intent>
+            <action android:name="android.intent.action.GET_CONTENT" />
+        </intent>
+    </queries>
 
 </manifest>

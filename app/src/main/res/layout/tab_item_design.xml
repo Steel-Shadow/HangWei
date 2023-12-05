@@ -6,13 +6,13 @@
     android:layout_height="wrap_content"
     android:gravity="center_horizontal"
     android:paddingHorizontal="@dimen/dp_10"
-    tools:context=".ui.adapter.TabAdapter">
+    tools:context=".ui.home.adapter.TabAdapter">
 
     <com.hjq.shape.view.ShapeTextView
         android:id="@+id/tv_tab_design_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingVertical="@dimen/dp_5"
+        android:paddingVertical="@dimen/dp_12"
         android:textSize="@dimen/sp_15"
         app:shape_textColor="@color/black25"
         app:shape_textSelectedColor="@color/common_accent_color"

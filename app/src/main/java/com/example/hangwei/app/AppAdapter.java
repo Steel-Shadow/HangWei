@@ -1,6 +1,5 @@
 package com.example.hangwei.app;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.View;
 
@@ -14,27 +13,15 @@ import com.example.hangwei.base.BaseAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-
-/**
- * desc   : RecyclerView 适配器业务基类
- */
 public abstract class AppAdapter<T> extends BaseAdapter<BaseAdapter<?>.ViewHolder> {
 
-    /**
-     * 列表数据
-     */
+    /** 列表数据 */
     private List<T> mDataSet;
-    /**
-     * 当前列表的页码，默认为第一页，用于分页加载功能
-     */
+    /** 当前列表的页码，默认为第一页，用于分页加载功能 */
     private int mPageNumber = 1;
-    /**
-     * 是否是最后一页，默认为false，用于分页加载功能
-     */
+    /** 是否是最后一页，默认为false，用于分页加载功能 */
     private boolean mLastPage;
-    /**
-     * 标记对象
-     */
+    /** 标记对象 */
     private Object mTag;
 
     public AppAdapter(@NonNull Context context) {
@@ -59,10 +46,17 @@ public abstract class AppAdapter<T> extends BaseAdapter<BaseAdapter<?>.ViewHolde
     /**
      * 设置新的数据
      */
-    @SuppressLint("NotifyDataSetChanged")
     public void setData(@Nullable List<T> data) {
         mDataSet = data;
         notifyDataSetChanged();
+    }
+
+    /**
+     * 获取当前数据
+     */
+    @Nullable
+    public List<T> getData() {
+        return mDataSet;
     }
 
     /**
@@ -85,7 +79,6 @@ public abstract class AppAdapter<T> extends BaseAdapter<BaseAdapter<?>.ViewHolde
     /**
      * 清空当前数据
      */
-    @SuppressLint("NotifyDataSetChanged")
     public void clearData() {
         if (mDataSet == null || mDataSet.size() == 0) {
             return;
@@ -226,7 +219,6 @@ public abstract class AppAdapter<T> extends BaseAdapter<BaseAdapter<?>.ViewHolde
         }
 
         @Override
-        public void onBindView(int position) {
-        }
+        public void onBindView(int position) {}
     }
 }

@@ -2,7 +2,6 @@ package com.example.hangwei.app;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -11,16 +10,15 @@ import androidx.annotation.StringRes;
 import com.gyf.immersionbar.ImmersionBar;
 import com.hjq.bar.TitleBar;
 import com.example.hangwei.base.BaseActivity;
-import com.example.hangwei.R;
 import com.example.hangwei.base.BaseDialog;
+import com.example.hangwei.R;
 import com.example.hangwei.action.TitleBarAction;
-import com.example.hangwei.ui.dialog.WaitDialog;
+import com.example.hangwei.dialog.WaitDialog;
 
 /**
  *    desc   : Activity 业务基类
  */
-public abstract class AppActivity extends BaseActivity
-        implements TitleBarAction {
+public abstract class AppActivity extends BaseActivity implements TitleBarAction {
 
     /** 标题栏对象 */
     private TitleBar mTitleBar;
@@ -135,8 +133,6 @@ public abstract class AppActivity extends BaseActivity
         return ImmersionBar.with(this)
                 // 默认状态栏字体颜色为黑色
                 .statusBarDarkFont(isStatusBarDarkFont())
-                // 指定导航栏背景颜色
-                .navigationBarColor(R.color.white)
                 // 状态栏字体和导航栏内容自动变色，必须指定状态栏颜色和导航栏颜色才可以自动变色
                 .autoDarkModeEnable(true, 0.2f);
     }
@@ -170,7 +166,7 @@ public abstract class AppActivity extends BaseActivity
     }
 
     @Override
-    public void onLeftClick(View view) {
+    public void onLeftClick(TitleBar titleBar) {
         onBackPressed();
     }
 

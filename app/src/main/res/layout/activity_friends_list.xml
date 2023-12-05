@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.commu.friends.list.FriendsListActivity">
+
+    <com.hjq.bar.TitleBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#00BFFF"
+        app:title="我关注的">
+
+    </com.hjq.bar.TitleBar>
+
+    <com.example.hangwei.widget.view.WrapRecyclerView
+        android:id="@+id/friends_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:listCount="1000"
+        tools:listitem="@layout/item_friend">
+
+    </com.example.hangwei.widget.view.WrapRecyclerView>
+
+
+</LinearLayout>

@@ -7,24 +7,20 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.example.hangwei.R;
 import com.gyf.immersionbar.ImmersionBar;
 import com.hjq.bar.TitleBar;
+import com.example.hangwei.R;
 import com.example.hangwei.action.TitleBarAction;
 
 /**
- * desc   : 带标题栏的 Fragment 业务基类
+ *    desc   : 带标题栏的 Fragment 业务基类
  */
 public abstract class TitleBarFragment<A extends AppActivity> extends AppFragment<A>
         implements TitleBarAction {
 
-    /**
-     * 标题栏对象
-     */
+    /** 标题栏对象 */
     private TitleBar mTitleBar;
-    /**
-     * 状态栏沉浸
-     */
+    /** 状态栏沉浸 */
     private ImmersionBar mImmersionBar;
 
     @Override
