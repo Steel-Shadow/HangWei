@@ -53,7 +53,7 @@ public final class DishAdapter extends AppAdapter<Dish> {
 
             mName.setText(dish.name);
             mLocation.setText(dish.location);
-            mPrice.setText(String.format(Locale.CHINA, "%d", dish.price));
+            mPrice.setText(dish.price);
             mLikeCount.setText(String.format(Locale.CHINA, "%d", dish.likeCount));
             mCommentCount.setText(String.format(Locale.CHINA, "%d", dish.commentCount));
             Glide.with(this.getItemView()).load(dish.foodPicUrl).into(mFoodPic);

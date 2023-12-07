@@ -22,23 +22,6 @@
             android:orientation="vertical">
 
             <com.example.hangwei.widget.view.SettingBar
-                android:id="@+id/settings_night"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_15"
-                app:bar_leftText="夜间模式">
-
-                <com.example.hangwei.widget.view.SwitchButton
-                    android:id="@+id/settings_switch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end|center_vertical"
-                    android:layout_marginHorizontal="@dimen/dp_15" />
-
-            </com.example.hangwei.widget.view.SettingBar>
-
-
-            <com.example.hangwei.widget.view.SettingBar
                 android:id="@+id/settings_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

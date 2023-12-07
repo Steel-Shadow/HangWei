@@ -174,6 +174,8 @@ public class AddPostActivity extends AppActivity {
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+                } finally {
+                    response.body().close(); // 关闭响应体
                 }
             }
         });

@@ -138,6 +138,8 @@ public final class SafeDialog {
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
+                    } finally {
+                        response.body().close(); // 关闭响应体
                     }
                 }
             });

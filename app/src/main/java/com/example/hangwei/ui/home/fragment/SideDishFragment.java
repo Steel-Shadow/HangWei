@@ -1,6 +1,11 @@
 package com.example.hangwei.ui.home.fragment;
 
 
+import static android.app.Activity.RESULT_OK;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -72,6 +77,9 @@ public class SideDishFragment extends BaseFragment<BaseActivity> implements OnRe
 
     private void updateDishData(boolean setElseAdd, Runnable afterResponse) {
         HashMap<String, Object> params = new HashMap<>();
+        Activity activity = getActivity();
+        assert activity != null;
+        params.put("dishId", ((DishInfoActivity) activity).getDishId());
         AsyncHttpUtil.httpPostForObject(Ports.sideDish, params, new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -98,7 +106,7 @@ public class SideDishFragment extends BaseFragment<BaseActivity> implements OnRe
                                     jsonDish.getString("dishId"),
                                     jsonDish.getString("dishName"),
                                     jsonDish.getString("campus"),
-                                    jsonDish.getInt("price"),
+                                    jsonDish.getString("price"),
                                     jsonDish.getInt("likeCount"),
                                     jsonDish.getInt("commentCount"),
                                     jsonDish.getString("picture"));
@@ -137,15 +145,19 @@ public class SideDishFragment extends BaseFragment<BaseActivity> implements OnRe
     @Override
     public void onItemClick(RecyclerView recyclerView, View itemView, int position) {
         Dish dish = mAdapter.getItem(position);
-
-        DishInfoActivity activity = (DishInfoActivity) getAttachActivity();
-        activity.setDishId(dish.id);
-        activity.setName(dish.name);
-        activity.setPrice(dish.price);
-        activity.setPic(dish.foodPicUrl);
-        activity.mFavorite = new Favorite(activity, activity.findViewById(R.id.dish_info_favorite), dish.id, Ports.dishFavChange, Ports.dishFavCheck);
-
-        updateDishData(true, () -> {
+        Intent intent = new Intent(getActivity(), DishInfoActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("id", dish.id);
+        bundle.putString("name", dish.name);
+        bundle.putString("price", dish.price);
+        bundle.putString("picUrl", dish.foodPicUrl);
+        bundle.putInt("favorCnt", dish.likeCount);
+        intent.putExtras(bundle);
+        startActivityForResult(intent, (resultCode, data) -> {
+            if (resultCode == RESULT_OK && data != null) {
+                dish.setLikeCount(data.getIntExtra("favorCnt", dish.likeCount));
+                mAdapter.setItem(position, dish);
+            }
         });
     }
 }

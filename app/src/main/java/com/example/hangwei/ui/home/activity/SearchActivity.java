@@ -9,12 +9,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hangwei.R;
-import com.example.hangwei.base.BaseActivity;
+import com.example.hangwei.app.AppActivity;
 import com.example.hangwei.base.BaseAdapter;
 import com.example.hangwei.consts.ToastConst;
 import com.example.hangwei.data.AsyncHttpUtil;
 import com.example.hangwei.data.Ports;
-import com.example.hangwei.ui.home.adapter.DishAdapter;
 import com.example.hangwei.ui.home.adapter.HotAdapter;
 import com.example.hangwei.ui.home.element.Dish;
 import com.example.hangwei.utils.ToastUtil;
@@ -33,7 +32,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
-public class SearchActivity extends BaseActivity
+public class SearchActivity extends AppActivity
         implements BaseAdapter.OnItemClickListener {
     private ClearEditText mSearchBox;
     private RecyclerView mRecyclerView;
@@ -98,7 +97,7 @@ public class SearchActivity extends BaseActivity
                                     jsonDish.getString("dishId"),
                                     jsonDish.getString("dishName"),
                                     jsonDish.getString("campus"),
-                                    jsonDish.getInt("price"),
+                                    jsonDish.getString("price"),
                                     jsonDish.getInt("likeCount"),
                                     jsonDish.getInt("commentCount"),
                                     jsonDish.getString("picture"));
@@ -124,7 +123,7 @@ public class SearchActivity extends BaseActivity
         Bundle bundle = new Bundle();
         bundle.putString("id", dish.id);
         bundle.putString("name", dish.name);
-        bundle.putInt("price", dish.price);
+        bundle.putString("price", dish.price);
         bundle.putString("picUrl", dish.foodPicUrl);
         intent.putExtras(bundle);
 

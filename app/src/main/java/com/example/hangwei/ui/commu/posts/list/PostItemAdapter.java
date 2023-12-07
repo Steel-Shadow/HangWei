@@ -7,8 +7,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatImageView;
 
+import com.bumptech.glide.load.MultiTransformation;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.example.hangwei.R;
 import com.example.hangwei.app.AppAdapter;
+import com.example.hangwei.data.glide.GlideApp;
 
 /**
  * desc   : 帖子列表
@@ -51,6 +55,10 @@ public class PostItemAdapter extends AppAdapter<PostItem> {
             tv_post_tag.setText(postItem.tag);
             tv_post_time.setText(postItem.time);
             tv_favor_count.setText(String.valueOf(postItem.thumbUps));
+            GlideApp.with(getContext())
+                    .load(postItem.avatar)
+                    .transform(new MultiTransformation<>(new CenterCrop(), new CircleCrop()))
+                    .into(iv_pic_post);
         }
     }
 }

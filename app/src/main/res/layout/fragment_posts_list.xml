@@ -1,19 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.commu.posts.list.PostsListActivity">
-
-    <com.hjq.bar.TitleBar
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#FFD700"
-        app:title="广场">
-
-    </com.hjq.bar.TitleBar>
+    tools:context=".ui.commu.posts.list.PostsListFragment">
 
     <com.scwang.smart.refresh.layout.SmartRefreshLayout
         android:id="@+id/posts_refresh_layout"
@@ -40,4 +32,4 @@
 
     </ImageView>
 
-</LinearLayout>
+</FrameLayout>

@@ -1,8 +1,8 @@
 package com.example.hangwei.data;
 
 public class Ports {
-    // public static String api = "http://116.204.10.156:4523/";
-    public static String api = "https://mock.apifox.cn/m1/3369925-0-default/";
+    public static String api = "http://116.204.10.156:4523/";
+    // public static String api = "https://mock.apifox.cn/m1/3369925-0-default/";
 
     /**
      * 用户类
@@ -11,6 +11,7 @@ public class Ports {
     public static String userLoginUrl = userUrl + "login";
     public static String userRegisterUrl = userUrl + "register";
     public static String userModifyUrl = userUrl + "modify";
+    public static String userFeedback = userUrl + "feedback";
 
     /*
      * 餐品类
@@ -18,7 +19,6 @@ public class Ports {
     public static String dish = api + "dish/";
     public static String dishUpdate = dish + "update";
     public static String dishChoose = dish + "choose";
-    public static String dishSearch = dish + "search";
     public static String dishCommentGet = dish + "comment/get";
     public static String dishCommentAdd = dish + "comment/add";
     public static String sideDish = dish + "sideDish";
@@ -26,8 +26,12 @@ public class Ports {
     public static String dishFavCheck = dish + "favorite/check";
     public static String dishHistoryGet = dish + "history/get";
     public static String dishHistoryAdd = dish + "history/add";
+    public static String dishUp = dish + "thumbUp";
+    public static String dishIsUp = dish + "isThumbUp";
+    public static String dishFavAll = dish + "favorite/all";
+    public static String dishSearch = dish + "search";
     public static String dishHot = dish + "hot";
-    public static String dishFavAll = "https://mock.apifox.com/m2/3369925-0-default/130207478";
+
 
     /*
      * 食堂
@@ -93,7 +97,7 @@ public class Ports {
      * 图像上传：POST
      * OCR
      */
-    public static String ocrUrl = api + "ocr";
+    public static String ocrUrl = "https://pro.helloimg.com/api/v1";
 
     public static String verifyUrl = api + "verify";
 

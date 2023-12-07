@@ -39,7 +39,7 @@ public class CanteenFavAdapter extends AppAdapter<Canteen> {
             Canteen canteen = getItem(position);
 
             mName.setText(canteen.name);
-            Glide.with(this.getItemView()).load(canteen.picUrl).into(mFoodPic);
+            mFoodPic.setImageResource(canteen.picID);
         }
     }
 }

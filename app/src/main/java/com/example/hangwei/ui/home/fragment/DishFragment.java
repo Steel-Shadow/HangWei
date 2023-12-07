@@ -1,5 +1,6 @@
 package com.example.hangwei.ui.home.fragment;
 
+import static android.app.Activity.RESULT_OK;
 import static java.lang.Math.min;
 
 import android.content.Intent;
@@ -117,8 +118,7 @@ public final class DishFragment extends TitleBarFragment<AppActivity>
                         getAttachActivity().runOnUiThread(afterResponse);
                     } else {
                         JSONObject data = jsonObject.getJSONObject("data");
-                        dishes.addAll(locationGetDishes(data.getJSONArray("学院路")));
-                        dishes.addAll(locationGetDishes(data.getJSONArray("沙河")));
+                        dishes.addAll(locationGetDishes(data.getJSONArray(campus)));
                         getAttachActivity().runOnUiThread(() -> {
                             if (setElseAdd) {
                                 mAdapter.setData(dishes);
@@ -131,6 +131,8 @@ public final class DishFragment extends TitleBarFragment<AppActivity>
                 } catch (JSONException e) {
                     getAttachActivity().runOnUiThread(afterResponse);
                     e.printStackTrace();
+                } finally {
+                    response.body().close(); // 关闭响应体
                 }
             }
         });
@@ -138,21 +140,17 @@ public final class DishFragment extends TitleBarFragment<AppActivity>
 
     private List<Dish> locationGetDishes(JSONArray location) throws JSONException {
         List<Dish> dishes = new ArrayList<>();
-        for (int canteen_index = 0; canteen_index < location.length(); canteen_index++) {
-            JSONArray canteen = location.getJSONArray(canteen_index);
-
-            for (int dish_index = 0; dish_index < min(LIST_ITEM_ADD_NUM, canteen.length()); dish_index++) {
-                JSONObject jsonDish = canteen.getJSONObject(dish_index);
-                Dish dish = new Dish(
-                        jsonDish.getString("dishId"),
-                        jsonDish.getString("dishName"),
-                        jsonDish.getString("campus"),
-                        jsonDish.getInt("price"),
-                        jsonDish.getInt("likeCount"),
-                        jsonDish.getInt("commentCount"),
-                        jsonDish.getString("picture"));
-                dishes.add(dish);
-            }
+        for (int i = 0; i < location.length(); i++) {
+            JSONObject jsonDish = location.getJSONObject(i);
+            Dish dish = new Dish(
+                    jsonDish.getString("dishId"),
+                    jsonDish.getString("dishName"),
+                    jsonDish.getString("campus"),
+                    jsonDish.getString("price"),
+                    jsonDish.getInt("likeCount"),
+                    jsonDish.getInt("commentCount"),
+                    jsonDish.getString("picture"));
+            dishes.add(dish);
         }
         return dishes;
     }
@@ -174,11 +172,17 @@ public final class DishFragment extends TitleBarFragment<AppActivity>
         Bundle bundle = new Bundle();
         bundle.putString("id", dish.id);
         bundle.putString("name", dish.name);
-        bundle.putInt("price", dish.price);
+        bundle.putString("price", dish.price);
+        bundle.putInt("favorCnt", dish.likeCount);
         bundle.putString("picUrl", dish.foodPicUrl);
         intent.putExtras(bundle);
 
-        startActivity(intent);
+        startActivityForResult(intent, (resultCode, data) -> {
+            if (resultCode == RESULT_OK && data != null) {
+                dish.setLikeCount(data.getIntExtra("favorCnt", dish.likeCount));
+                mAdapter.setItem(position, dish);
+            }
+        });
     }
 
     /**

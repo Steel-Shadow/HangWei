@@ -49,7 +49,7 @@ public class Favorite {
     public void updateFavorite() {
         HashMap<String, String> params = new HashMap<>(2);
         params.put("userId", userId);
-        params.put("dishId", id);
+        params.put("id", id);
         AsyncHttpUtil.httpPost(urlCheck, params, new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -70,6 +70,8 @@ public class Favorite {
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+                } finally {
+                    response.body().close(); // 关闭响应体
                 }
             }
         });
@@ -78,7 +80,7 @@ public class Favorite {
     private void clickFavorite(View v) {
         HashMap<String, String> params = new HashMap<>();
         params.put("userId", userId);
-        params.put("dishId", id);
+        params.put("id", id);
         AsyncHttpUtil.httpPost(urlFavChange, params, new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -98,6 +100,38 @@ public class Favorite {
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+                } finally {
+                    response.body().close(); // 关闭响应体
+                }
+            }
+        });
+    }
+
+    public void callFavorite() {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("userId", userId);
+        params.put("id", id);
+        AsyncHttpUtil.httpPost(urlFavChange, params, new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                ToastUtil.toast("收藏失败", ToastConst.successStyle);
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                System.out.println(response.message());
+                try {
+                    assert response.body() != null;
+                    JSONObject jsonObject = new JSONObject(response.body().string());
+                    if (jsonObject.getInt("code") == 0) {
+                        ToastUtil.toast(jsonObject.getString("msg"), ToastConst.errorStyle);
+                    } else {
+                        changeFavorite();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } finally {
+                    response.body().close(); // 关闭响应体
                 }
             }
         });
@@ -118,5 +152,9 @@ public class Favorite {
             mFavorite.setTextColor(context.getResources().getColor(R.color.gray, null));
             mFavorite.getCompoundDrawablesRelative()[1].setTint(context.getResources().getColor(R.color.gray, null));
         }
+    }
+
+    public boolean isFavorite() {
+        return mHasFavorite;
     }
 }

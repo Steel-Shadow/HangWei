@@ -159,13 +159,14 @@ public class FindPwdActivity extends AppActivity {
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+                } finally {
+                    response.body().close(); // 关闭响应体
                 }
             }
         });
     }
 
 
-    // 待修改：接口、SharedPref 数据等
     private void doRefreshPwd() {
         HashMap<String, String> params = new HashMap<>();
         SharedPreferences prefs = getSharedPreferences("BasePrefs", MODE_PRIVATE);
@@ -211,6 +212,8 @@ public class FindPwdActivity extends AppActivity {
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+                } finally {
+                    response.body().close(); // 关闭响应体
                 }
             }
         });

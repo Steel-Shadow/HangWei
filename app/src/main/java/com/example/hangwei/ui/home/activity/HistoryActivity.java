@@ -8,9 +8,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hangwei.R;
+import com.example.hangwei.app.AppActivity;
 import com.example.hangwei.ui.home.element.Dish;
 import com.example.hangwei.ui.home.element.History;
-import com.example.hangwei.base.BaseActivity;
 import com.example.hangwei.base.BaseAdapter;
 import com.example.hangwei.consts.ToastConst;
 import com.example.hangwei.data.AsyncHttpUtil;
@@ -34,7 +34,7 @@ import okhttp3.Response;
 /**
  * desc   : 历史展示页
  */
-public final class HistoryActivity extends BaseActivity
+public final class HistoryActivity extends AppActivity
         implements BaseAdapter.OnItemClickListener {
     public static HistoryActivity newInstance() {
         return new HistoryActivity();
@@ -114,7 +114,7 @@ public final class HistoryActivity extends BaseActivity
         Bundle bundle = new Bundle();
         bundle.putString("id", history.dish.id);
         bundle.putString("name", history.dish.name);
-        bundle.putInt("price", history.dish.price);
+        bundle.putString("price", history.dish.price);
         bundle.putString("picUrl", history.dish.foodPicUrl);
         bundle.putString("time", history.time);
         intent.putExtras(bundle);

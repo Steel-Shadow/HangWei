@@ -13,8 +13,3 @@
 .externalNativeBuild
 .cxx
 local.properties
-.idea
-build
-captures
-._*
-design_Xd

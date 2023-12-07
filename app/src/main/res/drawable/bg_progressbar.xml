@@ -26,10 +26,10 @@
             -->
             <gradient
                 android:angle="270"
-                android:centerColor="@color/black10"
+                android:centerColor="#B5B3B2"
                 android:centerY="0.75"
-                android:endColor="@color/black10"
-                android:startColor="@color/black10" />
+                android:endColor="#B5B3B2"
+                android:startColor="#B5B3B2" />
         </shape>
     </item>
     <item android:id="@android:id/progress">

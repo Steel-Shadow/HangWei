@@ -3,6 +3,7 @@ package com.example.hangwei.ui.commu.friends.detail;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -14,12 +15,16 @@ import android.widget.ToggleButton;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.load.MultiTransformation;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.example.hangwei.R;
 import com.example.hangwei.app.AppActivity;
 import com.example.hangwei.base.BaseAdapter;
 import com.example.hangwei.consts.ToastConst;
 import com.example.hangwei.data.AsyncHttpUtil;
 import com.example.hangwei.data.Ports;
+import com.example.hangwei.data.glide.GlideApp;
 import com.example.hangwei.dialog.InputDialog;
 import com.example.hangwei.ui.commu.posts.detail.PostDetailActivity;
 import com.example.hangwei.ui.commu.posts.list.PostItem;
@@ -46,6 +51,7 @@ public class FriendDetailActivity extends AppActivity
     private String userName; // 当前用户
     private Boolean isFollow; // 是否关注
     private List<PostItem> allPosts = new ArrayList<>();
+    private Uri ava;
     private ImageView avatar;
     private TextView detail_owner;
     private Button btn_report;
@@ -85,20 +91,7 @@ public class FriendDetailActivity extends AppActivity
                     .show();
         });
 
-        follow_msg.setOnClickListener(view -> {
-            isFollow = !isFollow;
-            doFollow();
-            btn_follow.setChecked(isFollow);
-            if (isFollow) {
-                follow_msg.setText("= 已关注");
-                follow_msg.setTextColor(Color.GRAY);
-                follow_msg.setBackground(getDrawable(R.drawable.bg_vary_corner));
-            } else {
-                follow_msg.setText("+关注");
-                follow_msg.setTextColor(Color.parseColor("#FF83FA"));
-                follow_msg.setBackground(getDrawable(R.drawable.bg_purple_corner));
-            }
-        });
+        follow_msg.setOnClickListener(view -> doFollow());
 
         // 设置渐变监听
         mCollapsingToolbarLayout.setOnScrimsListener(this);
@@ -110,6 +103,11 @@ public class FriendDetailActivity extends AppActivity
         user = bundle.getString("user");
         userName = bundle.getString("userName");
         isFollow = bundle.getBoolean("isFollow");
+        ava = Uri.parse(bundle.getString("avatar"));
+        GlideApp.with(getContext())
+                .load(ava)
+                .transform(new MultiTransformation<>(new CenterCrop(), new CircleCrop()))
+                .into(avatar);
 
         if (user.equals(userName)) {
             findViewById(R.id.friend_detail_gonelay).setVisibility(View.GONE);
@@ -156,7 +154,7 @@ public class FriendDetailActivity extends AppActivity
                                 for (int i = 0; i < jsArray.length(); i++) {
                                     JSONObject jsObj = (JSONObject) jsArray.get(i);
                                     allPosts.add(new PostItem(jsObj.getString("id"), jsObj.getString("userName"),
-                                            jsObj.getString("title"), jsObj.getString("tag"),
+                                            ava, jsObj.getString("title"), jsObj.getString("tag"),
                                             jsObj.getString("time"), jsObj.getInt("thumbUps")));
                                 }
                                 mAdapter.setData(allPosts);
@@ -167,6 +165,8 @@ public class FriendDetailActivity extends AppActivity
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+                } finally {
+                    response.body().close(); // 关闭响应体
                 }
             }
         });
@@ -176,7 +176,7 @@ public class FriendDetailActivity extends AppActivity
         HashMap<String, String> params = new HashMap<>();
         params.put("userName", user);
         params.put("blogger", userName);
-        params.put("isFollow", String.valueOf(isFollow));
+        params.put("isFollow", String.valueOf(!isFollow));
         AsyncHttpUtil.httpPost(Ports.friendsFollow, params, new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -191,10 +191,26 @@ public class FriendDetailActivity extends AppActivity
                     if (jsonObject.getInt("code") == 0) {
                         ToastUtil.toast(jsonObject.getString("msg"), ToastConst.errorStyle);
                     } else {
-                        ToastUtil.toast("关注成功", ToastConst.successStyle);
+                        runOnUiThread(() -> {
+                            isFollow = !isFollow;
+                            btn_follow.setChecked(isFollow);
+                            if (isFollow) {
+                                follow_msg.setText("= 已关注");
+                                follow_msg.setTextColor(Color.GRAY);
+                                follow_msg.setBackground(getDrawable(R.drawable.bg_vary_corner));
+                                ToastUtil.toast("关注成功", ToastConst.successStyle);
+                            } else {
+                                follow_msg.setText("+关注");
+                                follow_msg.setTextColor(Color.parseColor("#FF83FA"));
+                                follow_msg.setBackground(getDrawable(R.drawable.bg_purple_corner));
+                                ToastUtil.toast("已取关", ToastConst.warnStyle);
+                            }
+                        });
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+                } finally {
+                    response.body().close(); // 关闭响应体
                 }
             }
         });
@@ -227,6 +243,8 @@ public class FriendDetailActivity extends AppActivity
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+                } finally {
+                    response.body().close(); // 关闭响应体
                 }
             }
         });

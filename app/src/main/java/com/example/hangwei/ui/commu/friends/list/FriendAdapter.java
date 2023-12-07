@@ -9,11 +9,15 @@ import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 
+import com.bumptech.glide.load.MultiTransformation;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.example.hangwei.R;
 import com.example.hangwei.app.AppAdapter;
 import com.example.hangwei.consts.ToastConst;
 import com.example.hangwei.data.AsyncHttpUtil;
 import com.example.hangwei.data.Ports;
+import com.example.hangwei.data.glide.GlideApp;
 import com.example.hangwei.utils.ToastUtil;
 
 import org.json.JSONException;
@@ -55,6 +59,11 @@ public class FriendAdapter extends AppAdapter<Friend> {
         public void onBindView(int position) {
             Friend friend = getItem(position);
             userName.setText(friend.userName);
+            GlideApp.with(getContext())
+                    .load(friend.avatar)
+                    .transform(new MultiTransformation<>(new CenterCrop(), new CircleCrop()))
+                    .into(avatar);
+
             btn_follow.setChecked(friend.isFollow);
             if (friend.isFollow) {
                 follow_msg.setText("= 已关注");
@@ -65,27 +74,14 @@ public class FriendAdapter extends AppAdapter<Friend> {
                 follow_msg.setTextColor(Color.parseColor("#FF83FA"));
                 follow_msg.setBackground(getDrawable(R.drawable.bg_purple_corner));
             }
-            follow_msg.setOnClickListener(view -> {
-                friend.setFollow();
-                doFollow(friend);
-                btn_follow.setChecked(friend.isFollow);
-                if (friend.isFollow) {
-                    follow_msg.setText("= 已关注");
-                    follow_msg.setTextColor(Color.GRAY);
-                    follow_msg.setBackground(getDrawable(R.drawable.bg_vary_corner));
-                } else {
-                    follow_msg.setText("+关注");
-                    follow_msg.setTextColor(Color.parseColor("#FF83FA"));
-                    follow_msg.setBackground(getDrawable(R.drawable.bg_purple_corner));
-                }
-            });
+            follow_msg.setOnClickListener(view -> doFollow(friend));
         }
 
         public void doFollow(Friend friend) {
             HashMap<String, String> params = new HashMap<>();
             params.put("userName", friend.user);
             params.put("blogger", friend.userName);
-            params.put("isFollow", String.valueOf(friend.isFollow));
+            params.put("isFollow", String.valueOf(!friend.isFollow));
             AsyncHttpUtil.httpPost(Ports.friendsFollow, params, new Callback() {
                 @Override
                 public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -99,9 +95,23 @@ public class FriendAdapter extends AppAdapter<Friend> {
                         JSONObject jsonObject = new JSONObject(response.body().string());
                         if (jsonObject.getInt("code") == 0) {
                             ToastUtil.toast(jsonObject.getString("msg"), ToastConst.errorStyle);
+                        } else {
+                            friend.setFollow();
+                            btn_follow.setChecked(friend.isFollow);
+                            if (friend.isFollow) {
+                                follow_msg.setText("= 已关注");
+                                follow_msg.setTextColor(Color.GRAY);
+                                follow_msg.setBackground(getDrawable(R.drawable.bg_vary_corner));
+                            } else {
+                                follow_msg.setText("+关注");
+                                follow_msg.setTextColor(Color.parseColor("#FF83FA"));
+                                follow_msg.setBackground(getDrawable(R.drawable.bg_purple_corner));
+                            }
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
+                    } finally {
+                        response.body().close(); // 关闭响应体
                     }
                 }
             });

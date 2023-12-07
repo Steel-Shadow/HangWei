@@ -211,34 +211,38 @@ public class RegisterActivity extends AppActivity {
                             btn_register.showError(3000);
                         }, 1000);
                     } else {
-                        postDelayed(() -> {
-                            btn_register.showSucceed();
+                        runOnUiThread(() -> {
                             postDelayed(() -> {
-                                SharedPreferences prefs = getSharedPreferences("BasePrefs", MODE_PRIVATE);
-                                SharedPreferences.Editor editor = prefs.edit();
-                                editor.putBoolean("isLogin", true);
-                                try {
-                                    editor.putString("usedID",
-                                            jsonObject.getJSONObject("data").getString("id"));
-                                } catch (JSONException e) {
-                                    throw new RuntimeException(e);
-                                }
-                                editor.putString("usedName", userName);
-                                editor.putString("usedPwd", password1);
-                                editor.putString("usedEmail", email);
-                                editor.putString("usedAvatar", null);
-                                editor.apply();
-                                // 注册成功后关闭此页面进入主页
-                                ToastUtil.toast("注册成功", ToastConst.successStyle);
-                                // 销毁注册界面
-                                finish();
-                                // 跳转到主界面，登录成功的状态传递到 HomeActivity 中
-                                startActivity(HomeActivity.class);
+                                btn_register.showSucceed();
+                                postDelayed(() -> {
+                                    SharedPreferences prefs = getSharedPreferences("BasePrefs", MODE_PRIVATE);
+                                    SharedPreferences.Editor editor = prefs.edit();
+                                    editor.putBoolean("isLogin", true);
+                                    try {
+                                        JSONObject data = jsonObject.getJSONObject("data");
+                                        editor.putString("usedID", data.getString("id"));
+                                    } catch (JSONException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                    editor.putString("usedName", userName);
+                                    editor.putString("usedPwd", password1);
+                                    editor.putString("usedEmail", email);
+                                    editor.putString("usedAvatar", null);
+                                    editor.apply();
+                                    // 注册成功后关闭此页面进入主页
+                                    ToastUtil.toast("注册成功", ToastConst.successStyle);
+                                    // 跳转到主界面，登录成功的状态传递到 HomeActivity 中
+                                    startActivity(HomeActivity.class);
+                                    // 销毁注册界面
+                                    finish();
+                                }, 1000);
                             }, 1000);
-                        }, 1000);
+                        });
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+                } finally {
+                    response.body().close(); // 关闭响应体
                 }
             }
         });

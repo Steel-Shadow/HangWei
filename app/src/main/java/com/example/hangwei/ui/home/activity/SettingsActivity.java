@@ -27,7 +27,6 @@ import java.util.regex.Pattern;
 
 public class SettingsActivity extends AppActivity
         implements SwitchButton.OnCheckedChangeListener {
-    private SwitchButton mNightSwitchView;
     private SettingBar mEmailView;
     private SettingBar mPasswordView;
     private SettingBar mCleanCacheView;
@@ -39,15 +38,11 @@ public class SettingsActivity extends AppActivity
 
     @Override
     protected void initView() {
-        mNightSwitchView = findViewById(R.id.settings_switch);
         mEmailView = findViewById(R.id.settings_email);
         mPasswordView = findViewById(R.id.settings_password);
         mCleanCacheView = findViewById(R.id.settings_cache);
 
-        // 设置切换按钮的监听
-        mNightSwitchView .setOnCheckedChangeListener(this);
-
-        setOnClickListener(R.id.settings_switch, R.id.settings_email, R.id.settings_password,
+        setOnClickListener(R.id.settings_email, R.id.settings_password,
                 R.id.settings_update, R.id.settings_agreement, R.id.settings_about,
                 R.id.settings_cache, R.id.settings_exit);
     }
@@ -73,15 +68,7 @@ public class SettingsActivity extends AppActivity
     @Override
     public void onClick(View view) {
         int viewId = view.getId();
-        if (viewId == R.id.settings_switch) {
-            if (mNightSwitchView.isChecked()) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                mNightSwitchView.setChecked(true);
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                mNightSwitchView.setChecked(false);
-            }
-        } else if (viewId == R.id.settings_email) {
+        if (viewId == R.id.settings_email) {
 
             new SafeDialog.Builder(this)
                     .setListener((dialog, email, code) -> startActivity(EmailResetActivity.class))
@@ -106,7 +93,7 @@ public class SettingsActivity extends AppActivity
             }
         } else if (viewId == R.id.settings_agreement) {
 
-            BrowserActivity.start(this, "https://github.com/getActivity/Donate");
+            BrowserActivity.start(this, "https://github.com/Steel-Shadow/HangWei");//todo: 修改了网址
 
         } else if (viewId == R.id.settings_about) {
 

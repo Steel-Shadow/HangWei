@@ -3,6 +3,7 @@ package com.example.hangwei.ui.home.fragment;
 import static android.content.Context.MODE_PRIVATE;
 
 import android.app.Activity;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -85,7 +86,8 @@ public final class CommentFragment extends BaseFragment<BaseActivity>
 
                 boolean isForbidden = getContext().getSharedPreferences("BasePrefs", MODE_PRIVATE).getBoolean("isForbidden", false);
                 if (isForbidden) {
-                    ToastUtil.toast("您已被禁言，无法评论", ToastConst.errorStyle);
+                    ToastUtil.toast("您已被禁言，无法评论", ToastConst.warnStyle);
+                    return false;
                 }
 
                 String userPicUrl = getContext().getSharedPreferences("BasePrefs", MODE_PRIVATE).getString("usedAvatar", "null");
@@ -95,8 +97,9 @@ public final class CommentFragment extends BaseFragment<BaseActivity>
 
                 String userId = getContext().getSharedPreferences("BasePrefs", MODE_PRIVATE).getString("usedID", "null");
 
-                if (!mAddComment.getText().toString().equals("")) {
+                if (!TextUtils.isEmpty(mAddComment.getText().toString())) {
                     addComment(userId, mAddComment.getText().toString());
+                    mAddComment.setText("");
                 }
             }
             return false;
@@ -159,6 +162,8 @@ public final class CommentFragment extends BaseFragment<BaseActivity>
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+                } finally {
+                    response.body().close(); // 关闭响应体
                 }
             }
         });
@@ -193,6 +198,8 @@ public final class CommentFragment extends BaseFragment<BaseActivity>
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+                } finally {
+                    response.body().close(); // 关闭响应体
                 }
             }
         });

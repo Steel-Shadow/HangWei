@@ -15,14 +15,22 @@
 
     </com.hjq.bar.TitleBar>
 
-    <com.example.hangwei.widget.view.WrapRecyclerView
-        android:id="@+id/friends_list"
+    <com.scwang.smart.refresh.layout.SmartRefreshLayout
+        android:id="@+id/friends_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:listCount="1000"
-        tools:listitem="@layout/item_friend">
+        android:layout_height="match_parent"
+        app:srlEnablePreviewInEditMode="false">
 
-    </com.example.hangwei.widget.view.WrapRecyclerView>
+        <com.example.hangwei.widget.view.WrapRecyclerView
+            android:id="@+id/friends_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:listCount="1000"
+            tools:listitem="@layout/item_friend">
+
+        </com.example.hangwei.widget.view.WrapRecyclerView>
+
+    </com.scwang.smart.refresh.layout.SmartRefreshLayout>
 
 
 </LinearLayout>

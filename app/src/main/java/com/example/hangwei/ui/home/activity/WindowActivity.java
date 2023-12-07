@@ -1,23 +1,25 @@
 package com.example.hangwei.ui.home.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hangwei.R;
+import com.example.hangwei.app.AppActivity;
 import com.example.hangwei.ui.home.element.Dish;
-import com.example.hangwei.base.BaseActivity;
 import com.example.hangwei.base.BaseAdapter;
 import com.example.hangwei.consts.ToastConst;
 import com.example.hangwei.data.AsyncHttpUtil;
 import com.example.hangwei.data.Ports;
 import com.example.hangwei.ui.home.adapter.DishAdapter;
+import com.example.hangwei.ui.home.element.Favorite;
 import com.example.hangwei.utils.ToastUtil;
 import com.example.hangwei.widget.view.WrapRecyclerView;
+import com.hjq.bar.TitleBar;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener;
@@ -38,7 +40,7 @@ import okhttp3.Response;
 /**
  * desc   : 窗口的菜品展示页
  */
-public final class WindowActivity extends BaseActivity
+public final class WindowActivity extends AppActivity
         implements OnRefreshLoadMoreListener,
         BaseAdapter.OnItemClickListener {
     private static final int MAX_LIST_ITEM_NUM = Integer.MAX_VALUE;
@@ -49,7 +51,8 @@ public final class WindowActivity extends BaseActivity
     }
 
     private String mId;
-    private TextView mWindowName;
+    private Favorite mFavorite;
+    private TitleBar mWindowName;
     private SmartRefreshLayout mRefreshLayout;
     private WrapRecyclerView mRecyclerView;
     private DishAdapter mAdapter;
@@ -77,7 +80,8 @@ public final class WindowActivity extends BaseActivity
         Bundle bundle = getIntent().getExtras();
         assert bundle != null;
         mId = bundle.getString("id");
-        mWindowName.setText(bundle.getString("name"));
+        mWindowName.setTitle(bundle.getString("name"));
+        mFavorite = new Favorite(getContext(), findViewById(R.id.window_favorite), mId, Ports.windowFavChange, Ports.windowFavCheck);
 //        mRefreshLayout.autoRefresh(0);
         updateDishData(true, () -> {
         });
@@ -88,6 +92,8 @@ public final class WindowActivity extends BaseActivity
      */
     private void updateDishData(boolean setElseAdd, Runnable afterResponse) {
         HashMap<String, Object> params = new HashMap<>();
+        System.out.println(mId);
+        params.put("windowId",mId);
         AsyncHttpUtil.httpPostForObject(Ports.windowDishes, params, new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -114,7 +120,7 @@ public final class WindowActivity extends BaseActivity
                                     jsonDish.getString("dishId"),
                                     jsonDish.getString("dishName"),
                                     jsonDish.getString("campus"),
-                                    jsonDish.getInt("price"),
+                                    jsonDish.getString("price"),
                                     jsonDish.getInt("likeCount"),
                                     jsonDish.getInt("commentCount"),
                                     jsonDish.getString("picture"));
@@ -132,6 +138,8 @@ public final class WindowActivity extends BaseActivity
                 } catch (JSONException e) {
                     runOnUiThread(afterResponse);
                     e.printStackTrace();
+                } finally {
+                    response.body().close(); // 关闭响应体
                 }
             }
         });
@@ -153,11 +161,17 @@ public final class WindowActivity extends BaseActivity
         Bundle bundle = new Bundle();
         bundle.putString("id", dish.id);
         bundle.putString("name", dish.name);
-        bundle.putInt("price", dish.price);
+        bundle.putString("price", dish.price);
         bundle.putString("picUrl", dish.foodPicUrl);
+        bundle.putInt("favorCnt", dish.likeCount);
         intent.putExtras(bundle);
 
-        startActivity(intent);
+        startActivityForResult(intent, (resultCode, data) -> {
+            if (resultCode == RESULT_OK && data != null) {
+                dish.setLikeCount(data.getIntExtra("favorCnt", dish.likeCount));
+                mAdapter.setItem(position, dish);
+            }
+        });
     }
 
     /**
@@ -175,10 +189,14 @@ public final class WindowActivity extends BaseActivity
 
     @Override
     public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-        updateDishData(false, () -> {
-            mRefreshLayout.finishLoadMore();
-            mAdapter.setLastPage(mAdapter.getCount() >= MAX_LIST_ITEM_NUM);
-            mRefreshLayout.setNoMoreData(mAdapter.isLastPage());
-        });
+        mRefreshLayout.finishLoadMore();
+    }
+
+    @Override
+    public void finish() {
+        Intent resIntent = new Intent();
+        resIntent.putExtra("isFavorite", mFavorite.isFavorite());
+        setResult(Activity.RESULT_OK, resIntent);
+        super.finish();
     }
 }

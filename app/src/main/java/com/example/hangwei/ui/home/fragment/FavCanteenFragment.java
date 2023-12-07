@@ -10,6 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hangwei.R;
+import com.example.hangwei.app.AppActivity;
+import com.example.hangwei.app.TitleBarFragment;
 import com.example.hangwei.ui.home.element.Canteen;
 import com.example.hangwei.base.BaseActivity;
 import com.example.hangwei.base.BaseAdapter;
@@ -20,6 +22,10 @@ import com.example.hangwei.data.Ports;
 import com.example.hangwei.ui.home.activity.CanteenActivity;
 import com.example.hangwei.ui.home.adapter.CanteenFavAdapter;
 import com.example.hangwei.utils.ToastUtil;
+import com.example.hangwei.widget.view.WrapRecyclerView;
+import com.scwang.smart.refresh.layout.SmartRefreshLayout;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,13 +40,15 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
-public class FavCanteenFragment extends BaseFragment<BaseActivity>
-        implements BaseAdapter.OnItemClickListener {
+public class FavCanteenFragment extends TitleBarFragment<AppActivity>
+        implements OnRefreshLoadMoreListener, BaseAdapter.OnItemClickListener {
     public static FavCanteenFragment newInstance() {
         return new FavCanteenFragment();
     }
 
-    private RecyclerView mRecyclerView;
+    private String userId;
+    private SmartRefreshLayout mRefreshLayout;
+    private WrapRecyclerView mRecyclerView;
     private CanteenFavAdapter mAdapter;
 
     @Override
@@ -50,18 +58,24 @@ public class FavCanteenFragment extends BaseFragment<BaseActivity>
 
     @Override
     protected void initView() {
+        mRefreshLayout = findViewById(R.id.fav_layout);
         mRecyclerView = findViewById(R.id.fav_recycler_view);
 
         mAdapter = new CanteenFavAdapter(getAttachActivity());
         mAdapter.setOnItemClickListener(this);
 
         mRecyclerView.setAdapter(mAdapter);
+        mRefreshLayout.setOnRefreshLoadMoreListener(this);
     }
 
     @Override
     protected void initData() {
+        userId = getContext().getSharedPreferences("BasePrefs", MODE_PRIVATE).getString("usedID", null);
+        fresh(() -> {});
+    }
+
+    public void fresh(Runnable afterResponse) {
         HashMap<String, Object> params = new HashMap<>();
-        String userId = getContext().getSharedPreferences("BasePrefs", MODE_PRIVATE).getString("usedID", "null");
         params.put("userId", userId);
         AsyncHttpUtil.httpPostForObject(Ports.canteenFavAll, params, new Callback() {
             @Override
@@ -79,22 +93,18 @@ public class FavCanteenFragment extends BaseFragment<BaseActivity>
                     if (jsonObject.getInt("code") == 0) {
                         ToastUtil.toast(jsonObject.getString("msg"), ToastConst.errorStyle);
                     } else {
+                        if (jsonObject.isNull("data")) {
+                            return;
+                        }
                         JSONObject data = jsonObject.getJSONObject("data");
                         JSONArray jsonCanteens = data.getJSONArray("canteens");
                         for (int i = 0; i < jsonCanteens.length(); i++) {
                             JSONObject canteen = jsonCanteens.getJSONObject(i);
-                            canteens.add(new Canteen(
-                                    canteen.getString("id"),
-                                    canteen.getString("breakfast"),
-                                    canteen.getString("dinner"),
-                                    canteen.getString("location"),
-                                    canteen.getString("lunch"),
-                                    canteen.getString("name"),
-                                    canteen.getString("picUrl")
-                            ));
+                            canteens.add(new Canteen(canteen.getString("id")));
                         }
                         getAttachActivity().runOnUiThread(() -> {
                             mAdapter.setData(canteens);
+                            afterResponse.run();
                         });
                     }
                 } catch (JSONException e) {
@@ -120,8 +130,25 @@ public class FavCanteenFragment extends BaseFragment<BaseActivity>
         Intent intent = new Intent(getActivity(), CanteenActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString("id", canteen.id);
+        bundle.putString("name", canteen.name);
+        bundle.putString("breakfast", canteen.breakfast);
+        bundle.putString("lunch", canteen.lunch);
+        bundle.putString("dinner", canteen.dinner);
+        bundle.putString("location", canteen.location);
+        bundle.putString("detail", canteen.detail);
+        bundle.putInt("picUrl", canteen.picID);
         intent.putExtras(bundle);
 
         startActivity(intent);
+    }
+
+    @Override
+    public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+        fresh(() -> mRefreshLayout.finishLoadMore());
+    }
+
+    @Override
+    public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+        fresh(() -> mRefreshLayout.finishRefresh());
     }
 }

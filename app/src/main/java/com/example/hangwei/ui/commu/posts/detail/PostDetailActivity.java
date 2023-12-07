@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.MenuItem;
@@ -17,12 +18,16 @@ import android.widget.ToggleButton;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.load.MultiTransformation;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.example.hangwei.R;
 import com.example.hangwei.app.AppActivity;
 import com.example.hangwei.base.BaseAdapter;
 import com.example.hangwei.consts.ToastConst;
 import com.example.hangwei.data.AsyncHttpUtil;
 import com.example.hangwei.data.Ports;
+import com.example.hangwei.data.glide.GlideApp;
 import com.example.hangwei.dialog.InputDialog;
 import com.example.hangwei.dialog.MessageDialog;
 import com.example.hangwei.utils.ToastUtil;
@@ -106,20 +111,7 @@ public class PostDetailActivity extends AppActivity implements BaseAdapter.OnIte
         mAdapter.setOnItemClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
 
-        follow_msg.setOnClickListener(view -> {
-            isFollow = !isFollow;
-            doFollow();
-            btn_follow.setChecked(isFollow);
-            if (isFollow) {
-                follow_msg.setText("= 已关注");
-                follow_msg.setTextColor(Color.GRAY);
-                follow_msg.setBackground(getDrawable(R.drawable.bg_vary_corner));
-            } else {
-                follow_msg.setText("+关注");
-                follow_msg.setTextColor(Color.parseColor("#FF83FA"));
-                follow_msg.setBackground(getDrawable(R.drawable.bg_purple_corner));
-            }
-        });
+        follow_msg.setOnClickListener(view -> doFollow());
 
         btn_favor.setOnClickListener(view -> doFavor());
 
@@ -171,6 +163,7 @@ public class PostDetailActivity extends AppActivity implements BaseAdapter.OnIte
 
     // 填充数据
     public void setDetail() {
+        System.out.println(postId);
         HashMap<String, String> params = new HashMap<>();
         params.put("id", postId);
         params.put("userName", userName);
@@ -195,6 +188,10 @@ public class PostDetailActivity extends AppActivity implements BaseAdapter.OnIte
                                 favorCnt = jsObj.getInt("thumbUps");
                                 owner = jsObj.getString("userName");
                                 isFollow = jsObj.getBoolean("isFollow");
+                                GlideApp.with(getContext())
+                                        .load(Uri.parse(jsObj.getString("avatar")))
+                                        .transform(new MultiTransformation<>(new CenterCrop(), new CircleCrop()))
+                                        .into(avatar);
                                 post_detail_owner.setText(owner);
                                 post_detail_time.setText(jsObj.getString("time"));
                                 post_detail_title.setText(jsObj.getString("title"));
@@ -237,6 +234,8 @@ public class PostDetailActivity extends AppActivity implements BaseAdapter.OnIte
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+                } finally {
+                    response.body().close(); // 关闭响应体
                 }
             }
         });
@@ -258,6 +257,11 @@ public class PostDetailActivity extends AppActivity implements BaseAdapter.OnIte
     }
 
     public void doComment() {
+        boolean isForbidden = getSharedPreferences("BasePrefs", MODE_PRIVATE).getBoolean("isForbidden", false);
+        if (isForbidden) {
+            ToastUtil.toast("您已被禁言，无法评论", ToastConst.warnStyle);
+            return;
+        }
         String content = commentView.getText().toString();
         if (TextUtils.isEmpty(content)) {
             ToastUtil.toast("请说点啥再发送哦", ToastConst.warnStyle);
@@ -265,17 +269,9 @@ public class PostDetailActivity extends AppActivity implements BaseAdapter.OnIte
         }
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         String time = dateFormat.format(new Date());
-        curComment = new PostComment("0", userName, content, time);
-        allComments.add(0, curComment);
-        if (userName.equals(owner)) {
-            ownerComments.add(0, curComment);
-        }
-        mAdapter.setData(allComments);
-        comments_all.setTextColor(Color.BLACK);
-        comments_owner.setTextColor(Color.GRAY);
 
         HashMap<String, String> params = new HashMap<>();
-        params.put("postID", postId);
+        params.put("postId", postId);
         params.put("userName", userName);
         params.put("content", content);
         params.put("time", time);
@@ -296,28 +292,38 @@ public class PostDetailActivity extends AppActivity implements BaseAdapter.OnIte
                     } else {
                         JSONObject jsObj = jsonObject.getJSONObject("data");
                         String id = jsObj.getString("id");
-                        runOnUiThread(() -> curComment.setId(id));
+                        runOnUiThread(() -> {
+                            curComment = new PostComment("0", userName, content, time);
+                            curComment.setId(id);
+                            allComments.add(0, curComment);
+                            if (userName.equals(owner)) {
+                                ownerComments.add(0, curComment);
+                            }
+                            mAdapter.setData(allComments);
+                            comments_all.setTextColor(Color.BLACK);
+                            comments_owner.setTextColor(Color.GRAY);
+
+                            ToastUtil.toast("评论成功", ToastConst.successStyle);
+                            commentView.setText("");
+                        });
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+                } finally {
+                    response.body().close(); // 关闭响应体
                 }
             }
         });
-
-        ToastUtil.toast("评论成功", ToastConst.successStyle);
-        commentView.setText("");
     }
 
     public void doFavor() {
-        favored = !favored;
-        favorCnt = favored ? favorCnt + 1 : favorCnt - 1;
         btn_favor.setChecked(favored);
-        post_detail_favorCnt.setText(String.valueOf(favorCnt));
 
         HashMap<String, String> params = new HashMap<>();
         params.put("userName", userName);
-        params.put("postID", postId);
-        params.put("thumbUp", String.valueOf(favored));
+        params.put("postId", postId);
+        params.put("thumbUp", String.valueOf(!favored));
+        System.out.println(params);
 
         AsyncHttpUtil.httpPost(Ports.postsUp, params, new Callback() {
             @Override
@@ -332,9 +338,23 @@ public class PostDetailActivity extends AppActivity implements BaseAdapter.OnIte
                     JSONObject jsonObject = new JSONObject(response.body().string());
                     if (jsonObject.getInt("code") == 0) {
                         ToastUtil.toast(jsonObject.getString("msg"), ToastConst.errorStyle);
+                    } else {
+                        runOnUiThread(() -> {
+                            favored = !favored;
+                            btn_favor.setChecked(favored);
+                            favorCnt = favored ? favorCnt + 1 : favorCnt - 1;
+                            post_detail_favorCnt.setText(String.valueOf(favorCnt));
+                            if (favored) {
+                                ToastUtil.toast("已收到客官的赞啦~", ToastConst.successStyle);
+                            } else {
+                                ToastUtil.toast("已取赞，我们会继续努力~", ToastConst.warnStyle);
+                            }
+                        });
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+                } finally {
+                    response.body().close(); // 关闭响应体
                 }
             }
         });
@@ -344,7 +364,7 @@ public class PostDetailActivity extends AppActivity implements BaseAdapter.OnIte
         HashMap<String, String> params = new HashMap<>();
         params.put("userName", userName);
         params.put("blogger", owner);
-        params.put("isFollow", String.valueOf(isFollow));
+        params.put("isFollow", String.valueOf(!isFollow));
         AsyncHttpUtil.httpPost(Ports.friendsFollow, params, new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -358,9 +378,25 @@ public class PostDetailActivity extends AppActivity implements BaseAdapter.OnIte
                     JSONObject jsonObject = new JSONObject(response.body().string());
                     if (jsonObject.getInt("code") == 0) {
                         ToastUtil.toast(jsonObject.getString("msg"), ToastConst.errorStyle);
+                    } else {
+                        isFollow = !isFollow;
+                        btn_follow.setChecked(isFollow);
+                        if (isFollow) {
+                            follow_msg.setText("= 已关注");
+                            follow_msg.setTextColor(Color.GRAY);
+                            follow_msg.setBackground(getDrawable(R.drawable.bg_vary_corner));
+                            ToastUtil.toast("关注成功", ToastConst.successStyle);
+                        } else {
+                            follow_msg.setText("+关注");
+                            follow_msg.setTextColor(Color.parseColor("#FF83FA"));
+                            follow_msg.setBackground(getDrawable(R.drawable.bg_purple_corner));
+                            ToastUtil.toast("已取关", ToastConst.warnStyle);
+                        }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+                } finally {
+                    response.body().close(); // 关闭响应体
                 }
             }
         });
@@ -393,6 +429,8 @@ public class PostDetailActivity extends AppActivity implements BaseAdapter.OnIte
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+                } finally {
+                    response.body().close(); // 关闭响应体
                 }
             }
         });
@@ -423,6 +461,8 @@ public class PostDetailActivity extends AppActivity implements BaseAdapter.OnIte
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+                } finally {
+                    response.body().close(); // 关闭响应体
                 }
             }
         });

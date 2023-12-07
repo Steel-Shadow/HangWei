@@ -18,6 +18,9 @@ import com.example.hangwei.data.Ports;
 import com.example.hangwei.ui.commu.friends.detail.FriendDetailActivity;
 import com.example.hangwei.utils.ToastUtil;
 import com.example.hangwei.widget.view.WrapRecyclerView;
+import com.scwang.smart.refresh.layout.SmartRefreshLayout;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,8 +35,10 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
-public class FriendsListActivity extends AppActivity implements BaseAdapter.OnItemClickListener {
+public class FriendsListActivity extends AppActivity
+        implements OnRefreshLoadMoreListener, BaseAdapter.OnItemClickListener {
     private String userName; // APP用户
+    private SmartRefreshLayout mRefreshLayout;
     private WrapRecyclerView mRecyclerView;
     private List<Friend> allFriends = new ArrayList<>();
     private FriendAdapter mAdapter;
@@ -45,20 +50,22 @@ public class FriendsListActivity extends AppActivity implements BaseAdapter.OnIt
 
     @Override
     protected void initView() {
+        mRefreshLayout = findViewById(R.id.friends_layout);
         mRecyclerView = findViewById(R.id.friends_list);
         mAdapter = new FriendAdapter(this);
         mAdapter.setOnItemClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
+        mRefreshLayout.setOnRefreshLoadMoreListener(this);
     }
 
     @Override
     protected void initData() {
         SharedPreferences prefs = getSharedPreferences("BasePrefs", MODE_PRIVATE);
         userName = prefs.getString("usedName", "小航兵");
-        getFriends();
+        getFriends(() -> {});
     }
 
-    public void getFriends() {
+    public void getFriends(Runnable afterResponse) {
         HashMap<String, String> params = new HashMap<>();
         params.put("userName", userName);
         AsyncHttpUtil.httpPost(Ports.friendsGetAll, params, new Callback() {
@@ -76,23 +83,30 @@ public class FriendsListActivity extends AppActivity implements BaseAdapter.OnIt
                         ToastUtil.toast(jsonObject.getString("msg"), ToastConst.errorStyle);
                     } else {
                         if (!jsonObject.isNull("data")) {
+                            JSONArray data = jsonObject.getJSONArray("data");
                             runOnUiThread(() -> {
                                 try {
-                                    setFriends(jsonObject.getJSONArray("data"));
+                                    setFriends(data);
                                 } catch (JSONException e) {
                                     throw new RuntimeException(e);
                                 }
+                                afterResponse.run();
                             });
+                        } else {
+                            mAdapter.setData(new ArrayList<>());
                         }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+                } finally {
+                    response.body().close(); // 关闭响应体
                 }
             }
         });
     }
 
     private void setFriends(JSONArray jsonArray) throws JSONException {
+        allFriends.clear();
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsObj = (JSONObject) jsonArray.get(i);
             Friend friend = new Friend(userName, jsObj.getString("userName"),
@@ -119,5 +133,15 @@ public class FriendsListActivity extends AppActivity implements BaseAdapter.OnIt
                 mAdapter.setItem(position, friend);
             }
         });
+    }
+
+    @Override
+    public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+        getFriends(() -> mRefreshLayout.finishLoadMore());
+    }
+
+    @Override
+    public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+        getFriends(() -> mRefreshLayout.finishRefresh());
     }
 }

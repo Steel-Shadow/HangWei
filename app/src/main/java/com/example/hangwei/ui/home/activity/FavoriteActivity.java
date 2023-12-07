@@ -4,15 +4,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.hangwei.R;
-import com.example.hangwei.base.BaseActivity;
+import com.example.hangwei.app.AppActivity;
 import com.example.hangwei.base.BaseFragment;
 import com.example.hangwei.base.FragmentPagerAdapter;
 import com.example.hangwei.ui.home.adapter.TabAdapter;
 import com.example.hangwei.ui.home.fragment.FavCanteenFragment;
 import com.example.hangwei.ui.home.fragment.FavDishFragment;
-import com.example.hangwei.ui.home.fragment.FavWindowFragment;
 
-public class FavoriteActivity extends BaseActivity
+public class FavoriteActivity extends AppActivity
         implements TabAdapter.OnTabListener,
         ViewPager.OnPageChangeListener {
     private RecyclerView mTabView;
@@ -32,7 +31,6 @@ public class FavoriteActivity extends BaseActivity
 
         mPagerAdapter = new FragmentPagerAdapter<>(this);
         mPagerAdapter.addFragment(FavCanteenFragment.newInstance(), "食堂");
-        mPagerAdapter.addFragment(FavWindowFragment.newInstance(), "窗口");
         mPagerAdapter.addFragment(FavDishFragment.newInstance(), "菜品");
         mViewPager.setAdapter(mPagerAdapter);
         mViewPager.addOnPageChangeListener(this);
@@ -44,7 +42,6 @@ public class FavoriteActivity extends BaseActivity
     @Override
     protected void initData() {
         mTabAdapter.addItem("食堂");
-        mTabAdapter.addItem("窗口");
         mTabAdapter.addItem("餐品");
         mTabAdapter.setOnTabListener(this);
     }

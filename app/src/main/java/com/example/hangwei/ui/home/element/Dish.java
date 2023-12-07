@@ -6,12 +6,12 @@ public class Dish {
     public String id;
     public String name;
     public String location;
-    public int price;
+    public String price;
     public int likeCount;
     public int commentCount;
     public String foodPicUrl;
 
-    public Dish(String id, String name, String location, int price, int likeCount, int commentCount, String foodPicUrl) {
+    public Dish(String id, String name, String location, String price, int likeCount, int commentCount, String foodPicUrl) {
         this.id = id;
         this.name = name;
         this.location = location;
@@ -26,12 +26,16 @@ public class Dish {
             this.id = jsonDish.getString("dishId");
             this.name = jsonDish.getString("dishName");
             this.location = jsonDish.getString("campus");
-            this.price = jsonDish.getInt("price");
+            this.price = jsonDish.getString("price");
             this.likeCount = jsonDish.getInt("likeCount");
             this.commentCount = jsonDish.getInt("commentCount");
             this.foodPicUrl = jsonDish.getString("picture");
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void setLikeCount(int likeCount) {
+        this.likeCount = likeCount;
     }
 }

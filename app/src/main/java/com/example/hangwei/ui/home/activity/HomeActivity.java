@@ -18,7 +18,7 @@ import com.example.hangwei.base.BaseFragment;
 import com.example.hangwei.base.FragmentPagerAdapter;
 import com.example.hangwei.consts.ToastConst;
 import com.example.hangwei.other.DoubleClickHelper;
-import com.example.hangwei.ui.commu.CommuFragment;
+import com.example.hangwei.ui.commu.posts.list.PostsListFragment;
 import com.example.hangwei.ui.home.adapter.NavigationAdapter;
 import com.example.hangwei.ui.home.fragment.CanteenFragment;
 import com.example.hangwei.ui.home.fragment.HomeFragment;
@@ -64,13 +64,13 @@ public final class HomeActivity extends AppActivity
 
         mNavigationAdapter = new NavigationAdapter(this);
         mNavigationAdapter.addItem(new NavigationAdapter.MenuItem(getString(R.string.home_nav_index),
-                ContextCompat.getDrawable(this, R.drawable.home_home_selector)));
+                ContextCompat.getDrawable(this, R.drawable.home)));
         mNavigationAdapter.addItem(new NavigationAdapter.MenuItem(getString(R.string.home_nav_found),
-                ContextCompat.getDrawable(this, R.drawable.home_home_selector)));
+                ContextCompat.getDrawable(this, R.drawable.explore)));
         mNavigationAdapter.addItem(new NavigationAdapter.MenuItem("社区",
-                ContextCompat.getDrawable(this, R.drawable.home_home_selector)));
+                ContextCompat.getDrawable(this, R.drawable.community)));
         mNavigationAdapter.addItem(new NavigationAdapter.MenuItem(getString(R.string.home_nav_me),
-                ContextCompat.getDrawable(this, R.drawable.home_home_selector)));
+                ContextCompat.getDrawable(this, R.drawable.user)));
         mNavigationAdapter.setOnNavigationListener(this);
         mNavigationView.setAdapter(mNavigationAdapter);
     }
@@ -80,7 +80,7 @@ public final class HomeActivity extends AppActivity
         mPagerAdapter = new FragmentPagerAdapter<>(this);
         mPagerAdapter.addFragment(HomeFragment.newInstance());
         mPagerAdapter.addFragment(CanteenFragment.newInstance());
-        mPagerAdapter.addFragment(CommuFragment.newInstance());
+        mPagerAdapter.addFragment(PostsListFragment.newInstance());
         mPagerAdapter.addFragment(MineFragment.newInstance());
         mViewPager.setAdapter(mPagerAdapter);
 

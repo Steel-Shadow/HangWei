@@ -17,19 +17,17 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:contentInsetStart="0dp"
             app:layout_collapseMode="pin">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/favorite_choose_tab"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
                 android:orientation="vertical"
-                tools:itemCount="3"
+                tools:itemCount="2"
                 tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                 tools:listitem="@layout/tab_item_design"
-                tools:spanCount="3" />
+                tools:spanCount="2" />
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 

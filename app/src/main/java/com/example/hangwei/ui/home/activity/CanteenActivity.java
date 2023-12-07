@@ -1,23 +1,27 @@
 package com.example.hangwei.ui.home.activity;
 
+
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.example.hangwei.R;
+import com.example.hangwei.app.AppActivity;
+import com.example.hangwei.base.BaseAdapter;
 import com.example.hangwei.ui.home.element.Dish;
 import com.example.hangwei.ui.home.element.Favorite;
 import com.example.hangwei.ui.home.element.Window;
-import com.example.hangwei.base.BaseActivity;
 import com.example.hangwei.consts.ToastConst;
 import com.example.hangwei.data.AsyncHttpUtil;
 import com.example.hangwei.data.Ports;
 import com.example.hangwei.ui.home.adapter.WindowAdapter;
 import com.example.hangwei.utils.ToastUtil;
+import com.example.hangwei.widget.view.WrapRecyclerView;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener;
@@ -38,23 +42,18 @@ import okhttp3.Response;
 /**
  * desc   : 食堂展示页
  */
-public final class CanteenActivity extends BaseActivity
-        implements OnRefreshLoadMoreListener {
-    private static final int MAX_LIST_ITEM_NUM = Integer.MAX_VALUE;
-    private static final int LIST_ITEM_ADD_NUM = 10;
+public class CanteenActivity extends AppActivity implements OnRefreshLoadMoreListener,
+        BaseAdapter.OnItemClickListener {
     private String mId;
     private TextView mName;
     private TextView mTime;
     private TextView mLocation;
     private Favorite mFavorite;
+    private TextView mDetail;
     private ImageView mCanteenPic;
     private SmartRefreshLayout mRefreshLayout;
-    private RecyclerView mRecyclerView;
+    private WrapRecyclerView mRecyclerView;
     private WindowAdapter mAdapter;
-
-    public static CanteenActivity newInstance() {
-        return new CanteenActivity();
-    }
 
     @Override
     protected int getLayoutId() {
@@ -65,15 +64,16 @@ public final class CanteenActivity extends BaseActivity
     protected void initView() {
         mCanteenPic = findViewById(R.id.canteen_pic);
         mName = findViewById(R.id.canteen_name);
-        mFavorite = new Favorite(this, findViewById(R.id.canteen_favorite), mName.getText().toString(), Ports.canteenFavChange, Ports.canteenFavCheck);
 
         mTime = findViewById(R.id.canteen_time);
         mLocation = findViewById(R.id.canteen_location);
+        mDetail = findViewById(R.id.canteen_detail);
 
         mRefreshLayout = findViewById(R.id.canteen_refresh_layout);
         mRecyclerView = findViewById(R.id.canteen_recycler_view);
 
-        mAdapter = new WindowAdapter(getContext());
+        mAdapter = new WindowAdapter(this);
+        mAdapter.setOnItemClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
         mRefreshLayout.setOnRefreshLoadMoreListener(this);
     }
@@ -84,47 +84,15 @@ public final class CanteenActivity extends BaseActivity
         assert bundle != null;
         bundle.getString("id");
         mId = bundle.getString("id");
-
-        HashMap<String, String> params = new HashMap<>();
-        params.put("id", mId);
-        AsyncHttpUtil.httpPost(Ports.canteenInfo, params, new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                ToastUtil.toast("Get canteen data http fail!", ToastConst.errorStyle);
-            }
-
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                try {
-                    assert response.body() != null;
-                    JSONObject jsonObject = new JSONObject(response.body().string());
-
-                    if (jsonObject.getInt("code") == 0) {
-                        ToastUtil.toast(jsonObject.getString("msg"), ToastConst.errorStyle);
-                    } else {
-                        JSONObject data = jsonObject.getJSONObject("data");
-                        String name = data.getString("name");
-
-                        String time = "早餐 " + data.getString("breakfast") + "\n" +
-                                "午餐 " + data.getString("lunch") + "\n" +
-                                "晚餐 " + data.getString("dinner");
-
-                        String location = data.getString("location");
-                        String picUrl = data.getString("picUrl");
-
-                        runOnUiThread(() -> {
-                            mName.setText(name);
-                            mTime.setText(time);
-                            mLocation.setText(location);
-                            Glide.with(getContext()).load(picUrl).into(mCanteenPic);
-                            updateCanteen(true, () -> mRefreshLayout.finishRefresh());
-                        });
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+        mCanteenPic.setImageResource(bundle.getInt("picUrl"));
+        mName.setText(bundle.getString("name"));
+        mTime.setText("早餐   " + bundle.getString("breakfast") + "\n" +
+                "午餐 " + bundle.getString("lunch") + "\n" +
+                "晚餐 " + bundle.getString("dinner"));
+        mLocation.setText(bundle.getString("location"));
+        mDetail.setText(bundle.getString("detail"));
+        mFavorite = new Favorite(this, findViewById(R.id.canteen_favorite), mId, Ports.canteenFavChange, Ports.canteenFavCheck);
+        updateCanteen(true, () -> mRefreshLayout.finishRefresh());
     }
 
     @Override
@@ -136,11 +104,7 @@ public final class CanteenActivity extends BaseActivity
 
     @Override
     public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-        updateCanteen(false, () -> {
-            mRefreshLayout.finishLoadMore();
-            mAdapter.setLastPage(mAdapter.getCount() >= MAX_LIST_ITEM_NUM);
-            mRefreshLayout.setNoMoreData(mAdapter.isLastPage());
-        });
+        mRefreshLayout.finishLoadMore();
     }
 
     @Override
@@ -150,7 +114,8 @@ public final class CanteenActivity extends BaseActivity
 
     private void updateCanteen(boolean setElseAdd, Runnable afterResponse) {
         HashMap<String, Object> params = new HashMap<>();
-        params.put("canteen", mName);
+        params.put("id", mId);
+        System.out.println(mId);
         AsyncHttpUtil.httpPostForObject(Ports.canteenGetDishes, params, new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -178,8 +143,11 @@ public final class CanteenActivity extends BaseActivity
                             JSONArray dishes = jsonWindow.getJSONArray("dishes");
                             JSONObject jsonDish1 = dishes.getJSONObject(0);
                             Dish dish1 = new Dish(jsonDish1);
-                            JSONObject jsonDish2 = dishes.getJSONObject(1);
-                            Dish dish2 = new Dish(jsonDish2);
+                            Dish dish2 = null;
+                            if (dishes.length() == 2) {
+                                JSONObject jsonDish2 = dishes.getJSONObject(1);
+                                dish2 = new Dish(jsonDish2);
+                            }
                             windows.add(new Window(id, name, dish1, dish2));
                         }
 
@@ -195,6 +163,25 @@ public final class CanteenActivity extends BaseActivity
                 } catch (JSONException e) {
                     runOnUiThread(afterResponse);
                     e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onItemClick(RecyclerView recyclerView, View itemView, int position) {
+        System.out.println("fffffuck");
+        Window window = mAdapter.getItem(position);
+        Intent intent = new Intent(this, WindowActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("id", window.id);
+        bundle.putString("name", window.name);
+        intent.putExtras(bundle);
+        startActivityForResult(intent, (resultCode, data) -> {
+            mAdapter.setItem(position, window);
+            if (resultCode == RESULT_OK && data != null) {
+                if (data.getBooleanExtra("isFavorite", false) && !mFavorite.isFavorite()) {
+                    mFavorite.callFavorite();
                 }
             }
         });

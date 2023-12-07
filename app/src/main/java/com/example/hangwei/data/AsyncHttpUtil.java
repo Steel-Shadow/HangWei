@@ -150,6 +150,32 @@ public class AsyncHttpUtil {
     }
 
     /*
+     * 上传图片
+     * */
+    /*
+     * POST
+     * */
+    public static void postImage(String filepath, Callback callback) {
+        // build request
+        RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                .addFormDataPart("file", filepath,
+                        RequestBody.create(MediaType.parse("application/octet-stream"),
+                                new File(filepath)))
+                .build();
+
+        Request request = new Request.Builder()
+                .url("https://pro.helloimg.com/api/v1/upload")
+                .addHeader("Accept", "application/json")
+                .addHeader("Authorization", "Bearer 48|hWOWwMdCLMkhrpZZLMeph1TLcu5oXWbjIY0LNrwu")
+                .addHeader("Content-Type", "multipart/form-data")
+                .method("POST", body)
+                .build();
+
+        // request
+        okHttpClient.newCall(request).enqueue(callback);
+    }
+
+    /*
      * 上传文件
      * */
     /*

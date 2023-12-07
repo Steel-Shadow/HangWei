@@ -125,39 +125,44 @@ public class LoginActivity extends AppActivity {
                             } catch (JSONException e) {
                                 throw new RuntimeException(e);
                             }
-                            btn_login.showError(3000);
+                            btn_login.showError(2000);
                         }, 1000);
                     } else {
-                        postDelayed(() -> {
-                            btn_login.showSucceed();
+                        runOnUiThread(() -> {
                             postDelayed(() -> {
-                                SharedPreferences prefs = getSharedPreferences("BasePrefs", MODE_PRIVATE);
-                                SharedPreferences.Editor editor = prefs.edit();
-                                try {
-                                    editor.putBoolean("isLogin", true);
-                                    editor.putString("usedName", userName);
-                                    editor.putString("usedPwd", password);
-                                    editor.putString("usedID",
-                                            jsonObject.getJSONObject("data").getString("id"));
-                                    editor.putString("usedEmail",
-                                            jsonObject.getJSONObject("data").getString("email"));
-                                    editor.putString("usedAvatar",
-                                            jsonObject.getJSONObject("data").getString("avatar"));
-                                    editor.apply();
-                                    // 登录成功后关闭此页面进入主页
-                                    ToastUtil.toast("登录成功", ToastConst.successStyle);
-                                    // 销毁登录界面
-                                    finish();
-                                    // 跳转到主界面，登录成功的状态传递到 HomeActivity 中
-                                    startActivity(HomeActivity.class);
-                                } catch (JSONException e) {
-                                    ToastUtil.toast("服务器出了一点小问题~稍候再试哦", ToastConst.warnStyle);
-                                }
+                                btn_login.showSucceed();
+                                postDelayed(() -> {
+                                    SharedPreferences prefs = getSharedPreferences("BasePrefs", MODE_PRIVATE);
+                                    SharedPreferences.Editor editor = prefs.edit();
+                                    try {
+                                        JSONObject data = jsonObject.getJSONObject("data");
+                                        editor.putBoolean("isLogin", true);
+                                        editor.putString("usedName", userName);
+                                        editor.putString("usedPwd", password);
+                                        editor.putString("usedID", data.getString("id"));
+                                        editor.putString("usedEmail", data.getString("email"));
+                                        editor.putString("usedAvatar", data.getString("avatar"));
+                                        editor.putBoolean("isForbidden", data.getBoolean("isSilence"));
+                                        editor.commit();
+                                        // 登录成功后关闭此页面进入主页
+                                        ToastUtil.toast("登录成功", ToastConst.successStyle);
+                                        // 跳转到主界面，登录成功的状态传递到 HomeActivity 中
+                                        startActivity(HomeActivity.class);
+                                        // 销毁登录界面
+                                        finish();
+                                    } catch (JSONException e) {
+                                        btn_login.reset();
+                                        System.out.println(e);
+                                        ToastUtil.toast("服务器出了一点小问题~稍候再试哦", ToastConst.warnStyle);
+                                    }
+                                }, 1000);
                             }, 1000);
-                        }, 1000);
+                        });
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+                } finally {
+                    response.body().close(); // 关闭响应体
                 }
             }
         });

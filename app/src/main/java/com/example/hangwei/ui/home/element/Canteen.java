@@ -1,5 +1,7 @@
 package com.example.hangwei.ui.home.element;
 
+import com.example.hangwei.consts.CanteenConst;
+
 public class Canteen {
     /**
      * 早餐时间，例如06:30-09:30
@@ -23,17 +25,22 @@ public class Canteen {
      */
     public String name;
     /**
+     * detail
+     */
+    public String detail;
+    /**
      * 食堂图片
      */
-    public String picUrl;
+    public int picID;
 
-    public Canteen(String id, String breakfast, String dinner, String location, String lunch, String name, String picUrl) {
+    public Canteen(String id) {
         this.id = id;
-        this.breakfast = breakfast;
-        this.dinner = dinner;
-        this.location = location;
-        this.lunch = lunch;
-        this.name = name;
-        this.picUrl = picUrl;
+        this.breakfast = CanteenConst.canteenBreakfast.get(id);
+        this.lunch = CanteenConst.canteenLunch.get(id);
+        this.dinner = CanteenConst.canteenDinner.get(id);
+        this.location = CanteenConst.canteenPos.get(id);
+        this.name = CanteenConst.canteenName.get(id);
+        this.detail = CanteenConst.canteenDetail.get(id);
+        this.picID = CanteenConst.canteenPic.get(id);
     }
 }

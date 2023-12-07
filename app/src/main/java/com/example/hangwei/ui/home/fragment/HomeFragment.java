@@ -8,6 +8,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -19,6 +20,7 @@ import com.example.hangwei.R;
 import com.example.hangwei.app.AppFragment;
 import com.example.hangwei.app.TitleBarFragment;
 import com.example.hangwei.base.FragmentPagerAdapter;
+import com.example.hangwei.ui.home.activity.BrowserActivity;
 import com.example.hangwei.ui.home.activity.DishInfoActivity;
 import com.example.hangwei.ui.home.activity.HomeActivity;
 import com.example.hangwei.ui.home.activity.SearchActivity;
@@ -38,6 +40,7 @@ public final class HomeFragment extends TitleBarFragment<HomeActivity>
     private XCollapsingToolbarLayout mCollapsingToolbarLayout; // 渐变动态布局
     private Toolbar mToolbar; // 工具栏
     private TextView mAddressView; // 地址
+    private ImageView mImageView;
     private TextView mSearchBox; // 搜索栏，点击下方图片空白收回键盘
 
     /*-中间选择栏---------------------------------------------------------*/
@@ -66,6 +69,8 @@ public final class HomeFragment extends TitleBarFragment<HomeActivity>
 
         mAddressView = findViewById(R.id.home_address);
         mSearchBox = findViewById(R.id.home_searchBox);
+
+        mImageView = findViewById(R.id.home_imageView);
 
         mSpinner = findViewById(R.id.home_spinner);
         mViewPager = findViewById(R.id.home_pager_lists);
@@ -119,6 +124,8 @@ public final class HomeFragment extends TitleBarFragment<HomeActivity>
 
             }
         });
+
+        mImageView.setOnClickListener(view -> BrowserActivity.start(getContext(), "https://mp.weixin.qq.com/s/6cA6HZrNKSPeBBfmE1X5HQ"));
     }
 
     @Override

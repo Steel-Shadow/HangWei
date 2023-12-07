@@ -2,18 +2,13 @@ package com.example.hangwei.ui.home.adapter;
 
 import android.content.Context;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatDelegate;
 
-import com.bumptech.glide.Glide;
 import com.example.hangwei.R;
 import com.example.hangwei.app.AppAdapter;
 import com.example.hangwei.ui.home.element.Dish;
-
-import java.util.Locale;
 
 public class HotAdapter extends AppAdapter<Dish> {
     public HotAdapter(@NonNull Context context) {

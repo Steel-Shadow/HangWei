@@ -1,6 +1,9 @@
 package com.example.hangwei.ui.commu.posts.list;
 
 
+import static android.app.Activity.RESULT_OK;
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -11,13 +14,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hangwei.R;
-import com.example.hangwei.app.AppActivity;
+import com.example.hangwei.app.TitleBarFragment;
 import com.example.hangwei.base.BaseAdapter;
 import com.example.hangwei.consts.ToastConst;
 import com.example.hangwei.data.AsyncHttpUtil;
 import com.example.hangwei.data.Ports;
 import com.example.hangwei.ui.commu.posts.add.AddPostActivity;
 import com.example.hangwei.ui.commu.posts.detail.PostDetailActivity;
+import com.example.hangwei.ui.home.activity.HomeActivity;
 import com.example.hangwei.utils.ToastUtil;
 import com.example.hangwei.widget.layout.XCollapsingToolbarLayout;
 import com.example.hangwei.widget.view.WrapRecyclerView;
@@ -38,7 +42,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
-public class PostsListActivity extends AppActivity
+public class PostsListFragment extends TitleBarFragment<HomeActivity>
         implements OnRefreshLoadMoreListener,
         BaseAdapter.OnItemClickListener,
         XCollapsingToolbarLayout.OnScrimsListener {
@@ -47,10 +51,15 @@ public class PostsListActivity extends AppActivity
     private WrapRecyclerView mRecyclerView;
     private PostItemAdapter mAdapter;
     private String userName;
+    private String avatar;
+
+    public static PostsListFragment newInstance() {
+        return new PostsListFragment();
+    }
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_posts_list;
+        return R.layout.fragment_posts_list;
     }
 
     @Override
@@ -59,26 +68,35 @@ public class PostsListActivity extends AppActivity
         tv_add_post = findViewById(R.id.postList_add);
 
         mRecyclerView = findViewById(R.id.posts_list);
-        mAdapter = new PostItemAdapter(this);
+        mAdapter = new PostItemAdapter(getAttachActivity());
         mAdapter.setOnItemClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
         mRefreshLayout.setOnRefreshLoadMoreListener(this);
 
-        tv_add_post.setOnClickListener(view -> startActivityForResult(AddPostActivity.class, (resultCode, data) -> {
-            if (resultCode == RESULT_OK && data != null) {
-                PostItem postItem = new PostItem(data.getStringExtra("postID"), userName,
-                        data.getStringExtra("title"), data.getStringExtra("tag"),
-                        data.getStringExtra("time"), 0);
-                mAdapter.addItem(0, postItem);
-                mRefreshLayout.finishRefresh();
+        tv_add_post.setOnClickListener(view -> {
+            boolean isForbidden =
+                    getContext().getSharedPreferences("BasePrefs", MODE_PRIVATE).getBoolean("isForbidden", false);
+            if (isForbidden) {
+                ToastUtil.toast("您已被禁言，无法发帖", ToastConst.warnStyle);
+                return;
             }
-        }));
+            startActivityForResult(AddPostActivity.class, (resultCode, data) -> {
+                if (resultCode == RESULT_OK && data != null) {
+                    PostItem postItem = new PostItem(data.getStringExtra("postID"), userName, avatar,
+                            data.getStringExtra("title"), data.getStringExtra("tag"),
+                            data.getStringExtra("time"), 0);
+                    mAdapter.addItem(0, postItem);
+                    mRefreshLayout.finishRefresh();
+                }
+            });
+        });
     }
 
     @Override
     protected void initData() {
-        SharedPreferences prefs = getSharedPreferences("BasePrefs", MODE_PRIVATE);
+        SharedPreferences prefs = getAttachActivity().getSharedPreferences("BasePrefs", MODE_PRIVATE);
         userName = prefs.getString("usedName", "小航兵");
+        avatar = prefs.getString("usedAvatar", null);
         refreshPosts();
     }
 
@@ -102,15 +120,15 @@ public class PostsListActivity extends AppActivity
                     JSONObject jsonObject = new JSONObject(response.body().string());
                     if (jsonObject.getInt("code") == 0) {
                         ToastUtil.toast(jsonObject.getString("msg"), ToastConst.errorStyle);
-                        runOnUiThread(afterResponse);
+                        getAttachActivity().runOnUiThread(afterResponse);
                     } else {
                         if (jsonObject.isNull("data")) {
-                            runOnUiThread(afterResponse);
+                            getAttachActivity().runOnUiThread(afterResponse);
                             return;
                         }
                         JSONArray jsonArray = jsonObject.getJSONArray("data");
                         List<PostItem> posts = parsePosts(jsonArray);
-                        runOnUiThread(() -> {
+                        getAttachActivity().runOnUiThread(() -> {
                             if (addMore) {
                                 mAdapter.addData(posts);
                             } else {
@@ -121,6 +139,8 @@ public class PostsListActivity extends AppActivity
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+                } finally {
+                    response.body().close(); // 关闭响应体
                 }
             }
         });
@@ -130,7 +150,7 @@ public class PostsListActivity extends AppActivity
         List<PostItem> posts = new ArrayList<>();
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsObj = (JSONObject) jsonArray.get(i);
-            posts.add(new PostItem(jsObj.getString("id"), jsObj.getString("userName"),
+            posts.add(new PostItem(jsObj.getString("id"), jsObj.getString("userName"), jsObj.getString("avatar"),
                     jsObj.getString("title"), jsObj.getString("tag"),
                     jsObj.getString("time"), jsObj.getInt("thumbUps")));
         }
@@ -140,7 +160,7 @@ public class PostsListActivity extends AppActivity
     @Override
     public void onItemClick(RecyclerView recyclerView, View itemView, int position) {
         PostItem postItem = mAdapter.getItem(position);
-        Intent intent = new Intent(this, PostDetailActivity.class);
+        Intent intent = new Intent(getAttachActivity(), PostDetailActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString("userName", userName);
         bundle.putString("postId", postItem.id);

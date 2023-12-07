@@ -38,13 +38,10 @@
             style="@style/EditTextStyle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/dp_10"
-            android:layout_marginEnd="@dimen/dp_10"
-            android:background="@drawable/bg_progressbar"
+            android:background="@drawable/bg_comment_corner"
             android:gravity="center_horizontal"
             android:hint="@string/add_comment"
             android:imeOptions="actionDone"
-            android:layout_marginBottom="@dimen/dp_10"
             android:importantForAutofill="no"
             android:inputType="text" />
     </LinearLayout>

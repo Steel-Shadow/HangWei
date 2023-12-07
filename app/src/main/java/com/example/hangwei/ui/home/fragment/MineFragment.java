@@ -3,11 +3,16 @@ package com.example.hangwei.ui.home.fragment;
 import static android.content.Context.MODE_PRIVATE;
 
 import android.content.ActivityNotFoundException;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,9 +24,15 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.example.hangwei.R;
 import com.example.hangwei.app.TitleBarFragment;
+import com.example.hangwei.base.BaseDialog;
 import com.example.hangwei.consts.ToastConst;
+import com.example.hangwei.data.AsyncHttpUtil;
+import com.example.hangwei.data.Ports;
+import com.example.hangwei.dialog.InputDialog;
 import com.example.hangwei.dialog.MessageDialog;
+import com.example.hangwei.dialog.ShareDialog;
 import com.example.hangwei.ui.commu.friends.detail.FriendDetailActivity;
+import com.example.hangwei.ui.commu.friends.list.FriendsListActivity;
 import com.example.hangwei.ui.home.activity.FavoriteActivity;
 import com.example.hangwei.ui.home.activity.HistoryActivity;
 import com.example.hangwei.ui.home.activity.HomeActivity;
@@ -37,10 +48,19 @@ import com.hjq.permissions.OnPermissionCallback;
 import com.hjq.permissions.Permission;
 import com.hjq.permissions.XXPermissions;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 public class MineFragment extends TitleBarFragment<HomeActivity> {
     private ImageView avatarView;
@@ -52,11 +72,14 @@ public class MineFragment extends TitleBarFragment<HomeActivity> {
     private ImageView historyView;
     private ImageView starView;
     private ImageView postsView;
+    private ImageView followView;
     private TextView settingView;
     private TextView inviteView;
     private TextView contactView;
     private TextView supportView;
     private AppCompatButton btn_logout;
+    private SharedPreferences prefs;
+    private SharedPreferences.Editor editor;
 
     public static MineFragment newInstance() {
         return new MineFragment();
@@ -76,6 +99,7 @@ public class MineFragment extends TitleBarFragment<HomeActivity> {
         historyView = findViewById(R.id.mine_history);
         starView = findViewById(R.id.mine_star);
         postsView = findViewById(R.id.mine_posts);
+        followView = findViewById(R.id.mine_follows);
         settingView = findViewById(R.id.mine_setting);
         inviteView = findViewById(R.id.mine_invite);
         contactView = findViewById(R.id.mine_contact);
@@ -137,10 +161,31 @@ public class MineFragment extends TitleBarFragment<HomeActivity> {
             startActivity(intent);
         });
 
+        followView.setOnClickListener(view -> startActivity(FriendsListActivity.class));
+
         settingView.setOnClickListener(view -> startActivity(SettingsActivity.class));
 
         inviteView.setOnClickListener(view -> {
-            
+            new ShareDialog.Builder(getAttachActivity())
+                    .show();
+        });
+
+        contactView.setOnClickListener(view -> {
+            new MessageDialog.Builder(getActivity())
+                    .setTitle("温馨提示")
+                    .setMessage("欢迎联系开发者，我的邮箱是 21371429@buaa.edu.cn")
+                    .setConfirm("确定")
+                    .setCancel("取消")
+                    .setListener(dialog1 -> {
+                        new InputDialog.Builder(getAttachActivity())
+                                .setTitle("意见反馈")
+                                .setHint("您的意见反馈完全匿名，欢迎畅所欲言。")
+                                .setConfirm("确定")
+                                .setCancel("取消")
+                                .setListener((dialog, content) -> doFeedBack(content))
+                                .show();
+                    })
+                    .show();
         });
 
         supportView.setOnClickListener(view -> {
@@ -167,10 +212,54 @@ public class MineFragment extends TitleBarFragment<HomeActivity> {
 
     @Override
     protected void initData() {
-        SharedPreferences prefs = getAttachActivity().getSharedPreferences("BasePrefs", MODE_PRIVATE);
+        prefs = getAttachActivity().getSharedPreferences("BasePrefs", MODE_PRIVATE);
+        editor = prefs.edit();
+
         userName = prefs.getString("usedName", "小航兵");
         userNameView.setText(userName);
+
         email.setText(prefs.getString("usedEmail", "邮箱"));
+
+        String avatar = prefs.getString("usedAvatar", null);
+        if (!TextUtils.isEmpty(avatar)) {
+            mAvatarUrl = Uri.parse(avatar);
+            GlideApp.with(getActivity())
+                    .load(mAvatarUrl)
+                    .transform(new MultiTransformation<>(new CenterCrop(), new CircleCrop()))
+                    .into(avatarView);
+        }
+    }
+
+    private void doFeedBack(String content) {
+        if (TextUtils.isEmpty(content)) {
+            ToastUtil.toast("请说明举报理由", ToastConst.warnStyle);
+            return;
+        }
+        HashMap<String, String> params = new HashMap<>();
+        params.put("content", content);
+        AsyncHttpUtil.httpPost(Ports.userFeedback, params, new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                ToastUtil.toast("服务器有一些小问题~", ToastConst.warnStyle);
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                System.out.println(response.message());
+                try {
+                    JSONObject jsonObject = new JSONObject(response.body().string());
+                    if (jsonObject.getInt("code") == 0) {
+                        ToastUtil.toast(jsonObject.getString("msg"), ToastConst.errorStyle);
+                    } else {
+                        ToastUtil.toast("已经收到您的反馈，您的每一份建议都在帮助<航味>进步，感谢支持", ToastConst.hintStyle);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } finally {
+                    response.body().close(); // 关闭响应体
+                }
+            }
+        });
     }
 
     /** 裁剪图片 */
@@ -209,9 +298,89 @@ public class MineFragment extends TitleBarFragment<HomeActivity> {
         } else {
             mAvatarUrl = Uri.fromFile(file);
         }
-        GlideApp.with(getActivity())
-                .load(mAvatarUrl)
-                .transform(new MultiTransformation<>(new CenterCrop(), new CircleCrop()))
-                .into(avatarView);
+        uploadImage(getAbsolutePathFromContentUri(getAttachActivity(), mAvatarUrl));
+    }
+
+    private void uploadImage(String filepath) {
+        AsyncHttpUtil.postImage(filepath, new Callback() {
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                System.out.println(response.message());
+                try {
+                    JSONObject jsonObject = new JSONObject(response.body().string());
+                    if (jsonObject.getBoolean("status")) {
+                        getAttachActivity().runOnUiThread(() -> {
+                            try {
+                                String url = jsonObject.getJSONObject("data").getJSONObject("links").getString("url");
+                                mAvatarUrl = Uri.parse(url);
+                                editor.putString("usedAvatar", url);
+                                editor.apply();
+                                updateAvatar(url);
+                                GlideApp.with(getActivity())
+                                        .load(mAvatarUrl)
+                                        .transform(new MultiTransformation<>(new CenterCrop(), new CircleCrop()))
+                                        .into(avatarView);
+                            } catch (JSONException e) {
+                                throw new RuntimeException(e);
+                            }
+                        });
+                        response.close();
+                    }
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                } finally {
+                    response.body().close(); // 关闭响应体
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                ToastUtil.toast("图片上传失败", ToastConst.warnStyle);
+            }
+        });
+    }
+
+    private void updateAvatar(String url) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("id", prefs.getString("usedID", null));
+        params.put("avatar", url);
+
+        AsyncHttpUtil.httpPost(Ports.userModifyUrl, params, new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                ToastUtil.toast("服务器有一点小问题~，请稍候再试", ToastConst.warnStyle);
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                System.out.println(response.message());
+                try {
+                    JSONObject jsonObject = new JSONObject(response.body().string());
+                    if (jsonObject.getInt("code") == 0) {
+                        ToastUtil.toast(jsonObject.getString("msg"), ToastConst.errorStyle);
+                    } else {
+                        ToastUtil.toast("上传成功", ToastConst.successStyle);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } finally {
+                    response.body().close(); // 关闭响应体
+                }
+            }
+        });
+    }
+
+    private static String getAbsolutePathFromContentUri(Context context, Uri contentUri) {
+        String absolutePath = null;
+        String[] projection = {MediaStore.MediaColumns.DATA};
+        ContentResolver contentResolver = context.getContentResolver();
+        Cursor cursor = contentResolver.query(contentUri, projection, null, null, null);
+        if (cursor != null && cursor.moveToFirst()) {
+            int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
+            absolutePath = cursor.getString(columnIndex);
+            cursor.close();
+        }
+        return absolutePath;
     }
 }
