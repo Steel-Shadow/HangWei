@@ -31,7 +31,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Locale;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -55,9 +54,12 @@ public final class DishInfoActivity extends AppActivity
     public Favorite mFavorite;
     private ToggleButton btn_favor;
     private TextView dish_favorCnt;
+    private TextView mLocation;
 
     private RecyclerView mTabView;
     private ViewPager mViewPager;
+
+    private CommentFragment commentFragment;
 
     private TabAdapter mTabAdapter;
     private FragmentPagerAdapter<BaseFragment<?>> mPagerAdapter;
@@ -85,7 +87,9 @@ public final class DishInfoActivity extends AppActivity
         dish_favorCnt = findViewById(R.id.dish_info_favor_count);
 
         mPagerAdapter = new FragmentPagerAdapter<>(this);
-        mPagerAdapter.addFragment(CommentFragment.newInstance(), "评价");
+
+        commentFragment = CommentFragment.newInstance();
+        mPagerAdapter.addFragment(commentFragment, "评价");
         mPagerAdapter.addFragment(SideDishFragment.newInstance(), "餐品搭配");
         mViewPager.setAdapter(mPagerAdapter);
         mViewPager.addOnPageChangeListener(this);
@@ -94,6 +98,8 @@ public final class DishInfoActivity extends AppActivity
         mTabView.setAdapter(mTabAdapter);
 
         btn_favor.setOnClickListener(view -> doFavor());
+
+        mLocation = findViewById(R.id.dish_info_location);
     }
 
     @Override
@@ -109,6 +115,7 @@ public final class DishInfoActivity extends AppActivity
         mDishId = bundle.getString("id");
         mName.setText(bundle.getString("name"));
         mPrice.setText(bundle.getString("price"));
+        mLocation.setText(bundle.getString("location"));
         setFavor();
         favorCnt = bundle.getInt("favorCnt");
         dish_favorCnt.setText(String.valueOf(favorCnt));
@@ -263,6 +270,7 @@ public final class DishInfoActivity extends AppActivity
     @Override
     public void finish() {
         resIntent.putExtra("favorCnt", favorCnt);
+        resIntent.putExtra("commentCnt", commentFragment.getmCommentCount());
         setResult(Activity.RESULT_OK, resIntent);
         super.finish();
     }

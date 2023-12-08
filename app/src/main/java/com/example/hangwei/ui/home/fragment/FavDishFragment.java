@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.hangwei.R;
 import com.example.hangwei.app.AppActivity;
 import com.example.hangwei.app.TitleBarFragment;
+import com.example.hangwei.ui.home.activity.FavoriteActivity;
 import com.example.hangwei.ui.home.element.Dish;
 import com.example.hangwei.base.BaseActivity;
 import com.example.hangwei.base.BaseAdapter;
@@ -40,7 +41,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
-public class FavDishFragment extends TitleBarFragment<AppActivity>
+public class FavDishFragment extends TitleBarFragment<FavoriteActivity>
         implements OnRefreshLoadMoreListener, BaseAdapter.OnItemClickListener {
     public static FavDishFragment newInstance() {
         return new FavDishFragment();
@@ -71,7 +72,8 @@ public class FavDishFragment extends TitleBarFragment<AppActivity>
     @Override
     protected void initData() {
         userId = getContext().getSharedPreferences("BasePrefs", MODE_PRIVATE).getString("usedID", "null");
-        fresh(() -> {});
+        fresh(() -> {
+        });
     }
 
     public void fresh(Runnable afterResponse) {
@@ -81,6 +83,7 @@ public class FavDishFragment extends TitleBarFragment<AppActivity>
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 ToastUtil.toast("Get dish data http fail!", ToastConst.errorStyle);
+                getAttachActivity().runOnUiThread(afterResponse);
             }
 
             @Override
@@ -93,20 +96,14 @@ public class FavDishFragment extends TitleBarFragment<AppActivity>
 
                     if (jsonObject.getInt("code") == 0) {
                         ToastUtil.toast(jsonObject.getString("msg"), ToastConst.errorStyle);
+                        getAttachActivity().runOnUiThread(afterResponse);
                     } else {
                         JSONObject data = jsonObject.getJSONObject("data");
                         JSONArray jsonDishes = data.getJSONArray("dishes");
 
                         for (int dish_index = 0; dish_index < jsonDishes.length(); dish_index++) {
                             JSONObject jsonDish = jsonDishes.getJSONObject(dish_index);
-                            Dish dish = new Dish(
-                                    jsonDish.getString("dishId"),
-                                    jsonDish.getString("dishName"),
-                                    jsonDish.getString("campus"),
-                                    jsonDish.getString("price"),
-                                    jsonDish.getInt("likeCount"),
-                                    jsonDish.getInt("commentCount"),
-                                    jsonDish.getString("picture"));
+                            Dish dish = new Dish(jsonDish);
                             dishes.add(dish);
                         }
                         getAttachActivity().runOnUiThread(() -> {
@@ -115,6 +112,7 @@ public class FavDishFragment extends TitleBarFragment<AppActivity>
                         });
                     }
                 } catch (JSONException e) {
+                    getAttachActivity().runOnUiThread(afterResponse);
                     e.printStackTrace();
                 } finally {
                     response.body().close(); // 关闭响应体
@@ -142,6 +140,7 @@ public class FavDishFragment extends TitleBarFragment<AppActivity>
         bundle.putString("price", dish.price);
         bundle.putString("picUrl", dish.foodPicUrl);
         bundle.putInt("favorCnt", dish.likeCount);
+        bundle.putString("location", dish.location);
         intent.putExtras(bundle);
 
         startActivity(intent);

@@ -74,9 +74,9 @@
                     <ImageView
                         android:layout_width="30dp"
                         android:layout_height="30dp"
+                        android:layout_gravity="bottom"
                         android:layout_marginHorizontal="5dp"
-                        android:src="@drawable/money"
-                        android:layout_gravity="bottom"/>
+                        android:src="@drawable/money" />
 
                     <TextView
                         android:id="@+id/dish_info_price"
@@ -90,27 +90,51 @@
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:gravity="right"
-                        android:paddingEnd="15dp"
-                        android:padding="5dp">
+                        android:padding="5dp"
+                        android:paddingEnd="15dp">
 
                         <ToggleButton
                             android:id="@+id/dish_info_favor"
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:background="@drawable/post_favorbtn"
-                            android:textOn=""
-                            android:textOff="" />
+                            android:textOff=""
+                            android:textOn="" />
 
                         <TextView
                             android:id="@+id/dish_info_favor_count"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dp"
                             android:layout_gravity="bottom"
+                            android:layout_marginLeft="5dp"
                             android:text="999"
                             android:textSize="15sp" />
 
                     </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="5dp">
+
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:src="@drawable/location" />
+
+                    <TextView
+                        android:id="@+id/dish_info_location"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="@dimen/dp_5"
+                        android:text="食堂"
+                        android:textColor="@color/gray"
+                        android:textSize="16sp" />
 
                 </LinearLayout>
 

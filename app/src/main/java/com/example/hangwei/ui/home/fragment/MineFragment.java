@@ -232,7 +232,7 @@ public class MineFragment extends TitleBarFragment<HomeActivity> {
 
     private void doFeedBack(String content) {
         if (TextUtils.isEmpty(content)) {
-            ToastUtil.toast("请说明举报理由", ToastConst.warnStyle);
+            ToastUtil.toast("请说些什么哦~", ToastConst.warnStyle);
             return;
         }
         HashMap<String, String> params = new HashMap<>();

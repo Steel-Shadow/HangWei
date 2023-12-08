@@ -202,9 +202,9 @@
 
     <!-- 关于 -->
     <string name="about_title">关于我们</string>
-    <string name="about_author"><font color="#85b84f">Android</font> 轮子哥</string>
+    <string name="about_author">王艺杰 刘伟哲 苏弘康 任天行\n</string>
 
-    <string name="about_copyright">Copyright © 2018 &#8211; 2021</string>
+    <string name="about_copyright">Copyright © 2023 &#8211; ?</string>
 
     <!-- 忘记密码 -->
     <string name="password_forget_title">忘记密码</string>

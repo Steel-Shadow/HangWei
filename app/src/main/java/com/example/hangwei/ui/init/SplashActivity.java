@@ -9,15 +9,29 @@ import android.view.View;
 import androidx.annotation.NonNull;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.example.hangwei.consts.ToastConst;
+import com.example.hangwei.data.AsyncHttpUtil;
+import com.example.hangwei.data.Ports;
 import com.example.hangwei.ui.home.activity.HomeActivity;
+import com.example.hangwei.utils.ToastUtil;
 import com.gyf.immersionbar.BarHide;
 import com.gyf.immersionbar.ImmersionBar;
 import com.example.hangwei.R;
 import com.example.hangwei.app.AppActivity;
 import com.example.hangwei.widget.view.SlantedTextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.HashMap;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
+
 /**
- *    desc   : 闪屏界面
+ * desc   : 闪屏界面
  */
 public final class SplashActivity extends AppActivity {
 

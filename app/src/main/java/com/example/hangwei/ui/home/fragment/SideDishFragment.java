@@ -12,11 +12,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hangwei.R;
+import com.example.hangwei.app.TitleBarFragment;
 import com.example.hangwei.ui.home.element.Dish;
-import com.example.hangwei.ui.home.element.Favorite;
-import com.example.hangwei.base.BaseActivity;
 import com.example.hangwei.base.BaseAdapter;
-import com.example.hangwei.base.BaseFragment;
 import com.example.hangwei.consts.ToastConst;
 import com.example.hangwei.data.AsyncHttpUtil;
 import com.example.hangwei.data.Ports;
@@ -40,7 +38,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
-public class SideDishFragment extends BaseFragment<BaseActivity> implements OnRefreshLoadMoreListener,
+public class SideDishFragment extends TitleBarFragment<DishInfoActivity> implements OnRefreshLoadMoreListener,
         BaseAdapter.OnItemClickListener {
     private static final int MAX_LIST_ITEM_NUM = Integer.MAX_VALUE;
     private static final int LIST_ITEM_ADD_NUM = 10;
@@ -84,6 +82,7 @@ public class SideDishFragment extends BaseFragment<BaseActivity> implements OnRe
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 ToastUtil.toast("Post sideDish http fail!", ToastConst.errorStyle);
+                getAttachActivity().runOnUiThread(afterResponse);
             }
 
             @Override
@@ -102,14 +101,7 @@ public class SideDishFragment extends BaseFragment<BaseActivity> implements OnRe
 
                         for (int i = 0; i < sideDishes.length(); i++) {
                             JSONObject jsonDish = sideDishes.getJSONObject(i);
-                            Dish dish = new Dish(
-                                    jsonDish.getString("dishId"),
-                                    jsonDish.getString("dishName"),
-                                    jsonDish.getString("campus"),
-                                    jsonDish.getString("price"),
-                                    jsonDish.getInt("likeCount"),
-                                    jsonDish.getInt("commentCount"),
-                                    jsonDish.getString("picture"));
+                            Dish dish = new Dish(jsonDish);
                             dishes.add(dish);
                         }
 
@@ -123,6 +115,7 @@ public class SideDishFragment extends BaseFragment<BaseActivity> implements OnRe
                         });
                     }
                 } catch (JSONException e) {
+                    getAttachActivity().runOnUiThread(afterResponse);
                     e.printStackTrace();
                 }
             }
@@ -135,11 +128,7 @@ public class SideDishFragment extends BaseFragment<BaseActivity> implements OnRe
 
     @Override
     public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-        updateDishData(false, () -> {
-            mAdapter.setLastPage(mAdapter.getCount() >= MAX_LIST_ITEM_NUM);
-            mRefreshLayout.setNoMoreData(mAdapter.isLastPage());
-            mRefreshLayout.finishLoadMore();
-        });
+        mRefreshLayout.finishLoadMore();
     }
 
     @Override
@@ -152,10 +141,12 @@ public class SideDishFragment extends BaseFragment<BaseActivity> implements OnRe
         bundle.putString("price", dish.price);
         bundle.putString("picUrl", dish.foodPicUrl);
         bundle.putInt("favorCnt", dish.likeCount);
+        bundle.putString("location", dish.location);
         intent.putExtras(bundle);
         startActivityForResult(intent, (resultCode, data) -> {
             if (resultCode == RESULT_OK && data != null) {
                 dish.setLikeCount(data.getIntExtra("favorCnt", dish.likeCount));
+                dish.setCommentCount(data.getIntExtra("commentCnt", dish.commentCount));
                 mAdapter.setItem(position, dish);
             }
         });

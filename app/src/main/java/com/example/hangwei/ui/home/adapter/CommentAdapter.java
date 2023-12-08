@@ -1,6 +1,7 @@
 package com.example.hangwei.ui.home.adapter;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -8,8 +9,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.MultiTransformation;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.example.hangwei.R;
 import com.example.hangwei.app.AppAdapter;
+import com.example.hangwei.data.glide.GlideApp;
 import com.example.hangwei.ui.home.element.Comment;
 
 /**
@@ -44,7 +49,10 @@ public final class CommentAdapter extends AppAdapter<Comment> {
         @Override
         public void onBindView(int position) {
             Comment comment = getItem(position);
-            Glide.with(this.getItemView()).load(comment.picUrl).into(mUserPic);
+            GlideApp.with(getContext())
+                    .load(Uri.parse(comment.picUrl))
+                    .transform(new MultiTransformation<>(new CenterCrop(), new CircleCrop()))
+                    .into(mUserPic);
             mUserName.setText(comment.userName);
             mDate.setText(comment.date);
             mText.setText(comment.text);

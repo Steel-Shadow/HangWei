@@ -79,21 +79,12 @@ public class SettingsActivity extends AppActivity
             startActivity(FindPwdActivity.class);
 
         } else if (viewId == R.id.settings_update) {
-            // 本地的版本码和服务器的进行比较
-            if (20 > AppConfig.getVersionCode()) {
-                new UpdateDialog.Builder(this)
-                        .setVersionName("2.0")
-                        .setForceUpdate(false)
-                        .setUpdateLog("修复Bug\n优化用户体验")
-                        .setDownloadUrl("https://down.qq.com/qqweb/QQ_1/android_apk/Android_8.5.0.5025_537066738.apk")
-                        .setFileMd5("560017dc94e8f9b65f4ca997c7feb326")
-                        .show();
-            } else {
-                ToastUtil.toast("当前已是最新版本", ToastConst.successStyle);
-            }
+            
+            BrowserActivity.start(this, "https://github.com/Steel-Shadow/HangWei/Releases/latest");
+
         } else if (viewId == R.id.settings_agreement) {
 
-            BrowserActivity.start(this, "https://github.com/Steel-Shadow/HangWei");//todo: 修改了网址
+            BrowserActivity.start(this, "https://github.com/Steel-Shadow/HangWei");
 
         } else if (viewId == R.id.settings_about) {
 

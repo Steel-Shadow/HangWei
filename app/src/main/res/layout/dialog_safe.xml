@@ -47,7 +47,7 @@
                 android:ellipsize="end"
                 android:hint="请输入验证码"
                 android:inputType="number"
-                android:maxLength="@integer/sms_code_length"
+                android:maxLength="6"
                 android:paddingHorizontal="@dimen/dp_20"
                 android:paddingVertical="@dimen/dp_10"
                 android:singleLine="true"

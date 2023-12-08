@@ -13,10 +13,19 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:elevation="0px">
 
+        <com.hjq.bar.TitleBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#b0FFD700"
+            app:title="收藏">
+
+        </com.hjq.bar.TitleBar>
+
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="#b0FFD700"
             app:layout_collapseMode="pin">
 
             <androidx.recyclerview.widget.RecyclerView

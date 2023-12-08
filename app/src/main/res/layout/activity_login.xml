@@ -12,21 +12,14 @@
     tools:layoutAnimation="@null">
 
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/login_logo"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_marginTop="25dp"
-        android:layout_marginBottom="10dp"
-        android:src="@drawable/ic_app" />
-
-
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/login_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:layout_marginBottom="20dp"
         android:text="@string/login_text"
-        android:textColor="@color/yellow"
+        android:textColor="@color/black75"
         android:textSize="35dp" />
 
 
@@ -35,7 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="40dp"
-        android:background="@drawable/bg_corner"
+        android:background="@drawable/bg_login_corner"
         android:alpha="0.83"
         android:paddingHorizontal="10dp"
         android:orientation="vertical">
@@ -49,12 +42,11 @@
             android:drawableStart="@drawable/ic_user"
             android:drawablePadding="10dp"
             android:hint="@string/login_name_input"
-            android:inputType="textVisiblePassword"
             android:singleLine="true"
             app:regexType="anything" />
 
         <View
-            style="@style/HorizontalLineStyle"
+            style="@style/HorizontalLineStyle1"
             android:layout_marginHorizontal="5dp" />
 
         <com.example.hangwei.widget.view.PasswordEditText
@@ -78,6 +70,7 @@
         android:id="@+id/ll_login_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
         android:paddingHorizontal="40dp"
         android:alpha="0.83"
         android:orientation="vertical">
@@ -86,6 +79,8 @@
             android:id="@+id/login_find_password"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/bg_login_corner"
+            android:paddingLeft="5dp"
             android:text="@string/login_find_password"
             android:textColor="@color/black80"
             android:fontFamily="@font/open_sans_light"
@@ -97,19 +92,21 @@
 
         <com.example.hangwei.widget.view.SubmitButton
             android:id="@+id/login_btn_login"
-            style="@style/ButtonStyle"
+            style="@style/NewButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:text="@string/login_text" />
+            android:layout_marginTop="50dp"
+            android:text="@string/login_text"
+            android:textColor="@color/black65"/>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/login_btn_register"
-            style="@style/ButtonStyle"
+            style="@style/NewButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:text="@string/login_register" />
+            android:text="@string/login_register"
+            android:textColor="@color/black65"/>
 
     </LinearLayout>
 

@@ -3,6 +3,7 @@ package com.example.hangwei.ui.home.fragment;
 import static android.content.Context.MODE_PRIVATE;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -13,10 +14,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hangwei.R;
+import com.example.hangwei.app.TitleBarFragment;
 import com.example.hangwei.ui.home.element.Comment;
-import com.example.hangwei.base.BaseActivity;
 import com.example.hangwei.base.BaseAdapter;
-import com.example.hangwei.base.BaseFragment;
 import com.example.hangwei.consts.ToastConst;
 import com.example.hangwei.data.AsyncHttpUtil;
 import com.example.hangwei.data.Ports;
@@ -43,7 +43,7 @@ import okhttp3.Response;
 /**
  * desc   : 餐品详情页 的 评论区
  */
-public final class CommentFragment extends BaseFragment<BaseActivity>
+public final class CommentFragment extends TitleBarFragment<DishInfoActivity>
         implements OnRefreshLoadMoreListener,
         BaseAdapter.OnItemClickListener {
     private static final int MAX_LIST_ITEM_NUM = Integer.MAX_VALUE;
@@ -59,6 +59,10 @@ public final class CommentFragment extends BaseFragment<BaseActivity>
     private TextView mCommentCountTextView;
     private int mCommentCount;
     private CommentAdapter mAdapter;
+
+    private String userId;
+    private String userPicUrl;
+    private String userName;
 
     @Override
     protected int getLayoutId() {
@@ -84,23 +88,11 @@ public final class CommentFragment extends BaseFragment<BaseActivity>
                 // 隐藏光标
                 mAddComment.setCursorVisible(false);
 
-                boolean isForbidden = getContext().getSharedPreferences("BasePrefs", MODE_PRIVATE).getBoolean("isForbidden", false);
-                if (isForbidden) {
-                    ToastUtil.toast("您已被禁言，无法评论", ToastConst.warnStyle);
-                    return false;
-                }
-
-                String userPicUrl = getContext().getSharedPreferences("BasePrefs", MODE_PRIVATE).getString("usedAvatar", "null");
-                String userName = getContext().getSharedPreferences("BasePrefs", MODE_PRIVATE).getString("usedName", "我");
-
-                mAdapter.addItem(0, new Comment(userName, userPicUrl, "刚刚", mAddComment.getText().toString()));
-
-                String userId = getContext().getSharedPreferences("BasePrefs", MODE_PRIVATE).getString("usedID", "null");
-
-                if (!TextUtils.isEmpty(mAddComment.getText().toString())) {
-                    addComment(userId, mAddComment.getText().toString());
-                    mAddComment.setText("");
-                }
+                fetchPer(() -> {
+                    if (!TextUtils.isEmpty(mAddComment.getText().toString())) {
+                        addComment(userId, mAddComment.getText().toString());
+                    }
+                });
             }
             return false;
         });
@@ -108,8 +100,16 @@ public final class CommentFragment extends BaseFragment<BaseActivity>
 
     @Override
     protected void initData() {
+        SharedPreferences base = getContext().getSharedPreferences("BasePrefs", MODE_PRIVATE);
+        userId = base.getString("usedID", "null");
+        userPicUrl = base.getString("usedAvatar", "null");
+        userName = base.getString("usedName", "我");
         updateCommentData(true, () -> {
         });
+    }
+
+    public int getmCommentCount() {
+        return mCommentCount;
     }
 
     /**
@@ -125,6 +125,7 @@ public final class CommentFragment extends BaseFragment<BaseActivity>
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 ToastUtil.toast("餐品评论获取失败，请稍候再试", ToastConst.warnStyle);
+                getAttachActivity().runOnUiThread(afterResponse);
             }
 
             @Override
@@ -161,6 +162,39 @@ public final class CommentFragment extends BaseFragment<BaseActivity>
                         });
                     }
                 } catch (JSONException e) {
+                    getAttachActivity().runOnUiThread(afterResponse);
+                    e.printStackTrace();
+                } finally {
+                    response.body().close(); // 关闭响应体
+                }
+            }
+        });
+    }
+
+    private void fetchPer(Runnable afterResponse) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("userName", userName);
+        AsyncHttpUtil.httpPost(Ports.userIsSilence, params, new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                ToastUtil.toast("服务器有一些小问题~", ToastConst.warnStyle);
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                System.out.println(response.message());
+                try {
+                    JSONObject jsonObject = new JSONObject(response.body().string());
+                    if (jsonObject.getInt("code") == 0) {
+                        ToastUtil.toast(jsonObject.getString("msg"), ToastConst.errorStyle);
+                    } else {
+                        if (jsonObject.getJSONObject("data").getBoolean("isSilence")) {
+                            ToastUtil.toast("您已被禁言，无法评论", ToastConst.warnStyle);
+                        } else {
+                            getAttachActivity().runOnUiThread(() -> afterResponse.run());
+                        }
+                    }
+                } catch (JSONException e) {
                     e.printStackTrace();
                 } finally {
                     response.body().close(); // 关闭响应体
@@ -193,6 +227,7 @@ public final class CommentFragment extends BaseFragment<BaseActivity>
                         getAttachActivity().runOnUiThread(() -> {
                             mCommentCount += 1;
                             mCommentCountTextView.setText(String.format(getString(R.string.comment_count), mCommentCount));
+                            mAdapter.addItem(0, new Comment(userName, userPicUrl, "刚刚", mAddComment.getText().toString()));
                             mAddComment.setText("");
                         });
                     }
@@ -228,10 +263,6 @@ public final class CommentFragment extends BaseFragment<BaseActivity>
 
     @Override
     public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-        updateCommentData(false, () -> {
-            mRefreshLayout.finishLoadMore();
-            mAdapter.setLastPage(mAdapter.getCount() >= MAX_LIST_ITEM_NUM);
-            mRefreshLayout.setNoMoreData(mAdapter.isLastPage());
-        });
+        mRefreshLayout.finishLoadMore();
     }
 }

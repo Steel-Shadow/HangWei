@@ -72,6 +72,7 @@ public class FriendsListActivity extends AppActivity
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 ToastUtil.toast("服务器有一些小问题~", ToastConst.warnStyle);
+                runOnUiThread(() -> afterResponse.run());
             }
 
             @Override
@@ -81,6 +82,7 @@ public class FriendsListActivity extends AppActivity
                     JSONObject jsonObject = new JSONObject(response.body().string());
                     if (jsonObject.getInt("code") == 0) {
                         ToastUtil.toast(jsonObject.getString("msg"), ToastConst.errorStyle);
+                        runOnUiThread(() -> afterResponse.run());
                     } else {
                         if (!jsonObject.isNull("data")) {
                             JSONArray data = jsonObject.getJSONArray("data");
@@ -93,10 +95,14 @@ public class FriendsListActivity extends AppActivity
                                 afterResponse.run();
                             });
                         } else {
-                            mAdapter.setData(new ArrayList<>());
+                            runOnUiThread(() -> {
+                                mAdapter.setData(new ArrayList<>());
+                                afterResponse.run();
+                            });
                         }
                     }
                 } catch (JSONException e) {
+                    runOnUiThread(afterResponse);
                     e.printStackTrace();
                 } finally {
                     response.body().close(); // 关闭响应体

@@ -65,33 +65,49 @@ public class AddPostActivity extends AppActivity {
 
         helpTag.setOnClickListener(view -> {
             helpTag.setTextColor(Color.parseColor("#FFA500"));
+            helpTag.setBackground(getDrawable(R.drawable.tag2));
             recommendTag.setTextColor(Color.parseColor("#FFC0CB"));
+            recommendTag.setBackground(getDrawable(R.drawable.tag));
             hateTag.setTextColor(Color.parseColor("#FFC0CB"));
+            hateTag.setBackground(getDrawable(R.drawable.tag));
             otherTag.setTextColor(Color.parseColor("#FFC0CB"));
+            otherTag.setBackground(getDrawable(R.drawable.tag));
             sTag = "求助";
         });
 
         recommendTag.setOnClickListener(view -> {
             helpTag.setTextColor(Color.parseColor("#FFC0CB"));
+            helpTag.setBackground(getDrawable(R.drawable.tag));
             recommendTag.setTextColor(Color.parseColor("#FFA500"));
+            recommendTag.setBackground(getDrawable(R.drawable.tag2));
             hateTag.setTextColor(Color.parseColor("#FFC0CB"));
+            hateTag.setBackground(getDrawable(R.drawable.tag));
             otherTag.setTextColor(Color.parseColor("#FFC0CB"));
+            otherTag.setBackground(getDrawable(R.drawable.tag));
             sTag = "安利";
         });
 
         hateTag.setOnClickListener(view -> {
             helpTag.setTextColor(Color.parseColor("#FFC0CB"));
+            helpTag.setBackground(getDrawable(R.drawable.tag));
             recommendTag.setTextColor(Color.parseColor("#FFC0CB"));
+            recommendTag.setBackground(getDrawable(R.drawable.tag));
             hateTag.setTextColor(Color.parseColor("#FFA500"));
+            hateTag.setBackground(getDrawable(R.drawable.tag2));
             otherTag.setTextColor(Color.parseColor("#FFC0CB"));
+            otherTag.setBackground(getDrawable(R.drawable.tag));
             sTag = "吐槽";
         });
 
         otherTag.setOnClickListener(view -> {
             helpTag.setTextColor(Color.parseColor("#FFC0CB"));
+            helpTag.setBackground(getDrawable(R.drawable.tag));
             recommendTag.setTextColor(Color.parseColor("#FFC0CB"));
+            recommendTag.setBackground(getDrawable(R.drawable.tag));
             hateTag.setTextColor(Color.parseColor("#FFC0CB"));
+            hateTag.setBackground(getDrawable(R.drawable.tag));
             otherTag.setTextColor(Color.parseColor("#FFA500"));
+            otherTag.setBackground(getDrawable(R.drawable.tag2));
             sTag = "其它";
         });
 

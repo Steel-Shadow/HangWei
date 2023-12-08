@@ -93,11 +93,12 @@ public final class WindowActivity extends AppActivity
     private void updateDishData(boolean setElseAdd, Runnable afterResponse) {
         HashMap<String, Object> params = new HashMap<>();
         System.out.println(mId);
-        params.put("windowId",mId);
+        params.put("windowId", mId);
         AsyncHttpUtil.httpPostForObject(Ports.windowDishes, params, new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 ToastUtil.toast("Get dish data http fail!", ToastConst.errorStyle);
+                runOnUiThread(() -> afterResponse.run());
             }
 
             @Override
@@ -116,14 +117,7 @@ public final class WindowActivity extends AppActivity
 
                         for (int dish_index = 0; dish_index < jsonDishes.length(); dish_index++) {
                             JSONObject jsonDish = jsonDishes.getJSONObject(dish_index);
-                            Dish dish = new Dish(
-                                    jsonDish.getString("dishId"),
-                                    jsonDish.getString("dishName"),
-                                    jsonDish.getString("campus"),
-                                    jsonDish.getString("price"),
-                                    jsonDish.getInt("likeCount"),
-                                    jsonDish.getInt("commentCount"),
-                                    jsonDish.getString("picture"));
+                            Dish dish = new Dish(jsonDish);
                             dishes.add(dish);
                         }
                         runOnUiThread(() -> {
@@ -164,11 +158,13 @@ public final class WindowActivity extends AppActivity
         bundle.putString("price", dish.price);
         bundle.putString("picUrl", dish.foodPicUrl);
         bundle.putInt("favorCnt", dish.likeCount);
+        bundle.putString("location", dish.location);
         intent.putExtras(bundle);
 
         startActivityForResult(intent, (resultCode, data) -> {
             if (resultCode == RESULT_OK && data != null) {
                 dish.setLikeCount(data.getIntExtra("favorCnt", dish.likeCount));
+                dish.setCommentCount(data.getIntExtra("commentCnt", dish.commentCount));
                 mAdapter.setItem(position, dish);
             }
         });

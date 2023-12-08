@@ -47,7 +47,7 @@ public final class DishFragment extends TitleBarFragment<AppActivity>
         implements OnRefreshLoadMoreListener,
         BaseAdapter.OnItemClickListener,
         XCollapsingToolbarLayout.OnScrimsListener {
-    private static final int MAX_LIST_ITEM_NUM = Integer.MAX_VALUE;
+    private static final int MAX_LIST_ITEM_NUM = 200;
     private static final int LIST_ITEM_ADD_NUM = 10;
 
     public static DishFragment newInstance() {
@@ -104,6 +104,7 @@ public final class DishFragment extends TitleBarFragment<AppActivity>
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 ToastUtil.toast("Get dish data http fail!", ToastConst.errorStyle);
+                getAttachActivity().runOnUiThread(afterResponse);
             }
 
             @Override
@@ -142,14 +143,7 @@ public final class DishFragment extends TitleBarFragment<AppActivity>
         List<Dish> dishes = new ArrayList<>();
         for (int i = 0; i < location.length(); i++) {
             JSONObject jsonDish = location.getJSONObject(i);
-            Dish dish = new Dish(
-                    jsonDish.getString("dishId"),
-                    jsonDish.getString("dishName"),
-                    jsonDish.getString("campus"),
-                    jsonDish.getString("price"),
-                    jsonDish.getInt("likeCount"),
-                    jsonDish.getInt("commentCount"),
-                    jsonDish.getString("picture"));
+            Dish dish = new Dish(jsonDish);
             dishes.add(dish);
         }
         return dishes;
@@ -173,13 +167,15 @@ public final class DishFragment extends TitleBarFragment<AppActivity>
         bundle.putString("id", dish.id);
         bundle.putString("name", dish.name);
         bundle.putString("price", dish.price);
-        bundle.putInt("favorCnt", dish.likeCount);
         bundle.putString("picUrl", dish.foodPicUrl);
+        bundle.putInt("favorCnt", dish.likeCount);
+        bundle.putString("location", dish.location);
         intent.putExtras(bundle);
 
         startActivityForResult(intent, (resultCode, data) -> {
             if (resultCode == RESULT_OK && data != null) {
                 dish.setLikeCount(data.getIntExtra("favorCnt", dish.likeCount));
+                dish.setCommentCount(data.getIntExtra("commentCnt", dish.commentCount));
                 mAdapter.setItem(position, dish);
             }
         });
@@ -200,11 +196,15 @@ public final class DishFragment extends TitleBarFragment<AppActivity>
 
     @Override
     public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-        updateDishData(false, () -> {
+        if (type == 3) {
             mRefreshLayout.finishLoadMore();
-            mAdapter.setLastPage(mAdapter.getCount() >= MAX_LIST_ITEM_NUM);
-            mRefreshLayout.setNoMoreData(mAdapter.isLastPage());
-        });
+        } else {
+            updateDishData(false, () -> {
+                mRefreshLayout.finishLoadMore();
+                mAdapter.setLastPage(mAdapter.getCount() >= MAX_LIST_ITEM_NUM);
+                mRefreshLayout.setNoMoreData(mAdapter.isLastPage());
+            });
+        }
     }
 
     @Override

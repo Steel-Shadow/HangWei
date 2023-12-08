@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.hangwei.R;
 import com.example.hangwei.app.AppActivity;
 import com.example.hangwei.app.TitleBarFragment;
+import com.example.hangwei.ui.home.activity.FavoriteActivity;
 import com.example.hangwei.ui.home.element.Canteen;
 import com.example.hangwei.base.BaseActivity;
 import com.example.hangwei.base.BaseAdapter;
@@ -40,7 +41,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
-public class FavCanteenFragment extends TitleBarFragment<AppActivity>
+public class FavCanteenFragment extends TitleBarFragment<FavoriteActivity>
         implements OnRefreshLoadMoreListener, BaseAdapter.OnItemClickListener {
     public static FavCanteenFragment newInstance() {
         return new FavCanteenFragment();
@@ -81,6 +82,7 @@ public class FavCanteenFragment extends TitleBarFragment<AppActivity>
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 ToastUtil.toast("Get dish data http fail!", ToastConst.errorStyle);
+                getAttachActivity().runOnUiThread(afterResponse);
             }
 
             @Override
@@ -92,8 +94,10 @@ public class FavCanteenFragment extends TitleBarFragment<AppActivity>
 
                     if (jsonObject.getInt("code") == 0) {
                         ToastUtil.toast(jsonObject.getString("msg"), ToastConst.errorStyle);
+                        getAttachActivity().runOnUiThread(afterResponse);
                     } else {
                         if (jsonObject.isNull("data")) {
+                            getAttachActivity().runOnUiThread(afterResponse);
                             return;
                         }
                         JSONObject data = jsonObject.getJSONObject("data");
@@ -108,6 +112,7 @@ public class FavCanteenFragment extends TitleBarFragment<AppActivity>
                         });
                     }
                 } catch (JSONException e) {
+                    getAttachActivity().runOnUiThread(afterResponse);
                     e.printStackTrace();
                 }
             }

@@ -17,6 +17,10 @@ import com.example.hangwei.data.AsyncHttpUtil;
 import com.example.hangwei.data.Ports;
 import com.example.hangwei.ui.home.adapter.HistoryAdapter;
 import com.example.hangwei.utils.ToastUtil;
+import com.example.hangwei.widget.view.WrapRecyclerView;
+import com.scwang.smart.refresh.layout.SmartRefreshLayout;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,13 +39,16 @@ import okhttp3.Response;
  * desc   : 历史展示页
  */
 public final class HistoryActivity extends AppActivity
-        implements BaseAdapter.OnItemClickListener {
+        implements OnRefreshLoadMoreListener, BaseAdapter.OnItemClickListener {
+
+    private String id;
+    private SmartRefreshLayout mRefreshLayout;
+    private WrapRecyclerView mRecyclerView;
+    private HistoryAdapter mAdapter;
+
     public static HistoryActivity newInstance() {
         return new HistoryActivity();
     }
-
-    private RecyclerView mRecyclerView;
-    private HistoryAdapter mAdapter;
 
     @Override
     protected int getLayoutId() {
@@ -50,23 +57,30 @@ public final class HistoryActivity extends AppActivity
 
     @Override
     protected void initView() {
+        mRefreshLayout = findViewById(R.id.history_layout);
         mRecyclerView = findViewById(R.id.history_list);
 
         mAdapter = new HistoryAdapter(this);
         mAdapter.setOnItemClickListener(this);
 
         mRecyclerView.setAdapter(mAdapter);
+        mRefreshLayout.setOnRefreshLoadMoreListener(this);
     }
 
     @Override
     protected void initData() {
+        id = getContext().getSharedPreferences("BasePrefs", MODE_PRIVATE).getString("usedID", "null");
+        getHistory(() -> {});
+    }
+
+    private void getHistory(Runnable afterResponse) {
         HashMap<String, Object> params = new HashMap<>();
-        String id = getContext().getSharedPreferences("BasePrefs", MODE_PRIVATE).getString("usedID", "null");
         params.put("userId", id);
         AsyncHttpUtil.httpPostForObject(Ports.dishHistoryGet, params, new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 ToastUtil.toast("Get history http fail!", ToastConst.errorStyle);
+                runOnUiThread(() -> afterResponse.run());
             }
 
             @Override
@@ -77,6 +91,7 @@ public final class HistoryActivity extends AppActivity
 
                     if (jsonObject.getInt("code") == 0) {
                         ToastUtil.toast(jsonObject.getString("msg"), ToastConst.errorStyle);
+                        runOnUiThread(() -> afterResponse.run());
                     } else {
                         JSONObject data = jsonObject.getJSONObject("data");
                         JSONArray jsonHistories = data.getJSONArray("histories");
@@ -89,9 +104,13 @@ public final class HistoryActivity extends AppActivity
 
                             histories.add(new History(new Dish(jsonDish), time));
                         }
-                        runOnUiThread(() -> mAdapter.setData(histories));
+                        runOnUiThread(() -> {
+                            mAdapter.setData(histories);
+                            afterResponse.run();
+                        });
                     }
                 } catch (JSONException e) {
+                    runOnUiThread(afterResponse);
                     e.printStackTrace();
                 }
             }
@@ -120,5 +139,15 @@ public final class HistoryActivity extends AppActivity
         intent.putExtras(bundle);
 
         startActivity(intent);
+    }
+
+    @Override
+    public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+        mRefreshLayout.finishLoadMore();
+    }
+
+    @Override
+    public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+        getHistory(() -> mRefreshLayout.finishRefresh());
     }
 }

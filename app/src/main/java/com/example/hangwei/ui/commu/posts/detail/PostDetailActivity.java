@@ -1,10 +1,8 @@
 package com.example.hangwei.ui.commu.posts.detail;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -126,30 +124,26 @@ public class PostDetailActivity extends AppActivity implements BaseAdapter.OnIte
         });
 
         btn_comment.setOnClickListener(view -> {
-            doComment();
+            fetchPer(() -> doComment());
             hideKeyboard(view);
         });
 
         comments_all.setOnClickListener(view -> {
-            mAdapter.setData(allComments);
             if (comments_all.getCurrentTextColor() == Color.BLACK) {
-                comments_all.setTextColor(Color.GRAY);
-                comments_owner.setTextColor(Color.BLACK);
-            } else {
-                comments_all.setTextColor(Color.BLACK);
-                comments_owner.setTextColor(Color.GRAY);
+                return;
             }
+            mAdapter.setData(allComments);
+            comments_all.setTextColor(Color.BLACK);
+            comments_owner.setTextColor(Color.GRAY);
         });
 
         comments_owner.setOnClickListener(view -> {
-            mAdapter.setData(ownerComments);
             if (comments_owner.getCurrentTextColor() == Color.BLACK) {
-                comments_owner.setTextColor(Color.GRAY);
-                comments_all.setTextColor(Color.BLACK);
-            } else {
-                comments_owner.setTextColor(Color.BLACK);
-                comments_all.setTextColor(Color.GRAY);
+                return;
             }
+            mAdapter.setData(ownerComments);
+            comments_owner.setTextColor(Color.BLACK);
+            comments_all.setTextColor(Color.GRAY);
         });
     }
 
@@ -242,6 +236,8 @@ public class PostDetailActivity extends AppActivity implements BaseAdapter.OnIte
     }
 
     public void setComments(JSONArray jsArray) throws JSONException {
+        allComments.clear();
+        ownerComments.clear();
         for (int i = 0; i < jsArray.length(); i++) {
             JSONObject jsObj = (JSONObject) jsArray.get(i);
             String commenter = jsObj.getString("userName");
@@ -249,19 +245,46 @@ public class PostDetailActivity extends AppActivity implements BaseAdapter.OnIte
                     new PostComment(jsObj.getString("id"), commenter,
                             jsObj.getString("content"), jsObj.getString("time"));
             allComments.add(postComment);
-            if (commenter.equals(userName)) {
+            if (commenter.equals(owner)) {
                 ownerComments.add(postComment);
             }
         }
         mAdapter.setData(allComments);
     }
 
+    private void fetchPer(Runnable afterResponse) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("userName", userName);
+        AsyncHttpUtil.httpPost(Ports.userIsSilence, params, new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                ToastUtil.toast("服务器有一些小问题~", ToastConst.warnStyle);
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                System.out.println(response.message());
+                try {
+                    JSONObject jsonObject = new JSONObject(response.body().string());
+                    if (jsonObject.getInt("code") == 0) {
+                        ToastUtil.toast(jsonObject.getString("msg"), ToastConst.errorStyle);
+                    } else {
+                        if (jsonObject.getJSONObject("data").getBoolean("isSilence")) {
+                            ToastUtil.toast("您已被禁言，无法评论", ToastConst.warnStyle);
+                        } else {
+                            runOnUiThread(() -> afterResponse.run());
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } finally {
+                    response.body().close(); // 关闭响应体
+                }
+            }
+        });
+    }
+
     public void doComment() {
-        boolean isForbidden = getSharedPreferences("BasePrefs", MODE_PRIVATE).getBoolean("isForbidden", false);
-        if (isForbidden) {
-            ToastUtil.toast("您已被禁言，无法评论", ToastConst.warnStyle);
-            return;
-        }
         String content = commentView.getText().toString();
         if (TextUtils.isEmpty(content)) {
             ToastUtil.toast("请说点啥再发送哦", ToastConst.warnStyle);

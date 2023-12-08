@@ -93,14 +93,7 @@ public class SearchActivity extends AppActivity
 
                         for (int dish_index = 0; dish_index < jsonDishes.length(); dish_index++) {
                             JSONObject jsonDish = jsonDishes.getJSONObject(dish_index);
-                            Dish dish = new Dish(
-                                    jsonDish.getString("dishId"),
-                                    jsonDish.getString("dishName"),
-                                    jsonDish.getString("campus"),
-                                    jsonDish.getString("price"),
-                                    jsonDish.getInt("likeCount"),
-                                    jsonDish.getInt("commentCount"),
-                                    jsonDish.getString("picture"));
+                            Dish dish = new Dish(jsonDish);
                             dishes.add(dish);
                         }
                         runOnUiThread(() -> {
@@ -125,6 +118,8 @@ public class SearchActivity extends AppActivity
         bundle.putString("name", dish.name);
         bundle.putString("price", dish.price);
         bundle.putString("picUrl", dish.foodPicUrl);
+        bundle.putInt("favorCnt", dish.likeCount);
+        bundle.putString("location", dish.location);
         intent.putExtras(bundle);
 
         startActivity(intent);

@@ -127,7 +127,6 @@
                     android:id="@+id/canteen_detail"
                     android:layout_width="match_parent"
                     android:layout_height="70dp"
-                    android:background="@drawable/bg_test_corner"
                     android:layout_marginVertical="3dp"
                     android:gravity="center_vertical"
                     android:paddingHorizontal="15dp"

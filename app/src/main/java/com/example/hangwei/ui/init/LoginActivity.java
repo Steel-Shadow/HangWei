@@ -142,7 +142,6 @@ public class LoginActivity extends AppActivity {
                                         editor.putString("usedID", data.getString("id"));
                                         editor.putString("usedEmail", data.getString("email"));
                                         editor.putString("usedAvatar", data.getString("avatar"));
-                                        editor.putBoolean("isForbidden", data.getBoolean("isSilence"));
                                         editor.commit();
                                         // 登录成功后关闭此页面进入主页
                                         ToastUtil.toast("登录成功", ToastConst.successStyle);

@@ -25,7 +25,7 @@ public class Dish {
         try {
             this.id = jsonDish.getString("dishId");
             this.name = jsonDish.getString("dishName");
-            this.location = jsonDish.getString("campus");
+            this.location = jsonDish.getString("canteen") + " " + jsonDish.getString("window");
             this.price = jsonDish.getString("price");
             this.likeCount = jsonDish.getInt("likeCount");
             this.commentCount = jsonDish.getInt("commentCount");
@@ -37,5 +37,9 @@ public class Dish {
 
     public void setLikeCount(int likeCount) {
         this.likeCount = likeCount;
+    }
+
+    public void setCommentCount(int commentCount) {
+        this.commentCount = commentCount;
     }
 }

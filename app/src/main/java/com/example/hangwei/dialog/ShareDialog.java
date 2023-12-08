@@ -68,7 +68,7 @@ public final class ShareDialog {
             ShareBean item = mAdapter.getItem(position);
             if (item.shareName.equals("复制链接")) {
                 ToastUtil.toast("已复制到剪贴板", ToastConst.successStyle);
-                getSystemService(ClipboardManager.class).setPrimaryClip(ClipData.newPlainText("url", "https://github.com/Steel-Shadow/HangWei/releases/tag/v2.1"));
+                getSystemService(ClipboardManager.class).setPrimaryClip(ClipData.newPlainText("url", "https://github.com/Steel-Shadow/HangWei"));
             } else {
                 ToastUtil.toast("开发者正在加紧申请创建第三方平台，无奈过去半月余仍未审批通过。\n" +
                         "后续审批通过我们将第一时间进行版本更新，谢谢您的体谅", ToastConst.warnStyle);

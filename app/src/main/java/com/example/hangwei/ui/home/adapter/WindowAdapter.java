@@ -86,14 +86,17 @@ public class WindowAdapter extends AppAdapter<Window> {
             Window window = getItem(position);
 
             mWindowName.setText(window.name);
+            updateFavorite(window);
 
             Dish dish1 = window.dish1;
-            mName1.setText(dish1.name);
-            mLocation1.setText(dish1.location);
-            mPrice1.setText(dish1.price);
-            Glide.with(this.getItemView()).load(dish1.foodPicUrl).into(mFoodPic1);
-
-            updateFavorite(window);
+            if (dish1 == null) {
+                layout1.setVisibility(View.GONE);
+            } else {
+                mName1.setText(dish1.name);
+                mLocation1.setText(dish1.location);
+                mPrice1.setText(dish1.price);
+                Glide.with(this.getItemView()).load(dish1.foodPicUrl).into(mFoodPic1);
+            }
 
             Dish dish2 = window.dish2;
             if (dish2 == null) {

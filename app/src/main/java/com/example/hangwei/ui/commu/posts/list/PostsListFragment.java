@@ -73,13 +73,7 @@ public class PostsListFragment extends TitleBarFragment<HomeActivity>
         mRecyclerView.setAdapter(mAdapter);
         mRefreshLayout.setOnRefreshLoadMoreListener(this);
 
-        tv_add_post.setOnClickListener(view -> {
-            boolean isForbidden =
-                    getContext().getSharedPreferences("BasePrefs", MODE_PRIVATE).getBoolean("isForbidden", false);
-            if (isForbidden) {
-                ToastUtil.toast("您已被禁言，无法发帖", ToastConst.warnStyle);
-                return;
-            }
+        tv_add_post.setOnClickListener(view -> fetchPer(() -> {
             startActivityForResult(AddPostActivity.class, (resultCode, data) -> {
                 if (resultCode == RESULT_OK && data != null) {
                     PostItem postItem = new PostItem(data.getStringExtra("postID"), userName, avatar,
@@ -89,7 +83,7 @@ public class PostsListFragment extends TitleBarFragment<HomeActivity>
                     mRefreshLayout.finishRefresh();
                 }
             });
-        });
+        }));
     }
 
     @Override
@@ -111,6 +105,7 @@ public class PostsListFragment extends TitleBarFragment<HomeActivity>
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 ToastUtil.toast("服务器有一些小问题~", ToastConst.warnStyle);
+                getAttachActivity().runOnUiThread(afterResponse);
             }
 
             @Override
@@ -136,6 +131,39 @@ public class PostsListFragment extends TitleBarFragment<HomeActivity>
                             }
                             afterResponse.run();
                         });
+                    }
+                } catch (JSONException e) {
+                    getAttachActivity().runOnUiThread(afterResponse);
+                    e.printStackTrace();
+                } finally {
+                    response.body().close(); // 关闭响应体
+                }
+            }
+        });
+    }
+
+    private void fetchPer(Runnable afterResponse) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("userName", userName);
+        AsyncHttpUtil.httpPost(Ports.userIsSilence, params, new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                ToastUtil.toast("服务器有一些小问题~", ToastConst.warnStyle);
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                System.out.println(response.message());
+                try {
+                    JSONObject jsonObject = new JSONObject(response.body().string());
+                    if (jsonObject.getInt("code") == 0) {
+                        ToastUtil.toast(jsonObject.getString("msg"), ToastConst.errorStyle);
+                    } else {
+                        if (jsonObject.getJSONObject("data").getBoolean("isSilence")) {
+                            ToastUtil.toast("您已被禁言，无法发帖", ToastConst.warnStyle);
+                        } else {
+                            getAttachActivity().runOnUiThread(() -> afterResponse.run());
+                        }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

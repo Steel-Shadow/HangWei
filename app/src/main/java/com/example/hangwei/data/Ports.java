@@ -12,6 +12,8 @@ public class Ports {
     public static String userRegisterUrl = userUrl + "register";
     public static String userModifyUrl = userUrl + "modify";
     public static String userFeedback = userUrl + "feedback";
+    public static String userIsSilence = userUrl + "isSilence";
+    public static String userCheck = userUrl + "check";
 
     /*
      * 餐品类

@@ -120,6 +120,7 @@ public class CanteenActivity extends AppActivity implements OnRefreshLoadMoreLis
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 ToastUtil.toast("Canteen get dish data http fail!", ToastConst.errorStyle);
+                runOnUiThread(afterResponse);
             }
 
             @Override
@@ -140,10 +141,17 @@ public class CanteenActivity extends AppActivity implements OnRefreshLoadMoreLis
                             JSONObject jsonWindow = jsonWindows.getJSONObject(i);
                             String id = jsonWindow.getString("windowId");
                             String name = jsonWindow.getString("windowName");
+                            if (jsonWindow.isNull("dishes")) {
+                                windows.add(new Window(id, name, null, null));
+                                continue;
+                            }
                             JSONArray dishes = jsonWindow.getJSONArray("dishes");
-                            JSONObject jsonDish1 = dishes.getJSONObject(0);
-                            Dish dish1 = new Dish(jsonDish1);
+                            Dish dish1 = null;
                             Dish dish2 = null;
+                            if (dishes.length() >= 1) {
+                                JSONObject jsonDish1 = dishes.getJSONObject(0);
+                                dish1 = new Dish(jsonDish1);
+                            }
                             if (dishes.length() == 2) {
                                 JSONObject jsonDish2 = dishes.getJSONObject(1);
                                 dish2 = new Dish(jsonDish2);
