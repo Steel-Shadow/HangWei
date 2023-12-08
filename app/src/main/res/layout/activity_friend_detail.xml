@@ -13,7 +13,7 @@
         app:title="主页">
     </com.hjq.bar.TitleBar>
 
-    <com.example.hangwei.widget.layout.XCollapsingToolbarLayout
+    <com.example.hangwei_administrator.widget.layout.XCollapsingToolbarLayout
         android:id="@+id/friend_detail_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -47,9 +47,9 @@
                     android:id="@+id/friend_detail_userName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginVertical="5dp"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:layout_marginVertical="5dp"
                     android:text="用户名"
                     android:textSize="18sp"
                     android:textColor="@color/pink" />
@@ -108,7 +108,7 @@
 
         </LinearLayout>
 
-    </com.example.hangwei.widget.layout.XCollapsingToolbarLayout>
+    </com.example.hangwei_administrator.widget.layout.XCollapsingToolbarLayout>
 
     <TextView
         android:layout_width="match_parent"
@@ -119,13 +119,13 @@
         android:text="动态"
         android:textStyle="bold"/>
 
-    <com.example.hangwei.widget.view.WrapRecyclerView
+    <com.example.hangwei_administrator.widget.view.WrapRecyclerView
         android:id="@+id/friend_detail_posts"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:listCount="1000"
         tools:listitem="@layout/item_post_simple">
 
-    </com.example.hangwei.widget.view.WrapRecyclerView>
+    </com.example.hangwei_administrator.widget.view.WrapRecyclerView>
 
 </LinearLayout>

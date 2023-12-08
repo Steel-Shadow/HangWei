@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         app:srlEnablePreviewInEditMode="false">
 
-        <com.example.hangwei.widget.view.WrapRecyclerView
+        <com.example.hangwei_administrator.widget.view.WrapRecyclerView
             android:id="@+id/fav_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.example.hangwei.widget.view.SettingBar
+            <com.example.hangwei_administrator.widget.view.SettingBar
                 android:id="@+id/settings_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -29,7 +29,7 @@
                 app:bar_leftText="修改邮箱"
                 app:bar_rightDrawable="@drawable/arrows_right_ic" />
 
-            <com.example.hangwei.widget.view.SettingBar
+            <com.example.hangwei_administrator.widget.view.SettingBar
                 android:id="@+id/settings_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -37,7 +37,7 @@
                 app:bar_rightDrawable="@drawable/arrows_right_ic"
                 tools:bar_rightText="密码强度较低" />
 
-            <com.example.hangwei.widget.view.SettingBar
+            <com.example.hangwei_administrator.widget.view.SettingBar
                 android:id="@+id/settings_update"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -58,30 +58,30 @@
                     app:shape_radius="@dimen/dp_720"
                     app:shape_solidColor="#F85E5E" />
 
-            </com.example.hangwei.widget.view.SettingBar>
+            </com.example.hangwei_administrator.widget.view.SettingBar>
 
-            <com.example.hangwei.widget.view.SettingBar
+            <com.example.hangwei_administrator.widget.view.SettingBar
                 android:id="@+id/settings_agreement"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:bar_leftText="@string/setting_agreement"
                 app:bar_rightDrawable="@drawable/arrows_right_ic" />
 
-            <com.example.hangwei.widget.view.SettingBar
+            <com.example.hangwei_administrator.widget.view.SettingBar
                 android:id="@+id/settings_about"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:bar_leftText="@string/setting_about"
                 app:bar_rightDrawable="@drawable/arrows_right_ic" />
 
-            <com.example.hangwei.widget.view.SettingBar
+            <com.example.hangwei_administrator.widget.view.SettingBar
                 android:id="@+id/settings_cache"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:bar_leftText="@string/setting_cache"
                 app:bar_rightDrawable="@drawable/arrows_right_ic" />
 
-            <com.example.hangwei.widget.view.SettingBar
+            <com.example.hangwei_administrator.widget.view.SettingBar
                 android:id="@+id/settings_exit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

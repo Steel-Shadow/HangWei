@@ -7,7 +7,7 @@
     android:background="#363636"
     tools:context=".ui.home.activity.ImagePreviewActivity">
 
-    <com.example.hangwei.widget.layout.PhotoViewPager
+    <com.example.hangwei_administrator.widget.layout.PhotoViewPager
         android:id="@+id/vp_image_preview_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

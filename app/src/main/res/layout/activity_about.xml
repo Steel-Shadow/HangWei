@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         app:title="@string/about_title" />
 
-    <com.example.hangwei.widget.view.ScaleImageView
+    <com.example.hangwei_administrator.widget.view.ScaleImageView
         android:layout_width="@dimen/dp_100"
         android:layout_height="@dimen/dp_100"
         android:layout_marginTop="@dimen/dp_50"

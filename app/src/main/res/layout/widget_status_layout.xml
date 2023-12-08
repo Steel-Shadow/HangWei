@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.example.hangwei.widget.layout.NestedLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.example.hangwei_administrator.widget.layout.NestedLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -22,7 +22,7 @@
         app:lottie_loop="true"
         tools:src="@drawable/status_network_ic" />
 
-    <com.example.hangwei.widget.view.SmartTextView
+    <com.example.hangwei_administrator.widget.view.SmartTextView
         android:id="@+id/iv_status_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -49,4 +49,4 @@
         android:layout_height="0px"
         android:layout_weight="1.5" />
 
-</com.example.hangwei.widget.layout.NestedLinearLayout>
+</com.example.hangwei_administrator.widget.layout.NestedLinearLayout>

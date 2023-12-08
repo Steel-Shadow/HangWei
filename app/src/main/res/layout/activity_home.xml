@@ -7,7 +7,7 @@
     android:orientation="vertical"
     tools:context=".ui.home.activity.HomeActivity">
 
-    <com.example.hangwei.widget.layout.NoScrollViewPager
+    <com.example.hangwei_administrator.widget.layout.NoScrollViewPager
         android:id="@+id/home_page"
         android:layout_width="match_parent"
         android:layout_height="0px"

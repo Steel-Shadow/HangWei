@@ -60,7 +60,7 @@
 
         </FrameLayout>
 
-        <com.example.hangwei.widget.view.CountdownView
+        <com.example.hangwei_administrator.widget.view.CountdownView
             android:id="@+id/cv_safe_countdown"
             style="@style/CountdownViewStyle"
             android:layout_marginHorizontal="@dimen/dp_5" />

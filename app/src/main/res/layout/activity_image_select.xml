@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.example.hangwei.widget.layout.StatusLayout
+        <com.example.hangwei_administrator.widget.layout.StatusLayout
             android:id="@+id/hl_image_select_hint"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -30,9 +30,9 @@
                 tools:listitem="@layout/image_select_item"
                 tools:spanCount="3" />
 
-        </com.example.hangwei.widget.layout.StatusLayout>
+        </com.example.hangwei_administrator.widget.layout.StatusLayout>
 
-        <com.example.hangwei.widget.view.FloatActionButton
+        <com.example.hangwei_administrator.widget.view.FloatActionButton
             android:id="@+id/fab_image_select_floating"
             android:layout_width="@dimen/dp_60"
             android:layout_height="@dimen/dp_60"

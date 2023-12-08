@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.hangwei"
+    namespace = "com.example.hangwei_administrator"
     compileSdk = 33
 
     defaultConfig {
-        applicationId = "com.example.hangwei"
+        applicationId = "com.example.hangwei_administrator"
         minSdk = 24
         targetSdk = 32
         versionCode = 4

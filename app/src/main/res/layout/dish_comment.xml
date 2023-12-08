@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <com.example.hangwei.widget.view.ClearEditText
+        <com.example.hangwei_administrator.widget.view.ClearEditText
             android:id="@+id/add_comment"
             style="@style/EditTextStyle"
             android:layout_width="match_parent"

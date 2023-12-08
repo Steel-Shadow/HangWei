@@ -21,7 +21,7 @@
         android:textColor="#A4A4A4"
         android:textSize="@dimen/sp_14" />
 
-    <com.example.hangwei.widget.view.ClearEditText
+    <com.example.hangwei_administrator.widget.view.ClearEditText
         android:id="@+id/et_email_reset_email"
         style="@style/EditTextStyle"
         android:layout_width="match_parent"
@@ -46,7 +46,7 @@
         android:background="@color/white"
         android:orientation="horizontal">
 
-        <com.example.hangwei.widget.view.ClearEditText
+        <com.example.hangwei_administrator.widget.view.ClearEditText
             android:id="@+id/et_email_reset_code"
             style="@style/EditTextStyle"
             android:layout_width="0px"
@@ -63,13 +63,13 @@
             android:paddingVertical="@dimen/dp_18"
             android:singleLine="true" />
 
-        <com.example.hangwei.widget.view.CountdownView
+        <com.example.hangwei_administrator.widget.view.CountdownView
             android:id="@+id/cv_email_reset_countdown"
             style="@style/CountdownViewStyle" />
 
     </LinearLayout>
 
-    <com.example.hangwei.widget.view.SubmitButton
+    <com.example.hangwei_administrator.widget.view.SubmitButton
         android:id="@+id/btn_email_reset_commit"
         style="@style/ButtonStyle"
         android:layout_width="match_parent"

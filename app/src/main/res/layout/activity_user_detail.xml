@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.commu.friends.detail.FriendDetailActivity">
+
+    <com.hjq.bar.TitleBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:title="用户详情">
+    </com.hjq.bar.TitleBar>
+
+    <com.example.hangwei_administrator.widget.layout.XCollapsingToolbarLayout
+        android:id="@+id/user_detail_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:contentScrim="@color/white"
+        app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+        app:scrimVisibleHeightTrigger="@dimen/dp_100">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:background="@color/white"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:padding="10dp"
+                android:background="@color/white"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/user_detail_avatar"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="center"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_avatar_placeholder" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="22dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="用户名："
+                            android:textColor="@color/pink"
+                            android:textSize="16sp"/>
+
+                        <TextView
+                            android:id="@+id/user_detail_userName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="任天行"
+                            android:textColor="@color/pink"
+                            android:textSize="16sp"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="22dp"
+                        android:layout_marginVertical="7dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="邮箱："
+                            android:textColor="@color/pink"
+                            android:textSize="16sp"/>
+
+                        <TextView
+                            android:id="@+id/user_detail_email"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="21371435@buaa.edu.cn"
+                            android:textColor="@color/pink"
+                            android:textSize="16sp"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="22dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="密码："
+                            android:textColor="@color/pink"
+                            android:textSize="16sp"/>
+
+                        <TextView
+                            android:id="@+id/user_detail_pwd"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="1234567890abcdef"
+                            android:textColor="@color/pink"
+                            android:textSize="16sp"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/user_detail_gonelay"
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:paddingHorizontal="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="注册时间："
+                    android:textColor="@color/gray"/>
+
+                <TextView
+                    android:id="@+id/user_detail_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="2023-11-11 11:11"
+                    android:textColor="@color/gray"/>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:orientation="horizontal">
+
+                    <ToggleButton
+                        android:id="@+id/user_detail_silence"
+                        android:layout_width="60dp"
+                        android:layout_height="30dp"
+                        android:background="@drawable/silence_btn"
+                        android:textOn="禁言中"
+                        android:textOff="禁言"
+                        android:textColor="#a01E90FF"/>
+
+                    <Button
+                        android:id="@+id/user_detail_delete"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginLeft="20dp"
+                        android:background="@drawable/ban_account"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </com.example.hangwei_administrator.widget.layout.XCollapsingToolbarLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:gravity="center"
+        android:layout_marginVertical="1dp"
+        android:text="动态"
+        android:textStyle="bold"/>
+
+    <com.example.hangwei_administrator.widget.view.WrapRecyclerView
+        android:id="@+id/user_detail_posts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:listCount="1000"
+        tools:listitem="@layout/item_post_simple">
+
+    </com.example.hangwei_administrator.widget.view.WrapRecyclerView>
+
+</LinearLayout>

@@ -1,0 +1,172 @@
+package com.example.hangwei_administrator.ui.home.activity;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.view.inputmethod.EditorInfo;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.hangwei_administrator.R;
+import com.example.hangwei_administrator.app.AppActivity;
+import com.example.hangwei_administrator.base.BaseAdapter;
+import com.example.hangwei_administrator.consts.ToastConst;
+import com.example.hangwei_administrator.data.AsyncHttpUtil;
+import com.example.hangwei_administrator.data.Ports;
+import com.example.hangwei_administrator.ui.home.adapter.DishAdapter;
+import com.example.hangwei_administrator.ui.home.element.Dish;
+import com.example.hangwei_administrator.utils.ToastUtil;
+import com.example.hangwei_administrator.widget.view.ClearEditText;
+import com.scwang.smart.refresh.layout.SmartRefreshLayout;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
+
+public class SearchResultActivity extends AppActivity
+        implements OnRefreshLoadMoreListener,
+        BaseAdapter.OnItemClickListener {
+    private ClearEditText mSearchBox;
+    private SmartRefreshLayout mRefreshLayout;
+    private RecyclerView mRecyclerView;
+    private DishAdapter mAdapter;
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.search_result_activity;
+    }
+
+    @Override
+    protected void initView() {
+        mSearchBox = findViewById(R.id.search_result_searchBox);
+
+        mSearchBox.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                hideKeyboard(getContentView());
+                // 隐藏光标
+                mSearchBox.setCursorVisible(false);
+                refresh();
+            }
+            return false;
+        });
+        mRefreshLayout = findViewById(R.id.dish_refresh_layout);
+        mRecyclerView = findViewById(R.id.dish_list);
+
+        mAdapter = new DishAdapter(this);
+        mAdapter.setOnItemClickListener(this);
+
+        mRecyclerView.setAdapter(mAdapter);
+        mRefreshLayout.setOnRefreshLoadMoreListener(this);
+    }
+
+    @Override
+    protected void initData() {
+        Bundle bundle = getIntent().getExtras();
+        assert bundle != null;
+        mSearchBox.setText(bundle.getString("search"));
+        updateDishData(true, () -> {
+        });
+    }
+
+    private void updateDishData(boolean setElseAdd, Runnable afterResponse) {
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("search", mSearchBox.getText().toString());
+        AsyncHttpUtil.httpPostForObject(Ports.dishSearch, params, new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                ToastUtil.toast("网络错误", ToastConst.errorStyle);
+                runOnUiThread(afterResponse);
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                try {
+                    assert response.body() != null;
+                    JSONObject jsonObject = new JSONObject(response.body().string());
+                    List<Dish> dishes = new ArrayList<>();
+
+                    if (jsonObject.getInt("code") == 0) {
+                        ToastUtil.toast(jsonObject.getString("msg"), ToastConst.errorStyle);
+                        runOnUiThread(afterResponse);
+                    } else {
+                        JSONObject data = jsonObject.getJSONObject("data");
+                        JSONArray jsonDishes = data.getJSONArray("dishes");
+
+                        for (int dish_index = 0; dish_index < jsonDishes.length(); dish_index++) {
+                            JSONObject jsonDish = jsonDishes.getJSONObject(dish_index);
+                            Dish dish = new Dish(jsonDish);
+                            dishes.add(dish);
+                        }
+                        runOnUiThread(() -> {
+                            if (setElseAdd) {
+                                mAdapter.setData(dishes);
+                            } else {
+                                mAdapter.addData(dishes);
+                            }
+                            afterResponse.run();
+                        });
+                    }
+                } catch (JSONException e) {
+                    runOnUiThread(afterResponse);
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onItemClick(RecyclerView recyclerView, View itemView, int position) {
+        Dish dish = mAdapter.getItem(position);
+
+        // 创建一个 Intent 对象，指定当前的 Fragment 的上下文和要启动的 Activity 类
+        Intent intent = new Intent(getActivity(), DishInfoActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("id", dish.id);
+        bundle.putString("name", dish.name);
+        bundle.putString("price", dish.price);
+        bundle.putString("picUrl", dish.foodPicUrl);
+        bundle.putString("location", dish.location);
+        intent.putExtras(bundle);
+
+        startActivityForResult(intent, (resultCode, data) -> {
+            if (resultCode == RESULT_OK && data != null) {
+                if (data.getBooleanExtra("isDelete", false)) {
+                    mAdapter.removeItem(position);
+                    return;
+                }
+                dish.setName(data.getStringExtra("dishName"));
+                dish.setPrice(data.getStringExtra("price"));
+                dish.setFoodPicUrl(data.getStringExtra("url"));
+                dish.setLikeCount(data.getIntExtra("favorCnt", dish.likeCount));
+                dish.setCommentCount(data.getIntExtra("commentCnt", dish.commentCount));
+                mAdapter.setItem(position, dish);
+            }
+        });
+    }
+
+    public void refresh() {
+        updateDishData(true, () -> mRefreshLayout.finishRefresh());
+    }
+
+    @Override
+    public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+        refresh();
+    }
+
+    @Override
+    public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+        mRefreshLayout.finishLoadMore();
+    }
+}

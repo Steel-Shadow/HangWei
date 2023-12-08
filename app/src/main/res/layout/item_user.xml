@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:padding="8dp"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/item_user_avatar"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_gravity="left|center"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_avatar_placeholder" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="3dp"
+            android:layout_gravity="center"
+            android:paddingVertical="5dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/item_user_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="用户名"
+                android:textColor="#FFA500"
+                android:textSize="18sp"/>
+
+            <TextView
+                android:id="@+id/item_user_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="5dp"
+                android:text="21371429@buaa.edu.cn"
+                android:textColor="#838B8B"/>
+
+            <TextView
+                android:id="@+id/item_user_pwd"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="123456abcdefghijklmn"
+                android:textColor="#1E90FF"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="right"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <ToggleButton
+                android:id="@+id/item_user_silence"
+                android:layout_width="60dp"
+                android:layout_height="30dp"
+                android:background="@drawable/silence_btn"
+                android:textOn="禁言中"
+                android:textOff="禁言"
+                android:textColor="#a01E90FF"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="20dp"
+        android:paddingBottom="5dp"
+        android:background="@color/white"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="注册时间："
+            android:textColor="#8B8B7A"/>
+
+        <TextView
+            android:id="@+id/item_user_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FFD700"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="1dp"
+            android:background="@color/white" />
+
+    </LinearLayout>
+
+</LinearLayout>

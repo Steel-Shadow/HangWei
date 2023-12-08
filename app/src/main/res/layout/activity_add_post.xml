@@ -82,7 +82,7 @@
 
             </LinearLayout>
 
-            <com.example.hangwei.widget.view.ClearEditText
+            <com.example.hangwei_administrator.widget.view.ClearEditText
                 android:id="@+id/post_title_input"
                 style="@style/EditTextStyle"
                 android:layout_width="match_parent"
@@ -100,7 +100,7 @@
                 style="@style/HorizontalLineStyle"
                 android:layout_gravity="bottom" />
 
-            <com.example.hangwei.widget.view.ClearEditText
+            <com.example.hangwei_administrator.widget.view.ClearEditText
                 android:id="@+id/post_content_input"
                 style="@style/EditTextStyle"
                 android:layout_width="match_parent"
@@ -118,7 +118,7 @@
                 style="@style/HorizontalLineStyle"
                 android:layout_gravity="bottom" />
 
-            <com.example.hangwei.widget.view.SubmitButton
+            <com.example.hangwei_administrator.widget.view.SubmitButton
                 android:id="@+id/btn_send_post"
                 style="@style/ButtonStyle"
                 android:layout_width="match_parent"

@@ -19,7 +19,7 @@
         app:lottie_rawRes="@raw/welcome"
         app:lottie_speed="2.5"/>
 
-    <com.example.hangwei.widget.view.SlantedTextView
+    <com.example.hangwei_administrator.widget.view.SlantedTextView
         android:id="@+id/iv_splash_debug"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -17,7 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="40dp"
         android:text="@string/login_text"
         android:textColor="@color/black75"
         android:textSize="35dp" />
@@ -33,7 +33,7 @@
         android:paddingHorizontal="10dp"
         android:orientation="vertical">
 
-        <com.example.hangwei.widget.view.ClearEditText
+        <EditText
             android:id="@+id/login_input_username"
             style="@style/EditTextStyle"
             android:layout_width="match_parent"
@@ -41,7 +41,9 @@
             android:layout_marginVertical="5dp"
             android:drawableStart="@drawable/ic_user"
             android:drawablePadding="10dp"
-            android:hint="@string/login_name_input"
+            android:text="Administrator"
+            android:textColor="@color/red"
+            android:enabled="false"
             android:singleLine="true"
             app:regexType="anything" />
 
@@ -49,7 +51,7 @@
             style="@style/HorizontalLineStyle1"
             android:layout_marginHorizontal="5dp" />
 
-        <com.example.hangwei.widget.view.PasswordEditText
+        <com.example.hangwei_administrator.widget.view.PasswordEditText
             android:id="@+id/login_input_password"
             style="@style/EditTextStyle"
             android:layout_width="match_parent"
@@ -90,22 +92,13 @@
 
         </TextView>
 
-        <com.example.hangwei.widget.view.SubmitButton
+        <com.example.hangwei_administrator.widget.view.SubmitButton
             android:id="@+id/login_btn_login"
             style="@style/NewButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="80dp"
             android:text="@string/login_text"
-            android:textColor="@color/black65"/>
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/login_btn_register"
-            style="@style/NewButtonStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:text="@string/login_register"
             android:textColor="@color/black65"/>
 
     </LinearLayout>

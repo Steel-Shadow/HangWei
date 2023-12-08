@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.example.hangwei.widget.view.ClearEditText
+    <com.example.hangwei_administrator.widget.view.ClearEditText
         android:id="@+id/search_result_searchBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

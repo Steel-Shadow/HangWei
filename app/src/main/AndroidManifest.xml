@@ -35,7 +35,7 @@
         tools:ignore="ProtectedPermissions" />
 
     <application
-        android:name=".HangWei"
+        android:name=".HangWeiAdministrator"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -94,13 +94,6 @@
         <!-- 登录页 -->
         <activity
             android:name=".ui.init.LoginActivity"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden" />
-
-        <!-- 注册页 -->
-        <activity
-            android:name=".ui.init.RegisterActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
@@ -188,9 +181,6 @@
         <activity android:name=".ui.home.activity.CanteenActivity"
             android:exported="false" />
 
-        <activity android:name=".ui.home.activity.HistoryActivity"
-            android:exported="false" />
-
         <activity android:name=".ui.home.activity.FavoriteActivity"
             android:exported="false" />
 
@@ -239,6 +229,25 @@
             android:exported="false" />
         <activity android:name=".ui.home.activity.SearchActivity"/>
         <activity android:name=".ui.home.activity.SearchResultActivity"/>
+
+        <activity
+            android:name=".ui.commu.posts.report.PostsListActivity"
+            android:exported="false" />
+
+        <!-- 管理员 -->
+        <!-- 用户管理 -->
+        <activity
+            android:name=".ui.manage.user.DetailActivity"
+            android:exported="false" />
+
+        <!-- 餐品管理 -->
+        <activity
+            android:name=".ui.manage.dish.DishAddActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.manage.dish.DishModifyActivity"
+            android:exported="false" />
 
     </application>
 

@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         app:srlEnablePreviewInEditMode="false">
 
-        <com.example.hangwei.widget.view.WrapRecyclerView
+        <com.example.hangwei_administrator.widget.view.WrapRecyclerView
             android:id="@+id/posts_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -21,15 +21,33 @@
             tools:listitem="@layout/item_post" />
     </com.scwang.smart.refresh.layout.SmartRefreshLayout>
 
-    <ImageView
-        android:id="@+id/postList_add"
-        android:layout_width="@dimen/dp_60"
-        android:layout_height="60dp"
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/dp_10"
         android:layout_marginVertical="@dimen/dp_30"
         android:layout_gravity="right|bottom"
-        android:src="@drawable/post_add">
+        android:orientation="vertical">
 
-    </ImageView>
+        <ImageButton
+            android:id="@+id/postList_ac_report"
+            android:layout_width="50dp"
+            android:layout_height="55dp"
+            android:layout_marginVertical="15dp"
+            android:background="@drawable/ac_report">
+
+        </ImageButton>
+
+        <ImageButton
+            android:id="@+id/postList_add"
+            android:layout_width="@dimen/dp_60"
+            android:layout_height="60dp"
+            android:background="@drawable/post_add">
+
+        </ImageButton>
+
+
+
+    </LinearLayout>
 
 </FrameLayout>

@@ -13,7 +13,7 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:elevation="0px">
 
-        <com.example.hangwei.widget.layout.XCollapsingToolbarLayout
+        <com.example.hangwei_administrator.widget.layout.XCollapsingToolbarLayout
             android:id="@+id/ctl_home_bar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_256"
@@ -40,25 +40,21 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:weightSum="4"
                     android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/home_address"
-                        android:layout_width="0dp"
+                        android:layout_width="@dimen/dp_70"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
                         android:gravity="center_vertical"
-                        android:singleLine="true"
                         android:text="@string/home_location_text"
                         android:textColor="@color/black50"
                         android:textSize="@dimen/sp_15"
                         app:drawableStartCompat="@drawable/location" />
 
                     <LinearLayout
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_weight="3"
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
 
@@ -94,28 +90,25 @@
 
             </androidx.appcompat.widget.Toolbar>
 
-        </com.example.hangwei.widget.layout.XCollapsingToolbarLayout>
+        </com.example.hangwei_administrator.widget.layout.XCollapsingToolbarLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:weightSum="5"
             android:layout_marginVertical="1dp"
             android:orientation="horizontal">
 
             <Spinner
                 android:id="@+id/home_spinner"
-                android:layout_width="0dp"
+                android:layout_width="80dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
                 android:gravity="center_vertical"
-                android:background="@drawable/bg_corner_canteen"/>
+                android:background="@color/common_accent_color"/>
 
             <TextView
                 style="@style/EditTextStyle"
-                android:layout_width="0dp"
+                android:layout_width="fill_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="4"
                 android:gravity="center_vertical"
                 android:text="@string/home_middle_text"
                 android:textSize="15sp"
@@ -123,7 +116,7 @@
         </LinearLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <com.example.hangwei.widget.layout.NestedViewPager
+    <com.example.hangwei_administrator.widget.layout.NestedViewPager
         android:id="@+id/home_pager_lists"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

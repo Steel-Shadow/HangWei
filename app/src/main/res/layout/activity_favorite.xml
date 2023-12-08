@@ -40,7 +40,7 @@
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <com.example.hangwei.widget.layout.NestedViewPager
+    <com.example.hangwei_administrator.widget.layout.NestedViewPager
         android:id="@+id/favorite_pager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

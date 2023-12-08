@@ -59,7 +59,6 @@
         <item name="android:foreground">@null</item>
     </style>
 
-    <!-- 默认按钮样式 -->
     <style name="NewButtonStyle" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:paddingStart">@dimen/dp_20</item>
         <item name="android:paddingEnd">@dimen/dp_20</item>
